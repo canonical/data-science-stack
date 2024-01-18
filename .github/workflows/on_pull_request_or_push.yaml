@@ -1,0 +1,12 @@
+name: On Pull Request
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  tests:
+    name: Run Tests
+    uses: ./.github/workflows/tests.yaml

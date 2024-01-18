@@ -1,0 +1,6 @@
+codespell
+flake8
+flake8-builtins
+flake8-copyright
+pep8-naming
+pyproject-flake8
