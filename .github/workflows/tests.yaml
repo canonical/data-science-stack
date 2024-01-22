@@ -34,7 +34,3 @@ jobs:
         run: python -m pip install tox
       - name: Run tests
         run: tox -e integration
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15 # This will allow to open a sesion for max 15 minutes
