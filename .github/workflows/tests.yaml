@@ -45,14 +45,12 @@ jobs:
         python3.10 -m pip install tox
     
     - name: Setup operator environment
-      uses: charmed-kubernetes/actions-operator@main
-      with:
-        provider: microk8s
-        channel: 1.28-strict/stable
-        microk8s-addons: "hostpath-storage"
+      run: |
+        sudo snap install microk8s --classic --channel=1.28/stable
+        sudo microk8s enable hostpath-storage
 
     - name: Install library
-      run: sg snap_microk8s -c "tox -vve integration"
+      run: sg microk8s -c "tox -vve integration"
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
