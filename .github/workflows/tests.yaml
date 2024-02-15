@@ -52,8 +52,6 @@ jobs:
         mkdir -p $USER ~/.kube
         sudo usermod -a -G microk8s $USER
         sudo chown -f -R $USER ~/.kube
-        newgrp microk8s
-        microk8s config > ~/.kube/config
 
     - name: Install library
       run: tox -vve integration
