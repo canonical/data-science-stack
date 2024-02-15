@@ -43,6 +43,7 @@ jobs:
         wget https://bootstrap.pypa.io/get-pip.py
         python3.10 get-pip.py
         python3.10 -m pip install tox
+        rm get-pip.py
     
     - name: Setup operator environment
       run: |
@@ -51,12 +52,11 @@ jobs:
         mkdir -p $USER ~/.kube
         sudo usermod -a -G microk8s $USER
         sudo chown -f -R $USER ~/.kube
-        microk8s stop
-        microk8s start
+        newgrp microk8s
         microk8s config > ~/.kube/config
 
     - name: Install library
-      run: su ubuntu -c "tox -vve integration"
+      run: tox -vve integration
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
