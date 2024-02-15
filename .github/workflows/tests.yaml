@@ -2,17 +2,17 @@ name: Tests
 
 on:
   workflow_call:
-      microk8s-channel:
-        description: "Microk8s channel e.g. 1.28/stable"
-        required: false
-        default: "1.28/stable"
-        type: string
-      python-version:
-        description: "Version of python to install. If empty, the workflow will not install and will use machine's default"
-        default: "3.10"
-        required: false
-        type: string
-      
+    microk8s-channel:
+      description: "Microk8s channel e.g. 1.28/stable"
+      required: false
+      default: "1.28/stable"
+      type: string
+    python-version:
+      description: "Version of python to install. If empty, the workflow will not install and will use machine's default"
+      default: "3.10"
+      required: false
+      type: string
+    
 
 jobs:
   lint:
