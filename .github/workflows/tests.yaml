@@ -48,7 +48,7 @@ jobs:
       uses: charmed-kubernetes/actions-operator@main
       with:
         provider: microk8s
-        channel: 1.28/stable
+        channel: 1.28-strict/stable
         microk8s-addons: "hostpath-storage"
 
     - name: Install library
@@ -56,4 +56,5 @@ jobs:
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
+      if: always()
       timeout-minutes: 15 # This will allow to open a sesion for max 15 minutes
