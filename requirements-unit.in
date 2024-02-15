@@ -1,3 +1,4 @@
 pytest
 pytest-mock
 coverage[toml]
+-r requirements.txt
