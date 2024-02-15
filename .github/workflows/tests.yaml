@@ -48,9 +48,15 @@ jobs:
       run: |
         sudo snap install microk8s --classic --channel=1.28/stable
         sudo microk8s enable hostpath-storage
+        mkdir -p $USER ~/.kube
+        sudo usermod -a -G microk8s $USER
+        sudo chown -f -R $USER ~/.kube
+        microk8s stop
+        microk8s start
+        microk8s config > ~/.kube/config
 
     - name: Install library
-      run: sg microk8s -c "tox -vve integration"
+      run: su ubuntu -c "tox -vve integration"
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
