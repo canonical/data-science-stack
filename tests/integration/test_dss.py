@@ -7,7 +7,7 @@ def test_initialize_creates_dss() -> None:
     the 'mlflow-deployment' deployment is active in the 'dss' namespace.
     """
     # Run the initialize command with the provided kubeconfig
-    microk8s_config = subprocess.run(["sudo", "microk8s", "config"], capture_output=True, text=True)
+    microk8s_config = subprocess.run(["microk8s", "config"], capture_output=True, text=True)
     kubeconfig_content: str = microk8s_config.stdout.strip()
 
     result = subprocess.run(

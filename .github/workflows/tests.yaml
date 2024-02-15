@@ -45,16 +45,13 @@ jobs:
         python3.10 -m pip install tox
         rm get-pip.py
     
-    - name: Setup operator environment
-      run: |
-        sudo snap install microk8s --classic --channel=1.28/stable
-        sudo microk8s enable hostpath-storage
-        mkdir -p $USER ~/.kube
-        sudo usermod -a -G microk8s $USER
-        sudo chown -f -R $USER ~/.kube
+    - uses: balchua/microk8s-actions@v0.3.2
+      with:
+        channel: '1.28/stable'
+        addons: '["hostpath-storage"]'
 
     - name: Install library
-      run: tox -vve integration
+      run: sg microk8s -c "tox -vve integration"
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
