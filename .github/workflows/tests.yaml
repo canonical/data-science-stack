@@ -7,10 +7,10 @@ jobs:
     name: Lint
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Install dependencies
-      run: python3 -m pip install tox
+      run: sudo apt-get install python3-pip tox
     - name: Run linters
       run: tox -e lint
 
@@ -18,17 +18,16 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Install dependencies
-      run: python -m pip install tox
+      run: sudo apt-get install python3-pip tox
     - name: Run tests
       run: tox -e unit
 
   integration:
     name: Integration tests
     runs-on: ubuntu-22.04
-    needs: [lint, unit-test]  # Depends on lint and unit-test jobs
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
