@@ -1,7 +1,7 @@
 import subprocess
 
 
-def test_initialize_creates_dss_namespace() -> None:
+def test_initialize_creates_dss() -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow-deployment' deployment is active in the 'dss' namespace.
