@@ -52,7 +52,7 @@ jobs:
         microk8s-addons: "hostpath-storage"
 
     - name: Install library
-      run: tox -e integration -- -vv -s
+      run: sg snap_microk8s -c "tox -vve integration"
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
