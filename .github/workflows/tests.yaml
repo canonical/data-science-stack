@@ -4,7 +4,7 @@ on:
   workflow_call:
       microk8s-channel:
         description: "Microk8s channel e.g. 1.28/stable"
-        required: true
+        required: false
         default: "1.28/stable"
         type: string
       python-version:
