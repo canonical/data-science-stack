@@ -52,8 +52,4 @@ jobs:
 
     - name: Install library
       run: sg microk8s -c "tox -vve integration"
-    
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: always()
-      timeout-minutes: 15 # This will allow to open a sesion for max 15 minutes
+
