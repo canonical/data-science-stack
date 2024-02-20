@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: notebooks-home
+  namespace: dss
+  labels:
+    app: dss-notebooks
+    app.kubernetes.io/name: dss-notebooks
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-notebook-tensorflow
+  name: notebook-tensorflow
+  namespace: dss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-notebook-tensorflow
+  template:
+    metadata:
+      labels:
+        app: user-notebook-tensorflow
+    spec:
+      containers:
+      - image: kubeflownotebookswg/jupyter-scipy:v1.8.0
+        imagePullPolicy: IfNotPresent
+        name: tensorflow
+        command:
+          - jupyter
+        args:
+          - lab
+          - --notebook-dir
+          - /home/jovyan
+          - --ip
+          - 0.0.0.0
+          - --no-browser
+          - --port
+          - "8888"
+          - --NotebookApp.token
+          - ""
+          - --NotebookApp.password
+          - ""
+          - --NotebookApp.allow_origin
+          - '*'
+          - --NotebookApp.authenticate_prometheus
+          - "False"
+        env:
+          - name: MLFLOW_TRACKING_URI
+            value: http://mlflow.dss.svc
+        resources:
+          limits:
+            cpu: 4
+            memory: 8Gi
+          requests:
+            cpu: 1
+            memory: 2Gi
+        ports:
+          - containerPort: 8888
+            name: notebook-port
+            protocol: TCP
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /home/jovyan
+          name: home-pvc
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: dshm
+      - name: home-pvc
+        persistentVolumeClaim:
+          claimName: notebooks-home
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-notebook-tensorflow
+  namespace: dss
+  labels:
+    app: dss-user-notebooks
+    app.kubernetes.io/name: dss-user-notebooks
+spec:
+  selector:
+    app: user-notebook-tensorflow
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
