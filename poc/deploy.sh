@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+TIMEOUT=1200s
+
 echo -e "\nStep 1/3: Deploying MicroK8s snap"
 sudo snap install microk8s --classic --channel=1.29/stable
 
@@ -18,7 +20,7 @@ sudo microk8s enable rbac
 echo "Waiting for microK8s addons to become ready..."
 sudo microk8s.kubectl wait \
   --for=condition=available \
-  --timeout 600s \
+  --timeout $TIMEOUT \
   -n kube-system \
   deployment/coredns \
   deployment/hostpath-provisioner
@@ -33,7 +35,7 @@ sudo microk8s kubectl apply -f manifests/mlflow.yaml
 
 sudo microk8s.kubectl wait \
   --for condition=available \
-  --timeout 60s \
+  --timeout $TIMEOUT \
   -n dss\
   deployment \
   -l app=dss-mlflow
@@ -42,7 +44,7 @@ echo -e "\n\$ dss start notebook"
 sudo microk8s kubectl apply -f manifests/notebooks.yaml
 sudo microk8s.kubectl wait \
   --for condition=available \
-  --timeout 60s \
+  --timeout $TIMEOUT \
   -n dss\
   deployment \
   -l app=user-notebook-tensorflow
