@@ -27,7 +27,7 @@ sudo microk8s.kubectl wait \
 sudo microk8s.kubectl -n kube-system rollout status ds/calico-node
 
 echo -e "\nStep 3/3: Configuring NVIDIA runtime"
-sudo microk8s enable nvidia
+sudo microk8s enable nvidia --gpu-operator-driver=host
 
 echo -e "\n\$ dss initialise"
 sudo microk8s kubectl apply -f manifests/namespace.yaml
