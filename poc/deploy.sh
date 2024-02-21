@@ -64,6 +64,6 @@ echo "DSS has started successfully!
 For next steps you can connect to either of the following IPs and
 start experimenting:
 
-MLFlow: $MLFLOW_IP
-TensorFlow Notebook: $NOTEBOOK_IP
+MLFlow: http://$MLFLOW_IP
+TensorFlow Notebook: http://$NOTEBOOK_IP
 """
