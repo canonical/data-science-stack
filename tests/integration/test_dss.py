@@ -1,7 +1,14 @@
 import subprocess
 
+import pytest
+from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
+from lightkube.resources.apps_v1 import Deployment
+from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-def test_initialize_creates_dss() -> None:
+from dss.initialize import DSS_CLI_MANAGER_LABELS
+
+
+def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
@@ -40,3 +47,27 @@ def test_initialize_creates_dss() -> None:
     assert (
         "1/1" in kubectl_result.stdout
     )  # Assuming it should have 1 replica and all are available
+
+
+@pytest.fixture()
+def cleanup_after_initialize():
+    """Cleans up resources that might have been deployed by dss initialize.
+
+    Note that this is a white-box implemention - it depends on knowing what could be deployed and explicitly removing
+    those objects, rather than truly restoring the cluster to a previous state.  This could be leaky, depending on how
+    `dss initialize` is changed in future.
+    """
+    yield
+
+    k8s_resource_handler = KubernetesResourceHandler(
+        field_manager="dss",
+        labels=DSS_CLI_MANAGER_LABELS,
+        template_files=[],
+        context={},
+        resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
+    )
+
+    # Attempt to clean up anything that initialize might create
+    # Note that .delete() does not wait on the objects to be successfully deleted, so repeating the tests
+    # quickly can still cause an issue
+    k8s_resource_handler.delete()
