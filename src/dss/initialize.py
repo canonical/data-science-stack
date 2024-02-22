@@ -13,6 +13,9 @@ from dss.logger import setup_logger
 logger = setup_logger("logs/dss.log")
 
 
+DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
+
+
 def wait_for_deployment_ready(
     client: Client,
     namespace: str,
@@ -75,7 +78,7 @@ def initialize() -> None:
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager="dss",
-        labels={"app": "dss", "dss-component": "mlflow"},
+        labels=DSS_CLI_MANAGER_LABELS,
         template_files=[manifests_file],
         context={},
         resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
