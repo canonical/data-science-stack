@@ -53,9 +53,9 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
 def cleanup_after_initialize():
     """Cleans up resources that might have been deployed by dss initialize.
 
-    Note that this is a white-box implemention - it depends on knowing what could be deployed and explicitly removing
-    those objects, rather than truly restoring the cluster to a previous state.  This could be leaky, depending on how
-    `dss initialize` is changed in future.
+    Note that this is a white-box implementation - it depends on knowing what could be deployed and
+    explicitly removing those objects, rather than truly restoring the cluster to a previous state.
+    This could be leaky, depending on how `dss initialize` is changed in future.
     """
     yield
 
@@ -68,6 +68,6 @@ def cleanup_after_initialize():
     )
 
     # Attempt to clean up anything that initialize might create
-    # Note that .delete() does not wait on the objects to be successfully deleted, so repeating the tests
-    # quickly can still cause an issue
+    # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
+    # the tests quickly can still cause an issue
     k8s_resource_handler.delete()
