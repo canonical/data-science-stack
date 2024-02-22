@@ -4,7 +4,6 @@ import time
 import yaml
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube import Client, KubeConfig
-from lightkube.generic_resource import load_in_cluster_generic_resources
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
@@ -81,9 +80,6 @@ def initialize() -> None:
         context={},
         resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
     )
-
-    # Load Kubernetes generic resources
-    load_in_cluster_generic_resources(client)
 
     try:
         # Apply resources using KubernetesResourceHandler
