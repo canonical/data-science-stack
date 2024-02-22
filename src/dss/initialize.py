@@ -89,7 +89,7 @@ def initialize() -> None:
         k8s_resource_handler.apply()
 
         # Wait for mlflow deployment to be ready
-        wait_for_deployment_ready(client, namespace="dss", deployment_name="mlflow-deployment")
+        wait_for_deployment_ready(client, namespace="dss", deployment_name="mlflow")
 
         logger.info(
             "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"  # noqa E501

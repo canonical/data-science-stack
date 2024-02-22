@@ -8,7 +8,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mlflow-pvc
+  name: mlflow
   namespace: dss
 spec:
   accessModes:
@@ -21,7 +21,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mlflow-deployment
+  name: mlflow
   namespace: dss
 spec:
   replicas: 1
@@ -34,24 +34,24 @@ spec:
         app: mlflow
     spec:
       containers:
-        - name: mlflow-container
+        - name: mlflow
           image: ubuntu/mlflow:2.1.1_1.0-22.04
           args: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
           ports:
             - containerPort: 5000
           volumeMounts:
-            - name: mlflow-pvc
+            - name: mlflow
               mountPath: /mlruns
       volumes:
-        - name: mlflow-pvc
+        - name: mlflow
           persistentVolumeClaim:
-            claimName: mlflow-pvc
+            claimName: mlflow
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mlflow-svc
+  name: mlflow
   namespace: dss
 spec:
   selector:

@@ -4,7 +4,7 @@ import subprocess
 def test_initialize_creates_dss() -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
-    the 'mlflow-deployment' deployment is active in the 'dss' namespace.
+    the 'mlflow' deployment is active in the 'dss' namespace.
     """
     # Run the initialize command with the provided kubeconfig
     microk8s_config = subprocess.run(["microk8s", "config"], capture_output=True, text=True)
@@ -30,13 +30,13 @@ def test_initialize_creates_dss() -> None:
 
     # Check if the mlflow-deployment deployment is active in the dss namespace
     kubectl_result = subprocess.run(
-        ["kubectl", "get", "deployment", "mlflow-deployment", "-n", "dss"],
+        ["kubectl", "get", "deployment", "mlflow", "-n", "dss"],
         capture_output=True,
         text=True,
     )
 
     # Check if the deployment exists and is active
-    assert "mlflow-deployment" in kubectl_result.stdout
+    assert "mlflow" in kubectl_result.stdout
     assert (
         "1/1" in kubectl_result.stdout
     )  # Assuming it should have 1 replica and all are available
