@@ -43,15 +43,6 @@ def mock_resource_handler() -> MagicMock:
 
 
 @pytest.fixture
-def mock_load_generic_resources() -> MagicMock:
-    """
-    Fixture to mock the load_in_cluster_generic_resources function.
-    """
-    with patch("dss.initialize.load_in_cluster_generic_resources") as mock_load:
-        yield mock_load
-
-
-@pytest.fixture
 def mock_logger() -> MagicMock:
     """
     Fixture to mock the logger object.
@@ -65,7 +56,6 @@ def test_initialize_success(
     mock_kubeconfig_from_dict: MagicMock,
     mock_client: MagicMock,
     mock_resource_handler: MagicMock,
-    mock_load_generic_resources: MagicMock,
     mock_logger: MagicMock,
 ) -> None:
     """
@@ -95,10 +85,9 @@ def test_initialize_success(
         mock_environ_get.assert_called_once_with("DSS_KUBECONFIG", "")
         mock_kubeconfig_from_dict.assert_called_once_with("dummy_kubeconfig_content")
         mock_client.assert_called_once_with(mock_kubeconfig)
-        mock_load_generic_resources.assert_called_once_with(mock_client_instance)
         mock_resource_handler_instance.apply.assert_called_once()
         mock_wait_for_deployment_ready.assert_called_once_with(
-            mock_client_instance, namespace="dss", deployment_name="mlflow-deployment"
+            mock_client_instance, namespace="dss", deployment_name="mlflow"
         )
         mock_logger.info.assert_called_with(
             "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"
@@ -109,7 +98,6 @@ def test_initialize_missing_kubeconfig_env_var(
     mock_environ_get: MagicMock,
     mock_kubeconfig_from_dict: MagicMock,
     mock_client: MagicMock,
-    mock_load_generic_resources: MagicMock,
 ) -> None:
     """
     Test case to verify missing kubeconfig environment variable.
@@ -129,7 +117,6 @@ def test_initialize_missing_kubeconfig_env_var(
     mock_environ_get.assert_called_once_with("DSS_KUBECONFIG", "")
     mock_kubeconfig_from_dict.assert_not_called()
     mock_client.assert_not_called()
-    mock_load_generic_resources.assert_not_called()
 
 
 def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: MagicMock) -> None:
