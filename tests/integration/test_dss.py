@@ -13,12 +13,11 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
     """
-    # Run the initialize command with the provided kubeconfig
-    microk8s_config = subprocess.run(["microk8s", "config"], capture_output=True, text=True)
-    kubeconfig_content: str = microk8s_config.stdout.strip()
+    # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
+    kubeconfig = "~/.kube/config"
 
     result = subprocess.run(
-        ["dss", "initialize", "--kubeconfig", kubeconfig_content],
+        ["dss", "initialize", "--kubeconfig", kubeconfig],
         capture_output=True,
         text=True,
     )
@@ -31,8 +30,6 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     kubectl_result = subprocess.run(
         ["kubectl", "get", "namespace", "dss"], capture_output=True, text=True
     )
-
-    # Check if the namespace exists
     assert "dss" in kubectl_result.stdout
 
     # Check if the mlflow-deployment deployment is active in the dss namespace
@@ -41,8 +38,6 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
         capture_output=True,
         text=True,
     )
-
-    # Check if the deployment exists and is active
     assert "mlflow" in kubectl_result.stdout
     assert (
         "1/1" in kubectl_result.stdout

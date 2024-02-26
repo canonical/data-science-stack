@@ -1,9 +1,8 @@
 import os
 import time
 
-import yaml
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
-from lightkube import Client, KubeConfig
+from lightkube import Client
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
@@ -56,24 +55,18 @@ def wait_for_deployment_ready(
             )
 
 
-def initialize() -> None:
+def initialize(lightkube_client: Client) -> None:
     """
     Initializes the Kubernetes cluster by applying manifests from a YAML file.
+
+    Args:
+        lightkube_client (Client): The Kubernetes client.
 
     Returns:
         None
     """
     # Path to the manifests YAML file
     manifests_file = os.path.join(os.path.dirname(__file__), "manifests.yaml")
-
-    # Read kubeconfig content from environment variable
-    kubeconfig_content = os.environ.get("DSS_KUBECONFIG", "")
-    if not kubeconfig_content:
-        raise ValueError("Kubeconfig content not found in environment variable DSS_KUBECONFIG")
-
-    # Initialize Kubernetes client with kubeconfig content
-    kubeconfig = KubeConfig.from_dict(yaml.safe_load(kubeconfig_content))
-    client = Client(kubeconfig)
 
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
@@ -82,6 +75,7 @@ def initialize() -> None:
         template_files=[manifests_file],
         context={},
         resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
+        lightkube_client=lightkube_client,
     )
 
     try:
@@ -89,7 +83,7 @@ def initialize() -> None:
         k8s_resource_handler.apply()
 
         # Wait for mlflow deployment to be ready
-        wait_for_deployment_ready(client, namespace="dss", deployment_name="mlflow")
+        wait_for_deployment_ready(lightkube_client, namespace="dss", deployment_name="mlflow")
 
         logger.info(
             "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"  # noqa E501

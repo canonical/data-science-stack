@@ -61,13 +61,6 @@ def test_initialize_success(
     """
     Test case to verify successful initialization.
     """
-    # Mock the return value of os.environ.get
-    mock_environ_get.return_value = "dummy_kubeconfig_content"
-
-    # Mock the behavior of KubeConfig.from_dict
-    mock_kubeconfig = MagicMock()
-    mock_kubeconfig_from_dict.return_value = mock_kubeconfig
-
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
     mock_client.return_value = mock_client_instance
@@ -79,12 +72,9 @@ def test_initialize_success(
     # Mock wait_for_deployment_ready
     with patch("dss.initialize.wait_for_deployment_ready") as mock_wait_for_deployment_ready:
         # Call the function to test
-        initialize()
+        initialize(lightkube_client=mock_client_instance)
 
         # Assertions
-        mock_environ_get.assert_called_once_with("DSS_KUBECONFIG", "")
-        mock_kubeconfig_from_dict.assert_called_once_with("dummy_kubeconfig_content")
-        mock_client.assert_called_once_with(mock_kubeconfig)
         mock_resource_handler_instance.apply.assert_called_once()
         mock_wait_for_deployment_ready.assert_called_once_with(
             mock_client_instance, namespace="dss", deployment_name="mlflow"
@@ -92,31 +82,6 @@ def test_initialize_success(
         mock_logger.info.assert_called_with(
             "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"
         )
-
-
-def test_initialize_missing_kubeconfig_env_var(
-    mock_environ_get: MagicMock,
-    mock_kubeconfig_from_dict: MagicMock,
-    mock_client: MagicMock,
-) -> None:
-    """
-    Test case to verify missing kubeconfig environment variable.
-    """
-    # Mock the absence of the DSS_KUBECONFIG environment variable
-    mock_environ_get.return_value = ""
-
-    # Call the function to test
-    with pytest.raises(ValueError) as exc_info:
-        initialize()
-
-    # Assertions
-    assert (
-        str(exc_info.value)
-        == "Kubeconfig content not found in environment variable DSS_KUBECONFIG"
-    )
-    mock_environ_get.assert_called_once_with("DSS_KUBECONFIG", "")
-    mock_kubeconfig_from_dict.assert_not_called()
-    mock_client.assert_not_called()
 
 
 def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: MagicMock) -> None:
