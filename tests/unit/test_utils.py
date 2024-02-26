@@ -1,8 +1,23 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+from lightkube.resources.apps_v1 import Deployment
 
-from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
+from dss.utils import (
+    KUBECONFIG_DEFAULT,
+    get_default_kubeconfig,
+    get_lightkube_client,
+    wait_for_deployment_ready,
+)
+
+
+@pytest.fixture
+def mock_client() -> MagicMock:
+    """
+    Fixture to mock the Client class.
+    """
+    with patch("dss.utils.Client") as mock_client:
+        yield mock_client
 
 
 @pytest.fixture
@@ -24,12 +39,12 @@ def mock_kubeconfig() -> MagicMock:
 
 
 @pytest.fixture
-def mock_client() -> MagicMock:
+def mock_logger() -> MagicMock:
     """
-    Fixture to mock the Client class.
+    Fixture to mock the logger object.
     """
-    with patch("dss.utils.Client") as mock_client:
-        yield mock_client
+    with patch("dss.initialize.logger") as mock_logger:
+        yield mock_logger
 
 
 @pytest.mark.parametrize(
@@ -76,3 +91,31 @@ def test_get_lightkube_client_successful(
     mock_kubeconfig.from_file.assert_called_with(kubeconfig)
     mock_client.assert_called_with(config=mock_kubeconfig_instance)
     assert returned_client is not None
+
+
+def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: MagicMock) -> None:
+    """
+    Test case to verify timeout while waiting for deployment to be ready.
+    """
+    # Mock the behavior of the client.get method to return a deployment with available replicas = 0
+    mock_client_instance = MagicMock()
+    mock_client_instance.get.return_value = MagicMock(
+        spec=Deployment, status=MagicMock(availableReplicas=0), spec_replicas=1
+    )
+
+    # Call the function to test
+    with pytest.raises(TimeoutError) as exc_info:
+        wait_for_deployment_ready(
+            mock_client_instance,
+            namespace="test-namespace",
+            deployment_name="test-deployment",
+            timeout_seconds=5,
+            interval_seconds=1,
+        )
+
+    # Assertions
+    assert (
+        str(exc_info.value)
+        == "Timeout waiting for deployment test-deployment in namespace test-namespace to be ready"
+    )
+    assert mock_client_instance.get.call_count == 6  # 5 attempts, 1 final attempt after timeout

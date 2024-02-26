@@ -1,9 +1,8 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from lightkube.resources.apps_v1 import Deployment
 
-from dss.initialize import initialize, wait_for_deployment_ready
+from dss.initialize import initialize
 
 
 @pytest.fixture
@@ -13,15 +12,6 @@ def mock_environ_get() -> MagicMock:
     """
     with patch("dss.initialize.os.environ.get") as mock_env_get:
         yield mock_env_get
-
-
-@pytest.fixture
-def mock_kubeconfig_from_dict() -> MagicMock:
-    """
-    Fixture to mock the KubeConfig.from_dict function.
-    """
-    with patch("dss.initialize.KubeConfig.from_dict") as mock_kubeconfig:
-        yield mock_kubeconfig
 
 
 @pytest.fixture
@@ -53,7 +43,6 @@ def mock_logger() -> MagicMock:
 
 def test_initialize_success(
     mock_environ_get: MagicMock,
-    mock_kubeconfig_from_dict: MagicMock,
     mock_client: MagicMock,
     mock_resource_handler: MagicMock,
     mock_logger: MagicMock,
@@ -82,31 +71,3 @@ def test_initialize_success(
         mock_logger.info.assert_called_with(
             "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"
         )
-
-
-def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: MagicMock) -> None:
-    """
-    Test case to verify timeout while waiting for deployment to be ready.
-    """
-    # Mock the behavior of the client.get method to return a deployment with available replicas = 0
-    mock_client_instance = MagicMock()
-    mock_client_instance.get.return_value = MagicMock(
-        spec=Deployment, status=MagicMock(availableReplicas=0), spec_replicas=1
-    )
-
-    # Call the function to test
-    with pytest.raises(TimeoutError) as exc_info:
-        wait_for_deployment_ready(
-            mock_client_instance,
-            namespace="test-namespace",
-            deployment_name="test-deployment",
-            timeout_seconds=5,
-            interval_seconds=1,
-        )
-
-    # Assertions
-    assert (
-        str(exc_info.value)
-        == "Timeout waiting for deployment test-deployment in namespace test-namespace to be ready"
-    )
-    assert mock_client_instance.get.call_count == 6  # 5 attempts, 1 final attempt after timeout
