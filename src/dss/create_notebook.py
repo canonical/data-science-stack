@@ -13,7 +13,7 @@ from dss.config import (
     NOTEBOOK_PVC_NAME,
 )
 from dss.logger import setup_logger
-from dss.utils import wait_for_deployment_ready, _get_notebook_url
+from dss.utils import wait_for_deployment_ready, get_notebook_url, get_mlflow_tracking_uri
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -35,19 +35,14 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "notebook_deployment.yaml.j2"
     )
 
-    context = {
-        "notebook_name": name,
-        "namespace": DSS_NAMESPACE,
-        "notebook_image": image,
-        "pvc_name": NOTEBOOK_PVC_NAME,
-    }
+    config = _get_notebook_config(image, name)
 
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
         template_files=[manifests_file],
-        context=context,
+        context=config,
         resource_types={Deployment, Service},
         lightkube_client=lightkube_client,
     )
@@ -63,5 +58,19 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         k8s_resource_handler.delete()
         return
 
-    notebook_url = _get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
+    notebook_url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
     logger.info(f"Access the notebook at {notebook_url}.")
+
+
+def _get_notebook_config(image, name):
+    mlflow_tracking_uri = get_mlflow_tracking_uri()
+    context = {
+        "mlflow_tracking_uri": mlflow_tracking_uri,
+        "notebook_name": name,
+        "namespace": DSS_NAMESPACE,
+        "notebook_image": image,
+        "pvc_name": NOTEBOOK_PVC_NAME,
+    }
+    return context
+
+

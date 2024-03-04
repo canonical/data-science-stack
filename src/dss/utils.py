@@ -6,7 +6,7 @@ from lightkube import Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Service
 
-from dss.config import DSS_NAMESPACE
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.logger import setup_logger
 
 # Set up logger
@@ -85,7 +85,11 @@ def get_lightkube_client(kubeconfig: Optional[str] = None):
     return lightkube_client
 
 
-def _get_notebook_url(name: str, namespace: str, lightkube_client: Client) -> str:
+def get_mlflow_tracking_uri() -> str:
+    return f"http://{MLFLOW_DEPLOYMENT_NAME}.{DSS_NAMESPACE}.svc.cluster.local:5000"
+
+
+def get_notebook_url(name: str, namespace: str, lightkube_client: Client) -> str:
     """
     Returns the URL of the notebook server given the name of the server.
 

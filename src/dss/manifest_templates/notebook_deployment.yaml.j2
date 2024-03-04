@@ -15,9 +15,6 @@ spec:
   template:
     metadata:
       labels:
-        # TODO: Need to integrate the things that these pod defaults used to represent
-{#        access-minio: "true"#}
-{#        mlflow-server-minio: "true"#}
         notebook-name: {{ notebook_name }}
         # TODO
         selector: TBD
@@ -26,28 +23,20 @@ spec:
         - env:
           - name: NB_PREFIX
             value: /notebook/{{ namespace }}/{{ notebook_name }}
+          - name: MLFLOW_TRACKING_URI
+            value: {{ mlflow_tracking_uri }}
           image: {{ notebook_image }}
           imagePullPolicy: IfNotPresent
-          # TODO
           name: {{ notebook_name }}
           ports:
           - containerPort: 8888
             name: notebook-port
             protocol: TCP
-          # TODO: add resource limits
-{#          resources:#}
-{#            limits:#}
-{#              cpu: 2400m#}
-{#              memory: 5153960755200m#}
-{#            requests:#}
-{#              cpu: "2"#}
-{#              memory: 4Gi#}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
           - mountPath: /dev/shm
             name: dshm
-          # TODO
           - mountPath: /home/jovyan
             name: home-volume
           workingDir: /home/jovyan
@@ -58,7 +47,6 @@ spec:
         name: dshm
       - name: home-volume
         persistentVolumeClaim:
-          # TODO
           claimName: {{ pvc_name }}
 ---
 apiVersion: v1
@@ -76,12 +64,3 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8888
-
-
-
-
-
-# Create pvc (shared)
-# * set owner references to the statefulset?  or maybe not, we probably dont want it deleted
-# Create statefulset
-# Create service (needed? do we do this for mlflow?)  (I guess it means ip doesn't change if pod restarts for some reason)

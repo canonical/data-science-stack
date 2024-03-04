@@ -1,19 +1,18 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
 
 from dss.config import DSS_NAMESPACE
-from dss.create_notebook import _get_notebook_url, create_notebook
+from dss.create_notebook import create_notebook
 
 
 @pytest.fixture
-def mock_client() -> MagicMock:
+def mock_get_notebook_url() -> MagicMock:
     """
-    Fixture to mock the Client class.
+    Fixture to mock the get_notebook_url function.
     """
-    with patch("dss.create_notebook.Client") as mock_client:
-        yield mock_client
+    with patch("dss.create_notebook.get_notebook_url") as mock_get_notebook_url:
+        yield mock_get_notebook_url
 
 
 @pytest.fixture
@@ -35,7 +34,7 @@ def mock_logger() -> MagicMock:
 
 
 def test_create_notebook_success(
-    mock_client: MagicMock,
+    mock_get_notebook_url: MagicMock,
     mock_resource_handler: MagicMock,
     mock_logger: MagicMock,
 ) -> None:
@@ -44,9 +43,12 @@ def test_create_notebook_success(
     """
     notebook_name = "test-notebook"
     notebook_image = "test-image"
+    notebook_url = "http://somewhere.com:1234/notebook/namespace/name/lab"
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
+
+    mock_get_notebook_url.return_value = notebook_url
 
     # Mock the behavior of KubernetesResourceHandler
     mock_resource_handler_instance = MagicMock()
@@ -64,23 +66,4 @@ def test_create_notebook_success(
         mock_wait_for_deployment_ready.assert_called_once_with(
             mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
         )
-        mock_logger.info.assert_called_with("Notebook created.")
-
-
-def test_get_notebook_url() -> None:
-    """
-    Test the get_notebook_url helper.
-    """
-    name = "name"
-    namespace = "namespace"
-    ip = "1.1.1.1"
-    port = 8765
-    expected_url = f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"
-
-    mock_service = Service(spec=ServiceSpec(clusterIP=ip, ports=[ServicePort(port=port)]))
-    mock_client = MagicMock()
-    mock_client.get.return_value = mock_service
-
-    actual_url = _get_notebook_url(name=name, namespace=namespace, lightkube_client=mock_client)
-
-    assert actual_url == expected_url
+        mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")

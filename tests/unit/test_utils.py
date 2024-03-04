@@ -2,12 +2,15 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from lightkube.resources.apps_v1 import Deployment
+from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
 
+from dss.config import MLFLOW_DEPLOYMENT_NAME, DSS_NAMESPACE
 from dss.utils import (
     KUBECONFIG_DEFAULT,
     get_default_kubeconfig,
     get_lightkube_client,
-    wait_for_deployment_ready,
+    get_notebook_url,
+    wait_for_deployment_ready, get_mlflow_tracking_uri,
 )
 
 
@@ -91,6 +94,33 @@ def test_get_lightkube_client_successful(
     mock_kubeconfig.from_file.assert_called_with(kubeconfig)
     mock_client.assert_called_with(config=mock_kubeconfig_instance)
     assert returned_client is not None
+
+
+def test_get_mlflow_tracking_uri() -> None:
+    """
+    Tests whether get_mlflow_tracking_uri returns the expected value.
+    """
+    expected = f"http://{MLFLOW_DEPLOYMENT_NAME}.{DSS_NAMESPACE}.svc.cluster.local:5000"
+    assert get_mlflow_tracking_uri() == expected
+
+
+def test_get_notebook_url() -> None:
+    """
+    Test the get_notebook_url helper.
+    """
+    name = "name"
+    namespace = "namespace"
+    ip = "1.1.1.1"
+    port = 8765
+    expected_url = f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"
+
+    mock_service = Service(spec=ServiceSpec(clusterIP=ip, ports=[ServicePort(port=port)]))
+    mock_client = MagicMock()
+    mock_client.get.return_value = mock_service
+
+    actual_url = get_notebook_url(name=name, namespace=namespace, lightkube_client=mock_client)
+
+    assert actual_url == expected_url
 
 
 def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: MagicMock) -> None:
