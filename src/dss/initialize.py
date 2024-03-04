@@ -11,6 +11,7 @@ from dss.config import (
     FIELD_MANAGER,
     MANIFEST_TEMPLATES_LOCATION,
     MLFLOW_DEPLOYMENT_NAME,
+    NOTEBOOK_PVC_NAME,
 )
 from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready
@@ -35,7 +36,11 @@ def initialize(lightkube_client: Client) -> None:
         Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"),
     ]
 
-    config = {"mlflow_name": MLFLOW_DEPLOYMENT_NAME, "namespace": DSS_NAMESPACE}
+    config = {
+        "mlflow_name": MLFLOW_DEPLOYMENT_NAME,
+        "namespace": DSS_NAMESPACE,
+        "notebook_pvc_name": NOTEBOOK_PVC_NAME,
+    }
 
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
