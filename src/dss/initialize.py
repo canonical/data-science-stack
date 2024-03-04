@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
@@ -26,12 +25,8 @@ def initialize(lightkube_client: Client) -> None:
     """
     # Path to the manifests YAML file
     manifests_files = [
-        Path(
-            Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "dss_core.yaml.j2"
-        ),
-        Path(
-            Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"
-        ),
+        Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "dss_core.yaml.j2"),
+        Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"),
     ]
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
