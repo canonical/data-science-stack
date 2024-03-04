@@ -43,6 +43,12 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
         "1/1" in kubectl_result.stdout
     )  # Assuming it should have 1 replica and all are available
 
+    # Check if the dss notebook pvc exists using kubectl
+    kubectl_result = subprocess.run(
+        ["kubectl", "get", "pvc", "notebooks", "-n", "dss"], capture_output=True, text=True
+    )
+    assert "notebooks" in kubectl_result.stdout
+
 
 @pytest.fixture()
 def cleanup_after_initialize():
