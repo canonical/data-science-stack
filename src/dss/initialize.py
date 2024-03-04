@@ -5,7 +5,13 @@ from lightkube import Client
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-from dss.config import DSS_CLI_MANAGER_LABELS, FIELD_MANAGER, MANIFEST_TEMPLATES_LOCATION
+from dss.config import (
+    DSS_CLI_MANAGER_LABELS,
+    DSS_NAMESPACE,
+    FIELD_MANAGER,
+    MANIFEST_TEMPLATES_LOCATION,
+    MLFLOW_DEPLOYMENT_NAME,
+)
 from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready
 
@@ -28,12 +34,14 @@ def initialize(lightkube_client: Client) -> None:
         Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "dss_core.yaml.j2"),
         Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"),
     ]
-    # Initialize KubernetesResourceHandler
+
+    config = {"name": MLFLOW_DEPLOYMENT_NAME, "namespace": DSS_NAMESPACE}
+
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
         template_files=manifests_files,
-        context={},
+        context=config,
         resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
         lightkube_client=lightkube_client,
     )
