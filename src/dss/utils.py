@@ -14,6 +14,9 @@ logger = setup_logger("logs/dss.log")
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
 KUBECONFIG_DEFAULT = "./kubeconfig"
 
+# Labels applied to any Kubernetes objects managed by the DSS CLI
+DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
+
 
 def wait_for_deployment_ready(
     client: Client,
