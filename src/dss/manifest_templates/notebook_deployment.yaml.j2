@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ notebook_name }}
+  namespace: {{ namespace }}
+  labels:
+    # TODO
+    tbd: TBD
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      # TODO
+      selector: TBD
+  template:
+    metadata:
+      labels:
+        # TODO: Need to integrate the things that these pod defaults used to represent
+{#        access-minio: "true"#}
+{#        mlflow-server-minio: "true"#}
+        notebook-name: {{ notebook_name }}
+        # TODO
+        selector: TBD
+    spec:
+      containers:
+        - env:
+          - name: NB_PREFIX
+            value: /notebook/{{ namespace }}/{{ notebook_name }}
+          image: {{ notebook_image }}
+          imagePullPolicy: IfNotPresent
+          # TODO
+          name: {{ notebook_name }}
+          ports:
+          - containerPort: 8888
+            name: notebook-port
+            protocol: TCP
+          # TODO: add resource limits
+{#          resources:#}
+{#            limits:#}
+{#              cpu: 2400m#}
+{#              memory: 5153960755200m#}
+{#            requests:#}
+{#              cpu: "2"#}
+{#              memory: 4Gi#}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /dev/shm
+            name: dshm
+          # TODO
+          - mountPath: /home/jovyan
+            name: home-volume
+          workingDir: /home/jovyan
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: dshm
+      - name: home-volume
+        persistentVolumeClaim:
+          # TODO
+          claimName: {{ pvc_name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ notebook_name }}
+  namespace: {{ namespace }}
+  labels:
+    # TODO
+spec:
+  selector:
+    # TODO
+    selector: TBD
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
+
+
+
+
+
+# Create pvc (shared)
+# * set owner references to the statefulset?  or maybe not, we probably dont want it deleted
+# Create statefulset
+# Create service (needed? do we do this for mlflow?)  (I guess it means ip doesn't change if pod restarts for some reason)

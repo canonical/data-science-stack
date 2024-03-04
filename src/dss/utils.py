@@ -4,7 +4,9 @@ from typing import Optional
 
 from lightkube import Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
+from lightkube.resources.core_v1 import Service
 
+from dss.config import DSS_NAMESPACE
 from dss.logger import setup_logger
 
 # Set up logger
@@ -13,9 +15,6 @@ logger = setup_logger("logs/dss.log")
 # Name for the environment variable storing kubeconfig
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
 KUBECONFIG_DEFAULT = "./kubeconfig"
-
-# Labels applied to any Kubernetes objects managed by the DSS CLI
-DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
 
 
 def wait_for_deployment_ready(
@@ -84,3 +83,17 @@ def get_lightkube_client(kubeconfig: Optional[str] = None):
     kubeconfig = KubeConfig.from_file(kubeconfig)
     lightkube_client = Client(config=kubeconfig)
     return lightkube_client
+
+
+def _get_notebook_url(name: str, namespace: str, lightkube_client: Client) -> str:
+    """
+    Returns the URL of the notebook server given the name of the server.
+
+    Assumes the following conventions:
+    * the notebook server is exposed by a service of the same name
+    * the notebook service exposes the notebook on the first port in the service
+    """
+    service = lightkube_client.get(Service, namespace=DSS_NAMESPACE, name=name)
+    ip = service.spec.clusterIP
+    port = service.spec.ports[0].port
+    return f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"

@@ -5,7 +5,7 @@ from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-from dss.config import DSS_CLI_MANAGER_LABELS
+from dss.config import DSS_CLI_MANAGER_LABELS, FIELD_MANAGER
 
 
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
@@ -61,7 +61,7 @@ def cleanup_after_initialize():
     yield
 
     k8s_resource_handler = KubernetesResourceHandler(
-        field_manager="dss",
+        field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
         template_files=[],
         context={},
