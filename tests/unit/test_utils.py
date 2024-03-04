@@ -1,16 +1,17 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from lightkube.resources.apps_v1 import Deployment
 from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
+from lightkube.resources.apps_v1 import Deployment
 
-from dss.config import MLFLOW_DEPLOYMENT_NAME, DSS_NAMESPACE
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.utils import (
     KUBECONFIG_DEFAULT,
     get_default_kubeconfig,
     get_lightkube_client,
+    get_mlflow_tracking_uri,
     get_notebook_url,
-    wait_for_deployment_ready, get_mlflow_tracking_uri,
+    wait_for_deployment_ready,
 )
 
 

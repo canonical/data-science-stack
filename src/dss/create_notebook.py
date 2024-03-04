@@ -13,7 +13,7 @@ from dss.config import (
     NOTEBOOK_PVC_NAME,
 )
 from dss.logger import setup_logger
-from dss.utils import wait_for_deployment_ready, get_notebook_url, get_mlflow_tracking_uri
+from dss.utils import get_mlflow_tracking_uri, get_notebook_url, wait_for_deployment_ready
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -52,7 +52,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
 
         wait_for_deployment_ready(lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name)
 
-        logger.info("Notebook created.")
+        logger.info(f"Notebook {name} created.")
     except TimeoutError as err:
         logger.error(f"{str(err)}\nCleaning up the resources just created.")
         k8s_resource_handler.delete()
@@ -72,5 +72,3 @@ def _get_notebook_config(image, name):
         "pvc_name": NOTEBOOK_PVC_NAME,
     }
     return context
-
-
