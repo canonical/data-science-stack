@@ -5,14 +5,12 @@ from lightkube import Client
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
+from dss.config import DSS_CLI_MANAGER_LABELS, FIELD_MANAGER
 from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
-
-
-DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
 
 
 def initialize(lightkube_client: Client) -> None:
@@ -30,7 +28,7 @@ def initialize(lightkube_client: Client) -> None:
 
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
-        field_manager="dss",
+        field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
         template_files=[manifests_file],
         context={},
