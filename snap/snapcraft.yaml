@@ -1,0 +1,30 @@
+name: dss
+summary: a ML development and experimentation environment manager
+description: |
+     The DSS is a tool that allows users of workstations to deploy
+     and manage development and experimentation environments
+     in systems with GPU support.
+adopt-info: dss
+base: core22
+confinement: strict
+
+parts:
+  dss:
+    plugin: python
+    source: .
+    override-pull: |
+      craftctl default
+      # Comment out after the data-science-stack repository has tags for versioning the snap
+      # craftctl set version=$(git describe --tags --abbrev=10)
+      craftctl set version="0.1"
+plugs:
+  dot-dss-config:
+    interface: personal-files
+    read:
+      - $HOME/.dss/config
+apps:
+  dss:
+    command: bin/dss
+    plugs:
+      - dot-dss-config
+      - network
