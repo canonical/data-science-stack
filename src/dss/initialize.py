@@ -35,7 +35,7 @@ def initialize(lightkube_client: Client) -> None:
         Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"),
     ]
 
-    config = {"name": MLFLOW_DEPLOYMENT_NAME, "namespace": DSS_NAMESPACE}
+    config = {"mlflow_name": MLFLOW_DEPLOYMENT_NAME, "namespace": DSS_NAMESPACE}
 
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
