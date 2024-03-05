@@ -6,15 +6,6 @@ from dss.initialize import initialize
 
 
 @pytest.fixture
-def mock_environ_get() -> MagicMock:
-    """
-    Fixture to mock the os.environ.get function.
-    """
-    with patch("dss.initialize.os.environ.get") as mock_env_get:
-        yield mock_env_get
-
-
-@pytest.fixture
 def mock_client() -> MagicMock:
     """
     Fixture to mock the Client class.
@@ -42,7 +33,6 @@ def mock_logger() -> MagicMock:
 
 
 def test_initialize_success(
-    mock_environ_get: MagicMock,
     mock_client: MagicMock,
     mock_resource_handler: MagicMock,
     mock_logger: MagicMock,

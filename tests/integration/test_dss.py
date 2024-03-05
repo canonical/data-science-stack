@@ -5,7 +5,7 @@ from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-from dss.initialize import DSS_CLI_MANAGER_LABELS
+from dss.config import DSS_CLI_MANAGER_LABELS
 
 
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:

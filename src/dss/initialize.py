@@ -1,18 +1,22 @@
-import os
+from pathlib import Path
 
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube import Client
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
+from dss.config import (
+    DSS_CLI_MANAGER_LABELS,
+    DSS_NAMESPACE,
+    FIELD_MANAGER,
+    MANIFEST_TEMPLATES_LOCATION,
+    MLFLOW_DEPLOYMENT_NAME,
+)
 from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
-
-
-DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
 
 
 def initialize(lightkube_client: Client) -> None:
@@ -26,14 +30,18 @@ def initialize(lightkube_client: Client) -> None:
         None
     """
     # Path to the manifests YAML file
-    manifests_file = os.path.join(os.path.dirname(__file__), "manifests.yaml")
+    manifests_files = [
+        Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "dss_core.yaml.j2"),
+        Path(Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "mlflow_deployment.yaml.j2"),
+    ]
 
-    # Initialize KubernetesResourceHandler
+    config = {"mlflow_name": MLFLOW_DEPLOYMENT_NAME, "namespace": DSS_NAMESPACE}
+
     k8s_resource_handler = KubernetesResourceHandler(
-        field_manager="dss",
+        field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
-        template_files=[manifests_file],
-        context={},
+        template_files=manifests_files,
+        context=config,
         resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
         lightkube_client=lightkube_client,
     )
