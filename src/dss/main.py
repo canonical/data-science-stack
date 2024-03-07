@@ -1,4 +1,3 @@
-from argparse import RawTextHelpFormatter
 import click
 
 from dss.create_notebook import create_notebook
