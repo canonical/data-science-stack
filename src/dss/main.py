@@ -1,3 +1,4 @@
+from argparse import RawTextHelpFormatter
 import click
 
 from dss.create_notebook import create_notebook
@@ -31,6 +32,16 @@ def initialize_command(kubeconfig: str) -> None:
     initialize(lightkube_client=lightkube_client)
 
 
+CREATE_NOTEBOOK_IMAGE_HELP = """
+\b\nThe image used for the notebook server.  Suggested images:
+- kubeflownotebookswg/jupyter-scipy:v1.8.0
+- kubeflownotebookswg/jupyter-pytorch-full:v1.8.0
+- kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0
+- kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0
+- kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0
+"""
+
+
 @main.command(name="create-notebook")
 @click.option(
     "--name",
@@ -38,8 +49,7 @@ def initialize_command(kubeconfig: str) -> None:
 )
 @click.option(
     "--image",
-    # TODO: Add default images
-    help="The image used for the notebook server.",
+    help=CREATE_NOTEBOOK_IMAGE_HELP,
 )
 @click.option(
     "--kubeconfig",
