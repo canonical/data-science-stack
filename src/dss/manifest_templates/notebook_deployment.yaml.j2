@@ -4,20 +4,20 @@ metadata:
   name: {{ notebook_name }}
   namespace: {{ namespace }}
   labels:
-    # TODO
-    tbd: TBD
+    app.kubernetes.io/name: {{ notebook_name }}
+    app.kubernetes.io/part-of: dss
+    canonical.com/dss-notebook: {{ notebook_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      # TODO
-      selector: TBD
+      app.kubernetes.io/part-of: dss
+      canonical.com/dss-notebook: {{ notebook_name }}
   template:
     metadata:
       labels:
-        notebook-name: {{ notebook_name }}
-        # TODO
-        selector: TBD
+        app.kubernetes.io/part-of: dss
+        canonical.com/dss-notebook: {{ notebook_name }}
     spec:
       containers:
         - env:
@@ -55,11 +55,12 @@ metadata:
   name: {{ notebook_name }}
   namespace: {{ namespace }}
   labels:
-    # TODO
+    app.kubernetes.io/name: {{ notebook_name }}
+    app.kubernetes.io/part-of: dss
 spec:
   selector:
-    # TODO
-    selector: TBD
+    app.kubernetes.io/part-of: dss
+    canonical.com/dss-notebook: {{ notebook_name }}
   ports:
     - protocol: TCP
       port: 80

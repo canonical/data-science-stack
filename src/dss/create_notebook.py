@@ -27,9 +27,6 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         name (str): The name of the notebook server.
         image (str): The image used for the notebook server.
         lightkube_client (Client): The Kubernetes client.
-
-    Returns:
-        None
     """
     manifests_file = Path(
         Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "notebook_deployment.yaml.j2"
