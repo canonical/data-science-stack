@@ -25,6 +25,4 @@ parts:
     source: .
     override-pull: |
       craftctl default
-      # Comment out after the data-science-stack repository has tags for versioning the snap
-      # craftctl set version=$(git describe --tags --abbrev=10)
-      craftctl set version="0.0"
+      craftctl set version=$(git describe --tags --abbrev=10)
