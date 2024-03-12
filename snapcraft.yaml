@@ -8,15 +8,6 @@ adopt-info: dss
 base: core22
 confinement: strict
 
-parts:
-  dss:
-    plugin: python
-    source: .
-    override-pull: |
-      craftctl default
-      # Comment out after the data-science-stack repository has tags for versioning the snap
-      # craftctl set version=$(git describe --tags --abbrev=10)
-      craftctl set version="0.1"
 plugs:
   dot-dss-config:
     interface: personal-files
@@ -26,5 +17,14 @@ apps:
   dss:
     command: bin/dss
     plugs:
-      - dot-dss-config
+      - home
       - network
+parts:
+  dss:
+    plugin: python
+    source: .
+    override-pull: |
+      craftctl default
+      # Comment out after the data-science-stack repository has tags for versioning the snap
+      # craftctl set version=$(git describe --tags --abbrev=10)
+      craftctl set version="0.0"
