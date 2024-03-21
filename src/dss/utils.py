@@ -3,6 +3,7 @@ import time
 from typing import Optional
 
 from lightkube import Client, KubeConfig
+from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 
 from dss.logger import setup_logger
@@ -53,6 +54,50 @@ def wait_for_deployment_ready(
             logger.info(
                 f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."
             )
+
+
+def wait_for_deployment_deleted(
+    client: Client,
+    namespace: str,
+    deployment_name: str,
+    timeout_seconds: int = 60,
+    interval_seconds: int = 10,
+) -> None:
+    """
+    Waits for a Kubernetes deployment to be deleted.
+
+    Args:
+        client (Client): The Kubernetes client.
+        namespace (str): The namespace of the deployment.
+        deployment_name (str): The name of the deployment.
+        timeout_seconds (int): Timeout in seconds. Defaults to 600.
+        interval_seconds (int): Interval between checks in seconds. Defaults to 10.
+
+    Returns:
+        None
+    """
+    logger.info(
+        f"Waiting for deployment {deployment_name} in namespace {namespace} to be deleted..."
+    )
+    start_time = time.time()
+    while True:
+        try:
+            client.get(Deployment, namespace=namespace, name=deployment_name)
+            if time.time() - start_time >= timeout_seconds:
+                raise TimeoutError(
+                    f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be deleted"  # noqa E501
+                )
+            else:
+                time.sleep(interval_seconds)
+                logger.info(
+                    f"Waiting for deployment {deployment_name} in namespace {namespace} to be deleted..."
+                )
+        except ApiError as error:
+            if error.status.code != 404:
+                logger.debug(f"Failed to delete Deployment {deployment_name}: {error}")
+                raise
+            logger.info(f"Deployment {deployment_name} in namespace {namespace} is deleted")
+            break
 
 
 def get_default_kubeconfig(kubeconfig: Optional[str] = None) -> str:
