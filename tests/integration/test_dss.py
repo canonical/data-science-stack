@@ -1,11 +1,28 @@
 import subprocess
 
 import pytest
+import tenacity
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import DSS_CLI_MANAGER_LABELS
+
+
+@tenacity.retry(stop=tenacity.stop_after_attempt(10), wait=tenacity.wait_fixed(5))
+def check_mlflow_logs(kubeconfig):
+    # Run the logs command
+    result = subprocess.run(
+        ["dss", "logs", "--parts=mlflow", "--kubeconfig", kubeconfig],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the expected logs are present in the output
+    assert "Starting gunicorn" in result.stderr
 
 
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
@@ -48,6 +65,7 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
         ["kubectl", "get", "pvc", "notebooks", "-n", "dss"], capture_output=True, text=True
     )
     assert "notebooks" in kubectl_result.stdout
+    check_mlflow_logs(kubeconfig)
 
 
 @pytest.fixture()
