@@ -90,7 +90,7 @@ def wait_for_deployment_deleted(
             else:
                 time.sleep(interval_seconds)
                 logger.info(
-                    f"Waiting for deployment {deployment_name} in namespace {namespace} to be deleted..."
+                    f"Waiting for deployment {deployment_name} in namespace {namespace} to be deleted..."  # noqa E501
                 )
         except ApiError as error:
             if error.status.code != 404:
