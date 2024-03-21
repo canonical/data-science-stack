@@ -1,4 +1,5 @@
 from lightkube import Client
+from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Service
 
@@ -19,15 +20,20 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
         lightkube_client (Client): The Kubernetes client.
     """
 
-    lightkube_client.delete(res=Deployment, name=name, namespace=DSS_NAMESPACE)
-    lightkube_client.delete(res=Service, name=name, namespace=DSS_NAMESPACE)
+    try:
+        lightkube_client.delete(res=Deployment, name=name, namespace=DSS_NAMESPACE)
+        lightkube_client.delete(res=Service, name=name, namespace=DSS_NAMESPACE)
+    except ApiError as err:
+        if err.status.code == 404:
+            logger.warn(f"Failed to delete resource not found: {err}")
+        else:
+            logger.error(f"Failed to delete K8S resources, with error: {err}")
 
     try:
         wait_for_deployment_deleted(
             lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name
         )
-
     except TimeoutError as err:
         logger.error(str(err))
-
-    logger.info(f"Notebook {name} deleted.")
+    else:
+        logger.info(f"Notebook {name} removed.")
