@@ -65,13 +65,14 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     Tests that `dss remove-notebook` successfully removes a notebook as expected.
     Must be run after `dss initialize`
     """
-    # FIXME: remove the `--kubeconfig`` option after fixing https://github.com/canonical/data-science-stack/issues/37
+    # FIXME: remove the `--kubeconfig`` option
+    # after fixing https://github.com/canonical/data-science-stack/issues/37
     kubeconfig_file = "~/.kube/config"
     kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
     lightkube_client = lightkube.Client(kubeconfig)
 
-    # FIXME: remove this line when https://github.com/canonical/data-science-stack/pull/43 is merged
-    # and set the name of the notebook to be the same as in the create notebook test
+    # FIXME: remove this line when https://github.com/canonical/data-science-stack/pull/43 is
+    # merged and set the name of the notebook to be the same as in the create notebook test
     create_deployment_and_service()
 
     result = subprocess.run(
@@ -119,7 +120,7 @@ def cleanup_after_initialize():
     k8s_resource_handler.delete()
 
 
-# FIXME: remove this function when https://github.com/canonical/data-science-stack/pull/43 is merged
+# FIXME: remove function when https://github.com/canonical/data-science-stack/pull/43 is merged
 def create_deployment_and_service():
     """
     Helper to mimic the creation of a Notebook.

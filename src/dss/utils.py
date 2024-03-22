@@ -3,7 +3,6 @@ import time
 from typing import Optional
 
 from lightkube import Client, KubeConfig
-from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 
 from dss.logger import setup_logger

@@ -31,7 +31,8 @@ def initialize_command(kubeconfig: str) -> None:
     initialize(lightkube_client=lightkube_client)
 
 
-# FIXME: remove the `--kubeconfig`` option after fixing https://github.com/canonical/data-science-stack/issues/37
+# FIXME: remove the `--kubeconfig`` option
+# after fixing https://github.com/canonical/data-science-stack/issues/37
 @main.command(name="remove-notebook")
 @click.option(
     "--name",

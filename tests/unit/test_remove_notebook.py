@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 from charmed_kubeflow_chisme.lightkube.mocking import FakeApiError
 
-from dss.config import DSS_NAMESPACE
 from dss.remove_notebook import remove_notebook
 
 
