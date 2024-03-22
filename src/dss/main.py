@@ -50,6 +50,8 @@ CREATE_NOTEBOOK_IMAGE_HELP = """
     "--image",
     help=CREATE_NOTEBOOK_IMAGE_HELP,
 )
+# FIXME: Remove the kubeconfig param from the create-notebook command (and any tests) after
+#  https://github.com/canonical/data-science-stack/issues/37
 @click.option(
     "--kubeconfig",
     help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
