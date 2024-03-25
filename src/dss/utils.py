@@ -2,7 +2,7 @@ import os
 import time
 from typing import Optional
 
-from lightkube import Client, KubeConfig
+from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Service
 
@@ -11,6 +11,9 @@ from dss.logger import setup_logger
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
+
+# Resource types used for a DSS Notebook
+NOTEBOOK_RESOURCES = (Service, Deployment)
 
 # Name for the environment variable storing kubeconfig
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
@@ -101,3 +104,26 @@ def get_notebook_url(name: str, namespace: str, lightkube_client: Client) -> str
     ip = service.spec.clusterIP
     port = service.spec.ports[0].port
     return f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"
+
+
+def does_notebook_exist(name: str, namespace: str, lightkube_client: Client) -> bool:
+    """
+    Returns True if a notebook server with the given name exists in the given namespace.
+
+    This function returns true if either a Service or Deployment of the standard naming convention
+    exists.
+    """
+    for resource in NOTEBOOK_RESOURCES:
+        try:
+            lightkube_client.get(resource, namespace=namespace, name=name)
+            return True
+        except ApiError as e:
+            if e.response.status_code == 404:
+                # Request succeeded but resource does not exist.  Continue searching
+                continue
+            else:
+                # Something went wrong
+                raise e
+
+    # No resources found
+    return False

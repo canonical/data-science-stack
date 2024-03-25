@@ -13,7 +13,12 @@ from dss.config import (
     NOTEBOOK_PVC_NAME,
 )
 from dss.logger import setup_logger
-from dss.utils import get_mlflow_tracking_uri, get_notebook_url, wait_for_deployment_ready
+from dss.utils import (
+    does_notebook_exist,
+    get_mlflow_tracking_uri,
+    get_notebook_url,
+    wait_for_deployment_ready,
+)
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -28,6 +33,16 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         image (str): The image used for the notebook server.
         lightkube_client (Client): The Kubernetes client.
     """
+    if does_notebook_exist(name, DSS_NAMESPACE, lightkube_client):
+        url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
+        logger.error(
+            f"Notebook with name '{name}' already exists."
+            f"  To connect to the existing notebook, go to {url}."
+            f"  To create a new notebook of this name, first delete the existing one using"
+            f" `dss remove-notebook --name {name}`."
+        )
+        return
+
     manifests_file = Path(
         Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "notebook_deployment.yaml.j2"
     )
