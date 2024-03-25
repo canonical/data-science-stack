@@ -79,7 +79,6 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
         [
             DSS_NAMESPACE,
             "remove-notebook",
-            "--name",
             DEPLOYMENT_NAME,
             "--kubeconfig",
             kubeconfig_file,

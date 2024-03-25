@@ -34,9 +34,9 @@ def initialize_command(kubeconfig: str) -> None:
 # FIXME: remove the `--kubeconfig`` option
 # after fixing https://github.com/canonical/data-science-stack/issues/37
 @main.command(name="remove-notebook")
-@click.option(
-    "--name",
-    help="Name of the Notebook to removed.",
+@click.argument(
+    "name",
+    required=True,
 )
 @click.option(
     "--kubeconfig",
@@ -44,7 +44,7 @@ def initialize_command(kubeconfig: str) -> None:
 )
 def remove_notebook_command(name: str, kubeconfig: str):
     """
-    Remove a Notebook server.
+    Remove a Notebook server with the name NAME.
     """
     logger.info("Executing remove-notebook command")
 
