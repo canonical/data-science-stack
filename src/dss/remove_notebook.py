@@ -24,7 +24,9 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
         lightkube_client.delete(res=Service, name=name, namespace=DSS_NAMESPACE)
     except ApiError as err:
         if err.status.code == 404:
-            logger.warn("Failed to delete K8s resources not found. Ignoring remove-notebook.")
+            logger.warn(
+                "Failed to delete K8s resources not found. Ignoring remove-notebook.\nTry dss list-notebooks to use the correct notebook name."  # noqa E501
+            )
             return
         else:
             logger.error(f"Failed to delete K8S resources, with error: {err}")

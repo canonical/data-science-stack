@@ -56,5 +56,5 @@ def test_remove_notebook_not_found(
     remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
     mock_logger.warn.assert_called_with(
-        "Failed to delete K8s resources not found. Ignoring remove-notebook."
+        "Failed to delete K8s resources not found. Ignoring remove-notebook.\nTry dss list-notebooks to use the correct notebook name."  # noqa E501
     )
