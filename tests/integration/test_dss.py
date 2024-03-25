@@ -69,7 +69,6 @@ def test_create_notebook(cleanup_after_tests) -> None:
         [
             DSS_NAMESPACE,
             "create-notebook",
-            "--name",
             notebook_name,
             "--image",
             notebook_image,
