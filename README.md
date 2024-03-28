@@ -19,7 +19,7 @@ The DSS is a stack that includes
 - out-of-the box containerized ML Environments
 - an intuitive CLI which streamlines the management of those containers (data-science-stack snap)
 
-The container orchestration system also handles how to integrate with the host's
+The container orchestration system also handles the integration with the host's
 GPU and drivers, so the containerized environments can only focus on user-space libraries.
 
 ## Features
