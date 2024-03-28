@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Data Science Stack (DSS) aims to make it seamless for everyone to jump into an ML Environment within minutes and be able to utilise their GPUs.
+The Data Science Stack (DSS) makes it seamless for everyone to jump into an ML Environment within minutes and be able to utilise their GPUs.
 
 DSS is a ready-made environment which allows everyone to run ML workloads on the laptop.
 It gives easy access to a solution for developing and optimising ML models, that leverages the GPUs of the laptop by
