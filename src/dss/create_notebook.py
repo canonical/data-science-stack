@@ -66,8 +66,8 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
 
         logger.info(f"Success: Notebook {name} created successfully.")
     except TimeoutError as err:
-        logger.error(f"{str(err)}\nCleaning up the resources just created.")
-        k8s_resource_handler.delete()
+        logger.error(str(err))
+        logger.warn(f"Notebook {name} might be in the cluster. Check the status with `dss list`.")
         return
     except ImagePullBackOffError:
         logger.error(
