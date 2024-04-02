@@ -2,6 +2,7 @@ from pathlib import Path
 
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube import Client
+from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Service
 
@@ -65,6 +66,12 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         wait_for_deployment_ready(lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name)
 
         logger.info(f"Success: Notebook {name} created successfully.")
+    except ApiError as err:
+        logger.error(
+            f"Failed to create Notebook with error code {err.status.code}"
+            "Check the debug logs for more details."
+        )
+        logger.debug(f"Failed to create Notebook {name} with error {err}")
     except TimeoutError as err:
         logger.error(str(err))
         logger.warn(f"Notebook {name} might be in the cluster. Check the status with `dss list`.")
