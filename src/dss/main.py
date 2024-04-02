@@ -33,35 +33,41 @@ def initialize_command(kubeconfig: str) -> None:
 
 @main.command(name="logs")
 @click.option(
-    "--parts",
-    type=click.Choice(["notebooks", "mlflow"]),
-    required=True,
-    help="Specify which part's logs you want to retrieve: 'notebooks' or 'mlflow'.",
-)
-@click.option(
-    "--name",
-    help="Specify the name of the notebook or deployment to retrieve logs from.",
-)
-@click.option(
     "--kubeconfig",
     help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
 )
-def logs_command(parts: str, name: str, kubeconfig: str) -> None:
+@click.argument("notebook_name", required=False)
+@click.option(
+    "--all", "print_all", is_flag=True, help="Print the logs for all notebooks and MLflow."
+)  # noqa: E501
+@click.option("--mlflow", is_flag=True, help="Print the logs for the MLflow deployment.")
+def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: bool) -> None:
     """
-    Retrieve logs from specified parts of the DSS application.
+    Prints the logs for the specified notebook or DSS component.
     """
-    logger.info(f"Retrieving logs for {parts} - {name}")
-
-    if parts == "mlflow" and name is not None:
-        click.echo("Warning: The 'name' parameter will be ignored for 'mlflow' logs.")
-    elif parts == "notebooks" and name is None:
-        click.echo("Error: The 'name' parameter is required for 'notebooks' logs.")
+    if not notebook_name and not mlflow and not print_all:
+        click.echo(
+            "Failed to retrieve logs. Missing notebook name. Run the logs command with desired notebook name."  # noqa E501
+        )
         return
 
     kubeconfig = get_default_kubeconfig(kubeconfig)
     lightkube_client = get_lightkube_client(kubeconfig)
-    get_logs(parts, name, lightkube_client)
 
+    if print_all:
+        get_logs("all", None, lightkube_client)
+    elif mlflow:
+        get_logs("mlflow", None, lightkube_client)
+    elif notebook_name:
+        get_logs("notebooks", notebook_name, lightkube_client)
+
+
+# Define Examples section for logs command
+logs_command.help += """
+\n\nExamples:\n
+  dss logs my-notebook\n
+  dss logs --mlflow
+"""
 
 if __name__ == "__main__":
     main()

@@ -1,28 +1,19 @@
 import subprocess
+from pathlib import Path
 
 import pytest
-import tenacity
+import yaml
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-from dss.config import DSS_CLI_MANAGER_LABELS
+from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE
+from dss.utils import wait_for_deployment_ready
 
-
-@tenacity.retry(stop=tenacity.stop_after_attempt(10), wait=tenacity.wait_fixed(5))
-def check_mlflow_logs(kubeconfig):
-    # Run the logs command
-    result = subprocess.run(
-        ["dss", "logs", "--parts=mlflow", "--kubeconfig", kubeconfig],
-        capture_output=True,
-        text=True,
-    )
-
-    # Check if the command executed successfully
-    assert result.returncode == 0
-
-    # Check if the expected logs are present in the output
-    assert "Starting gunicorn" in result.stderr
+NOTEBOOK_RESOURCES_FILE = "./tests/integration/deploy.yaml"
+DEPLOYMENT_NAME = yaml.safe_load_all(Path(NOTEBOOK_RESOURCES_FILE).read_text()).__next__()[
+    "metadata"
+]["name"]
 
 
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
@@ -65,10 +56,52 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
         ["kubectl", "get", "pvc", "notebooks", "-n", "dss"], capture_output=True, text=True
     )
     assert "notebooks" in kubectl_result.stdout
-    check_mlflow_logs(kubeconfig)
 
 
-@pytest.fixture()
+def test_log_command(cleanup_after_initialize) -> None:
+    """
+    Integration test for the 'logs' command.
+    """
+    kubeconfig_file = "~/.kube/config"
+
+    # FIXME: remove this line when https://github.com/canonical/data-science-stack/pull/43 is
+    # merged and set the name of the notebook to be the same as in the create notebook test
+    create_deployment_and_service()
+
+    # Run the logs command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "logs",
+            DEPLOYMENT_NAME,
+            "--kubeconfig",
+            kubeconfig_file,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the expected logs are present in the output
+    assert "Jupyter Server" in result.stderr
+
+    # Run the logs command for MLflow with the kubeconfig file
+    result = subprocess.run(
+        ["dss", "logs", "--mlflow", "--kubeconfig", kubeconfig_file],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the expected logs are present in the output
+    assert "Starting gunicorn" in result.stderr
+
+
+@pytest.fixture(scope="module")
 def cleanup_after_initialize():
     """Cleans up resources that might have been deployed by dss initialize.
 
@@ -90,3 +123,28 @@ def cleanup_after_initialize():
     # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
     # the tests quickly can still cause an issue
     k8s_resource_handler.delete()
+
+
+# FIXME: remove function when https://github.com/canonical/data-science-stack/pull/43 is merged
+def create_deployment_and_service():
+    """
+    Helper to mimic the creation of a Notebook.
+    """
+    output = subprocess.run(
+        ["kubectl", "apply", "-f", NOTEBOOK_RESOURCES_FILE], capture_output=True, text=True
+    )
+    print(output)
+
+    k8s_resource_handler = KubernetesResourceHandler(
+        field_manager="dss",
+        labels=DSS_CLI_MANAGER_LABELS,
+        template_files=[],
+        context={},
+        resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
+    )
+
+    wait_for_deployment_ready(
+        k8s_resource_handler.lightkube_client,
+        namespace=DSS_NAMESPACE,
+        deployment_name=DEPLOYMENT_NAME,
+    )
