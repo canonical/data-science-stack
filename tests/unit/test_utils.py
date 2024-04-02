@@ -9,6 +9,7 @@ from lightkube.resources.apps_v1 import Deployment
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.utils import (
     KUBECONFIG_DEFAULT,
+    ImagePullBackOffError,
     does_notebook_exist,
     get_default_kubeconfig,
     get_lightkube_client,
@@ -163,6 +164,10 @@ def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: 
         spec=Deployment, status=MagicMock(availableReplicas=0), spec_replicas=1
     )
 
+    # Mock the behavior of the client.list method to return an iterable of one Pod
+    pod = MagicMock()
+    mock_client_instance.list.return_value = iter([pod])
+
     # Call the function to test
     with pytest.raises(TimeoutError) as exc_info:
         wait_for_deployment_ready(
@@ -179,6 +184,39 @@ def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: 
         == "Timeout waiting for deployment test-deployment in namespace test-namespace to be ready"
     )
     assert mock_client_instance.get.call_count == 6  # 5 attempts, 1 final attempt after timeout
+
+
+def test_wait_for_deployment_ready_image_pull_backoff(
+    mock_client: MagicMock, mock_logger: MagicMock
+) -> None:
+    """
+    Test case to verify that ImagePullBackOffError is raised when the pod status indicates that.
+    """
+    # Mock the behavior of the client.get method to return a deployment with available replicas = 0
+    mock_client_instance = MagicMock()
+    mock_client_instance.get.return_value = MagicMock(
+        spec=Deployment, status=MagicMock(availableReplicas=0), spec_replicas=1
+    )
+
+    # Mock the behavior of the client.list method to return a pod with `ImagePullBackOff` reason
+    pod = MagicMock()
+    pod.status.containerStatuses[0].state.waiting.reason = "ImagePullBackOff"
+    mock_client_instance.list.return_value = iter([pod])
+
+    # Call the function to test
+    with pytest.raises(ImagePullBackOffError) as exc_info:
+        wait_for_deployment_ready(
+            mock_client_instance,
+            namespace="test-namespace",
+            deployment_name="test-deployment",
+            timeout_seconds=5,
+            interval_seconds=1,
+        )
+
+    # Assertions
+    assert (
+        str(exc_info.value) == "Failed to create Deployment test-deployment with ImagePullBackOff"
+    )
 
 
 @pytest.mark.parametrize(

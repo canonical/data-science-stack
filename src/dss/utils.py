@@ -4,7 +4,7 @@ from typing import Optional
 
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import Service
+from lightkube.resources.core_v1 import Pod, Service
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.logger import setup_logger
@@ -18,6 +18,18 @@ NOTEBOOK_RESOURCES = (Service, Deployment)
 # Name for the environment variable storing kubeconfig
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
 KUBECONFIG_DEFAULT = "./kubeconfig"
+
+
+class ImagePullBackOffError(Exception):
+    """
+    Raised when the Notebook Pod is unable to pull the image.
+    """
+
+    __module__ = None
+
+    def __init__(self, msg: str, *args):
+        super().__init__(str(msg), *args)
+        self.msg = str(msg)
 
 
 def wait_for_deployment_ready(
@@ -50,6 +62,18 @@ def wait_for_deployment_ready(
             logger.info(f"Deployment {deployment_name} in namespace {namespace} is ready")
             break
         elif time.time() - start_time >= timeout_seconds:
+            pod: Pod = list(
+                client.list(
+                    Pod,
+                    namespace=namespace,
+                    labels={"canonical.com/dss-notebook": deployment_name},
+                )
+            )[0]
+            reason = pod.status.containerStatuses[0].state.waiting.reason
+            if reason in ["ImagePullBackOff", "ErrImagePull"]:
+                raise ImagePullBackOffError(
+                    f"Failed to create Deployment {deployment_name} with {reason}"
+                )
             raise TimeoutError(
                 f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be ready"  # noqa E501
             )

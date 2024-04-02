@@ -14,6 +14,7 @@ from dss.config import (
 )
 from dss.logger import setup_logger
 from dss.utils import (
+    ImagePullBackOffError,
     does_notebook_exist,
     get_mlflow_tracking_uri,
     get_notebook_url,
@@ -36,10 +37,9 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     if does_notebook_exist(name, DSS_NAMESPACE, lightkube_client):
         url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
         logger.error(
-            f"Notebook with name '{name}' already exists."
+            f"Failed to create Notebook. Notebook with name '{name}' already exists."
+            f"  Please specify a different name."
             f"  To connect to the existing notebook, go to {url}."
-            f"  To create a new notebook of this name, first delete the existing one using"
-            f" `dss remove-notebook --name {name}`."
         )
         return
 
@@ -64,12 +64,16 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
 
         wait_for_deployment_ready(lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name)
 
-        logger.info(f"Notebook {name} created.")
+        logger.info(f"Success: Notebook {name} created successfully.")
     except TimeoutError as err:
         logger.error(f"{str(err)}\nCleaning up the resources just created.")
         k8s_resource_handler.delete()
         return
-
+    except ImagePullBackOffError:
+        logger.error(
+            f"Failed to create Notebook {name}. Image {image} does not exist or is not accessible."
+        )
+        return
     notebook_url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
     logger.info(f"Access the notebook at {notebook_url}.")
 
