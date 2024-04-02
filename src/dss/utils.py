@@ -62,6 +62,8 @@ def wait_for_deployment_ready(
             logger.info(f"Deployment {deployment_name} in namespace {namespace} is ready")
             break
         elif time.time() - start_time >= timeout_seconds:
+            # Surround the following block with try-except?
+            # ----Block-start----
             pod: Pod = list(
                 client.list(
                     Pod,
@@ -74,6 +76,7 @@ def wait_for_deployment_ready(
                 raise ImagePullBackOffError(
                     f"Failed to create Deployment {deployment_name} with {reason}"
                 )
+            # ----Block-end----
             raise TimeoutError(
                 f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be ready"  # noqa E501
             )
