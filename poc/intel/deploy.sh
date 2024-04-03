@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 TIMEOUT=1200s
 
 echo -e "\nStep 1/3: Deploying MicroK8s snap"
@@ -42,9 +44,9 @@ kubectl -n node-feature-discovery rollout status ds/nfd-worker
 kubectl -n default rollout status ds/intel-gpu-plugin
 
 echo -e "\n\$ dss initialise"
-sudo microk8s kubectl apply -f manifests/namespace.yaml
-sudo microk8s kubectl apply -f manifests/mlflow.yaml
-sudo microk8s kubectl apply -f manifests/notebooks.yaml
+sudo microk8s kubectl apply -f $SCRIPT_DIR/../common-manifests/namespace.yaml
+sudo microk8s kubectl apply -f $SCRIPT_DIR/../common-manifests/mlflow.yaml
+sudo microk8s kubectl apply -f $SCRIPT_DIR/../common-manifests/notebooks.yaml
 
 sudo microk8s.kubectl wait \
   --for condition=available \
@@ -54,7 +56,7 @@ sudo microk8s.kubectl wait \
   -l app=dss-mlflow
 
 echo -e "\n\$ dss start notebook"
-sudo microk8s kubectl apply -f manifests/notebook-intel.yaml
+sudo microk8s kubectl apply -f $SCRIPT_DIR/manifests/notebook-intel.yaml
 sudo microk8s.kubectl wait \
   --for condition=available \
   --timeout $TIMEOUT \

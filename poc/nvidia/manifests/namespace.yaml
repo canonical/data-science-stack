@@ -1,7 +1,0 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dss
-  labels:
-    app.kubernetes.io/part-of: canonical-dss
