@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: notebooks-home
+  namespace: dss
+  labels:
+    app: dss-notebooks
+    app.kubernetes.io/name: dss-notebooks
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: microk8s-hostpath
+  volumeMode: Filesystem
