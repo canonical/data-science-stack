@@ -39,7 +39,7 @@ def initialize_command(kubeconfig: str) -> None:
 @click.argument("notebook_name", required=False)
 @click.option(
     "--all", "print_all", is_flag=True, help="Print the logs for all notebooks and MLflow."
-)  # noqa: E501
+)
 @click.option("--mlflow", is_flag=True, help="Print the logs for the MLflow deployment.")
 def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: bool) -> None:
     """
@@ -67,6 +67,7 @@ logs_command.help += """
 \n\nExamples:\n
   dss logs my-notebook\n
   dss logs --mlflow
+  dss logs --all
 """
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ def test_get_logs_failure_retrieve_mlflow(mock_client: MagicMock, mock_logger: M
     )
     mock_logger.info.assert_any_call("Note: You might want to run")
     mock_logger.info.assert_any_call("  dss status      to check the current status")
-    mock_logger.info.assert_any_call("  dss logs --all  to review all logs")
+    mock_logger.info.assert_any_call("  dss logs --all  to view all logs")
     mock_logger.info.assert_any_call("  dss initialize  to install dss")
 
 
@@ -111,7 +111,7 @@ def test_get_logs_failure_retrieve_pod(
 
     # Assertions
     mock_logger.error.assert_called_with(
-        "Failed to retrieve logs for notebooks test_notebook. Please wait and try again. Make sure DSS is correctly initialized."  # noqa: E501
+        "Failed to retrieve logs for notebooks test_notebook. Make sure DSS is correctly initialized."  # noqa: E501
     )
 
 
@@ -266,5 +266,5 @@ def test_get_logs_failure_retrieve_pod_logs(
     # Call the function to test
     get_logs("notebooks", "test_notebook", mock_client_instance)
     mock_logger.error.assert_any_call(
-        "Failed to retrieve logs. There was a problem while getting the logs for pod test_pod"
+        "Failed to retrieve logs. There was a problem while getting the logs for test_pod"
     )
