@@ -10,7 +10,7 @@ from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Servic
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE
 from dss.utils import wait_for_deployment_ready
 
-NOTEBOOK_RESOURCES_FILE = "./tests/integration/deploy.yaml"
+NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 DEPLOYMENT_NAME = yaml.safe_load_all(Path(NOTEBOOK_RESOURCES_FILE).read_text()).__next__()[
     "metadata"
 ]["name"]
