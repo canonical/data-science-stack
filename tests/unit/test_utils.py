@@ -10,6 +10,7 @@ from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.utils import (
     KUBECONFIG_DEFAULT,
     ImagePullBackOffError,
+    does_dss_pvc_exist,
     does_notebook_exist,
     get_default_kubeconfig,
     get_lightkube_client,
@@ -239,3 +240,23 @@ def test_does_notebook_exist(lightkube_client_side_effect, context_raised, expec
 
     with context_raised:
         assert does_notebook_exist("notebook", "namespace", mock_client) == expected_return
+
+
+@pytest.mark.parametrize(
+    "lightkube_client_side_effect, context_raised, expected_return",
+    [
+        # The PVC is found (lightkube_client.get() does not fail)
+        (None, does_not_raise(), True),
+        # The PVC is missing
+        ([FakeApiError(404)], does_not_raise(), False),
+        # Some other ApiError is raised, which we don't know how to handle
+        ([FakeApiError(999)], pytest.raises(ApiError), None),
+    ],
+)
+def test_does_dss_pvc_exist(lightkube_client_side_effect, context_raised, expected_return):
+    """Test the does_dss_pvc_exist helper."""
+    mock_client = MagicMock()
+    mock_client.get.side_effect = lightkube_client_side_effect
+
+    with context_raised:
+        assert does_dss_pvc_exist(mock_client) == expected_return

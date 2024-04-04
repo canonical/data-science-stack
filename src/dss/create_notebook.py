@@ -16,6 +16,7 @@ from dss.config import (
 from dss.logger import setup_logger
 from dss.utils import (
     ImagePullBackOffError,
+    does_dss_pvc_exist,
     does_notebook_exist,
     get_mlflow_tracking_uri,
     get_notebook_url,
@@ -35,6 +36,15 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         image (str): The image used for the notebook server.
         lightkube_client (Client): The Kubernetes client.
     """
+    if not does_dss_pvc_exist(lightkube_client):
+        logger.error(
+            "Failed to create notebook. DSS was not correctly initialized."
+            "   You might want to run"
+            "   dss status      to check the current status"
+            "   dss logs --all  to review all logs"
+            "   dss initialize  to install dss"
+        )
+        return
     if does_notebook_exist(name, DSS_NAMESPACE, lightkube_client):
         url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
         logger.error(
@@ -69,7 +79,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     except ApiError as err:
         logger.error(
             f"Failed to create Notebook with error code {err.status.code}"
-            "Check the debug logs for more details."
+            "   Check the debug logs for more details."
         )
         logger.debug(f"Failed to create Notebook {name} with error {err}")
     except TimeoutError as err:

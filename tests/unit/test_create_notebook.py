@@ -54,20 +54,22 @@ def test_create_notebook_success(
     mock_resource_handler_instance = MagicMock()
     mock_resource_handler.return_value = mock_resource_handler_instance
 
-    # Mock away the check on existing notebooks
-    with patch("dss.create_notebook.does_notebook_exist", return_value=False):
-        # Mock wait_for_deployment_ready
-        with patch(
-            "dss.create_notebook.wait_for_deployment_ready"
-        ) as mock_wait_for_deployment_ready:
-            # Call the function to test
-            create_notebook(
-                name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
-            )
+    # Mock away the check on existing dss pvc
+    with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True):
+        # Mock away the check on existing notebooks
+        with patch("dss.create_notebook.does_notebook_exist", return_value=False):
+            # Mock wait_for_deployment_ready
+            with patch(
+                "dss.create_notebook.wait_for_deployment_ready"
+            ) as mock_wait_for_deployment_ready:
+                # Call the function to test
+                create_notebook(
+                    name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
+                )
 
-            # Assertions
-            mock_resource_handler_instance.apply.assert_called_once()
-            mock_wait_for_deployment_ready.assert_called_once_with(
-                mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
-            )
+                # Assertions
+                mock_resource_handler_instance.apply.assert_called_once()
+                mock_wait_for_deployment_ready.assert_called_once_with(
+                    mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
+                )
             mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")

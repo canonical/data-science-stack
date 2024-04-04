@@ -4,9 +4,9 @@ from typing import Optional
 
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import Pod, Service
+from lightkube.resources.core_v1 import PersistentVolumeClaim, Pod, Service
 
-from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME
 from dss.logger import setup_logger
 
 # Set up logger
@@ -154,3 +154,21 @@ def does_notebook_exist(name: str, namespace: str, lightkube_client: Client) -> 
 
     # No resources found
     return False
+
+
+def does_dss_pvc_exist(lightkube_client: Client) -> bool:
+    """
+    Returns True if the Notebooks PVC created during `dss initialize` exists in the DSS namespace.
+    """
+    try:
+        lightkube_client.get(
+            PersistentVolumeClaim, namespace=DSS_NAMESPACE, name=NOTEBOOK_PVC_NAME
+        )
+        return True
+    except ApiError as e:
+        if e.response.status_code == 404:
+            # PVC not found
+            return False
+        else:
+            # Something went wrong
+            raise e
