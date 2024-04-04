@@ -23,6 +23,14 @@ from dss.utils import (
     wait_for_deployment_ready,
 )
 
+NOTEBOOK_IMAGES_ALIASES = {
+    "pytorch": "charmedkubeflow/jupyter-pytorch-full:1.8.0-3058193",
+    # TODO: add the rest of the rocks once updated in https://github.com/canonical/kubeflow-rocks
+    # "pytorch-cuda": "charmedkubeflow/jupyter-pytorch-cuda-full:1.8.0-xxxxx",
+    # "tensorflow-cuda": "charmedkubeflow/jupyter-tensorflow-cuda-full:1.8.0-xxxx",
+    # "tensorflow": "charmedkubeflow/jupyter-tensorflow-full:1.8.0-xxxx"
+}
+
 # Set up logger
 logger = setup_logger("logs/dss.log")
 
@@ -97,11 +105,20 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
 
 def _get_notebook_config(image, name):
     mlflow_tracking_uri = get_mlflow_tracking_uri()
+    full_image = _get_notebook_image_name(image)
     context = {
         "mlflow_tracking_uri": mlflow_tracking_uri,
         "notebook_name": name,
         "namespace": DSS_NAMESPACE,
-        "notebook_image": image,
+        "notebook_image": full_image,
         "pvc_name": NOTEBOOK_PVC_NAME,
     }
     return context
+
+
+def _get_notebook_image_name(image) -> str:
+    """
+    Returns the image's full name if the input is a key in `NOTEBOOK_IMAGES_ALIASES`
+    else it returns the input.
+    """
+    return NOTEBOOK_IMAGES_ALIASES.get(image, image)
