@@ -129,6 +129,7 @@ sniffio==1.3.0
     #   httpx
 tenacity==8.2.3
     # via
+    #   -r requirements-unit.in
     #   -r requirements.txt
     #   charmed-kubeflow-chisme
 tomli==2.0.1

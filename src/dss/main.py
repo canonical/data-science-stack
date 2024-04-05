@@ -2,6 +2,7 @@ import click
 
 from dss.initialize import initialize
 from dss.logger import setup_logger
+from dss.logs import get_logs
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -28,6 +29,42 @@ def initialize_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     initialize(lightkube_client=lightkube_client)
+
+
+@main.command(name="logs")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+@click.argument("notebook_name", required=False)
+@click.option(
+    "--all", "print_all", is_flag=True, help="Print the logs for all notebooks and MLflow."
+)
+@click.option("--mlflow", is_flag=True, help="Print the logs for the MLflow deployment.")
+def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: bool) -> None:
+    """Prints the logs for the specified notebook or DSS component.
+
+    \b
+    Examples:
+      dss logs my-notebook
+      dss logs --mlflow
+      dss logs --all
+    """
+    if not notebook_name and not mlflow and not print_all:
+        click.echo(
+            "Failed to retrieve logs. Missing notebook name. Run the logs command with desired notebook name."  # noqa E501
+        )
+        return
+
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    if print_all:
+        get_logs("all", None, lightkube_client)
+    elif mlflow:
+        get_logs("mlflow", None, lightkube_client)
+    elif notebook_name:
+        get_logs("notebooks", notebook_name, lightkube_client)
 
 
 if __name__ == "__main__":
