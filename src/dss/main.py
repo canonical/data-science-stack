@@ -42,8 +42,13 @@ def initialize_command(kubeconfig: str) -> None:
 )
 @click.option("--mlflow", is_flag=True, help="Print the logs for the MLflow deployment.")
 def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: bool) -> None:
-    """
-    Prints the logs for the specified notebook or DSS component.
+    """Prints the logs for the specified notebook or DSS component.
+
+    \b
+    Examples:
+      dss logs my-notebook
+      dss logs --mlflow
+      dss logs --all
     """
     if not notebook_name and not mlflow and not print_all:
         click.echo(
@@ -61,14 +66,6 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
     elif notebook_name:
         get_logs("notebooks", notebook_name, lightkube_client)
 
-
-# Define Examples section for logs command
-logs_command.help += """
-\n\nExamples:\n
-  dss logs my-notebook\n
-  dss logs --mlflow
-  dss logs --all
-"""
 
 if __name__ == "__main__":
     main()
