@@ -1,12 +1,20 @@
 import subprocess
+from pathlib import Path
 
 import lightkube
 import pytest
+import yaml
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
+from dss.utils import wait_for_deployment_ready
+
+NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
+DEPLOYMENT_NAME = yaml.safe_load_all(Path(NOTEBOOK_RESOURCES_FILE).read_text()).__next__()[
+    "metadata"
+]["name"]
 
 
 def test_initialize_creates_dss(cleanup_after_tests) -> None:
@@ -89,9 +97,52 @@ def test_create_notebook(cleanup_after_tests) -> None:
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
 
+def test_log_command(cleanup_after_initialize) -> None:
+    """
+    Integration test for the 'logs' command.
+    """
+    kubeconfig_file = "~/.kube/config"
+
+    # FIXME: remove this line when https://github.com/canonical/data-science-stack/pull/43 is
+    # merged and set the name of the notebook to be the same as in the create notebook test
+    create_deployment_and_service()
+
+    # Run the logs command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "logs",
+            DEPLOYMENT_NAME,
+            "--kubeconfig",
+            kubeconfig_file,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the expected logs are present in the output
+    assert "Jupyter Server" in result.stderr
+
+    # Run the logs command for MLflow with the kubeconfig file
+    result = subprocess.run(
+        ["dss", "logs", "--mlflow", "--kubeconfig", kubeconfig_file],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the expected logs are present in the output
+    assert "Starting gunicorn" in result.stderr
+
+
 @pytest.fixture(scope="module")
-def cleanup_after_tests():
-    """Cleans up resources that might have been deployed by the tests.
+def cleanup_after_initialize():
+    """Cleans up resources that might have been deployed by dss initialize.
 
     Note that this is a white-box implementation - it depends on knowing what could be deployed and
     explicitly removing those objects, rather than truly restoring the cluster to a previous state.
@@ -112,3 +163,28 @@ def cleanup_after_tests():
     # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
     # the tests quickly can still cause an issue
     k8s_resource_handler.delete()
+
+
+# FIXME: remove function when https://github.com/canonical/data-science-stack/pull/43 is merged
+def create_deployment_and_service():
+    """
+    Helper to mimic the creation of a Notebook.
+    """
+    output = subprocess.run(
+        ["kubectl", "apply", "-f", NOTEBOOK_RESOURCES_FILE], capture_output=True, text=True
+    )
+    print(output)
+
+    k8s_resource_handler = KubernetesResourceHandler(
+        field_manager="dss",
+        labels=DSS_CLI_MANAGER_LABELS,
+        template_files=[],
+        context={},
+        resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
+    )
+
+    wait_for_deployment_ready(
+        k8s_resource_handler.lightkube_client,
+        namespace=DSS_NAMESPACE,
+        deployment_name=DEPLOYMENT_NAME,
+    )
