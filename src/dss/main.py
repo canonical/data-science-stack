@@ -1,6 +1,6 @@
 import click
 
-from dss.config import RECOMMENDED_IMAGES_MESSAGE
+from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
@@ -43,7 +43,7 @@ IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n" + RECOMMENDE
 )
 @click.option(
     "--image",
-    default="kubeflownotebookswg/jupyter-scipy:v1.8.0",
+    default=DEFAULT_NOTEBOOK_IMAGE,
     help=IMAGE_OPTION_HELP,
 )
 # FIXME: Remove the kubeconfig param from the create command (and any tests) after
@@ -62,6 +62,11 @@ def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
         dss create my-notebook --image=kubeflownotebookswg/jupyter-scipy:v1.8.0
     """
     logger.info("Executing create command")
+    if image == DEFAULT_NOTEBOOK_IMAGE:
+        logger.info(
+            f"No image is specified. Using default value {DEFAULT_NOTEBOOK_IMAGE}."
+            " For more information on using a specific image, see dss create --help."
+        )
 
     kubeconfig = get_default_kubeconfig(kubeconfig)
     lightkube_client = get_lightkube_client(kubeconfig)

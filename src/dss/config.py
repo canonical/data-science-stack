@@ -18,8 +18,9 @@ NOTEBOOK_IMAGES_ALIASES = {
 def format_images_message(images_dict):
     formatted_string = "Recommended images:\n"
     for key, value in images_dict.items():
-        formatted_string += f"  - {key} = {value}\n"
+        formatted_string += f"  - {key}: {value}\n"
     return formatted_string
 
 
 RECOMMENDED_IMAGES_MESSAGE = format_images_message(NOTEBOOK_IMAGES_ALIASES)
+DEFAULT_NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
