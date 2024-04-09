@@ -88,6 +88,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
             "   Check the debug logs for more details."
         )
         logger.debug(f"Failed to create Notebook {name} with error {err}")
+        return
     except TimeoutError as err:
         logger.error(str(err))
         logger.warn(
@@ -98,7 +99,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     except ImagePullBackOffError as err:
         logger.error(
             f"Timed out while trying to create Notebook {name}.\n"
-            "Image {image_full_name} does not exist or is not accessible.\n"
+            f"Image {image_full_name} does not exist or is not accessible.\n"
             "Note: You might want to use some of these recommended images:\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
