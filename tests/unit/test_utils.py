@@ -175,7 +175,7 @@ def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: 
             mock_client_instance,
             namespace="test-namespace",
             deployment_name="test-deployment",
-            timeout_seconds=5,
+            timeout_seconds=2,
             interval_seconds=1,
         )
 
@@ -184,7 +184,7 @@ def test_wait_for_deployment_ready_timeout(mock_client: MagicMock, mock_logger: 
         str(exc_info.value)
         == "Timeout waiting for deployment test-deployment in namespace test-namespace to be ready"
     )
-    assert mock_client_instance.get.call_count == 6  # 5 attempts, 1 final attempt after timeout
+    assert mock_client_instance.get.call_count == 3  # 2 attempts, 1 final attempt after timeout
 
 
 def test_wait_for_deployment_ready_image_pull_backoff(
@@ -210,7 +210,7 @@ def test_wait_for_deployment_ready_image_pull_backoff(
             mock_client_instance,
             namespace="test-namespace",
             deployment_name="test-deployment",
-            timeout_seconds=5,
+            timeout_seconds=2,
             interval_seconds=1,
         )
 

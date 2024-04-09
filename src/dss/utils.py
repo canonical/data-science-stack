@@ -172,3 +172,20 @@ def does_dss_pvc_exist(lightkube_client: Client) -> bool:
         else:
             # Something went wrong
             raise e
+
+
+def does_mlflow_deployment_exist(lightkube_client: Client) -> bool:
+    """
+    Returns True if the `mlflow` Deployment created during `dss initialize`
+    exists in the DSS namespace.
+    """
+    try:
+        lightkube_client.get(Deployment, namespace=DSS_NAMESPACE, name=MLFLOW_DEPLOYMENT_NAME)
+        return True
+    except ApiError as e:
+        if e.response.status_code == 404:
+            # Deployment not found
+            return False
+        else:
+            # Something went wrong
+            raise e

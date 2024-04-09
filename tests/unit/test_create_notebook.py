@@ -39,7 +39,7 @@ def test_create_notebook_success(
     mock_logger: MagicMock,
 ) -> None:
     """
-    Test case to verify successful create-notebook call.
+    Test case to verify successful create_notebook call.
     """
     notebook_name = "test-notebook"
     notebook_image = "test-image"

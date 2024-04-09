@@ -59,7 +59,7 @@ def initialize(lightkube_client: Client) -> None:
         wait_for_deployment_ready(lightkube_client, namespace="dss", deployment_name="mlflow")
 
         logger.info(
-            "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"  # noqa E501
+            "DSS initialized. To create your first notebook run the command:\n\ndss create"  # noqa E501
         )
 
     except TimeoutError:

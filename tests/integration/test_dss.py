@@ -1,23 +1,18 @@
 import subprocess
-from pathlib import Path
 
 import lightkube
 import pytest
-import yaml
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
-from dss.utils import wait_for_deployment_ready
 
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
-DEPLOYMENT_NAME = yaml.safe_load_all(Path(NOTEBOOK_RESOURCES_FILE).read_text()).__next__()[
-    "metadata"
-]["name"]
+NOTEBOOK_NAME = "test-nb"
 
 
-def test_initialize_creates_dss(cleanup_after_tests) -> None:
+def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
@@ -59,9 +54,9 @@ def test_initialize_creates_dss(cleanup_after_tests) -> None:
     assert "notebooks" in kubectl_result.stdout
 
 
-def test_create_notebook(cleanup_after_tests) -> None:
+def test_create_notebook(cleanup_after_initialize) -> None:
     """
-    Tests that `dss create-notebook` successfully creates a notebook as expected.
+    Tests that `dss create` successfully creates a notebook as expected.
 
     Must be run after `dss initialize`
     """
@@ -70,14 +65,13 @@ def test_create_notebook(cleanup_after_tests) -> None:
     kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
     lightkube_client = lightkube.Client(kubeconfig)
 
-    notebook_name = "test-notebook"
     notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
     result = subprocess.run(
         [
             DSS_NAMESPACE,
-            "create-notebook",
-            notebook_name,
+            "create",
+            NOTEBOOK_NAME,
             "--image",
             notebook_image,
             "--kubeconfig",
@@ -93,7 +87,7 @@ def test_create_notebook(cleanup_after_tests) -> None:
     assert result.returncode == 0
 
     # Check if the notebook deployment is active in the dss namespace
-    deployment = lightkube_client.get(Deployment, name=notebook_name, namespace=DSS_NAMESPACE)
+    deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
 
@@ -103,16 +97,12 @@ def test_log_command(cleanup_after_initialize) -> None:
     """
     kubeconfig_file = "~/.kube/config"
 
-    # FIXME: remove this line when https://github.com/canonical/data-science-stack/pull/43 is
-    # merged and set the name of the notebook to be the same as in the create notebook test
-    create_deployment_and_service()
-
     # Run the logs command with the notebook name and kubeconfig file
     result = subprocess.run(
         [
             "dss",
             "logs",
-            DEPLOYMENT_NAME,
+            NOTEBOOK_NAME,
             "--kubeconfig",
             kubeconfig_file,
         ],
@@ -163,28 +153,3 @@ def cleanup_after_initialize():
     # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
     # the tests quickly can still cause an issue
     k8s_resource_handler.delete()
-
-
-# FIXME: remove function when https://github.com/canonical/data-science-stack/pull/43 is merged
-def create_deployment_and_service():
-    """
-    Helper to mimic the creation of a Notebook.
-    """
-    output = subprocess.run(
-        ["kubectl", "apply", "-f", NOTEBOOK_RESOURCES_FILE], capture_output=True, text=True
-    )
-    print(output)
-
-    k8s_resource_handler = KubernetesResourceHandler(
-        field_manager="dss",
-        labels=DSS_CLI_MANAGER_LABELS,
-        template_files=[],
-        context={},
-        resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
-    )
-
-    wait_for_deployment_ready(
-        k8s_resource_handler.lightkube_client,
-        namespace=DSS_NAMESPACE,
-        deployment_name=DEPLOYMENT_NAME,
-    )

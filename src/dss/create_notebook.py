@@ -11,25 +11,20 @@ from dss.config import (
     DSS_NAMESPACE,
     FIELD_MANAGER,
     MANIFEST_TEMPLATES_LOCATION,
+    NOTEBOOK_IMAGES_ALIASES,
     NOTEBOOK_PVC_NAME,
+    RECOMMENDED_IMAGES_MESSAGE,
 )
 from dss.logger import setup_logger
 from dss.utils import (
     ImagePullBackOffError,
     does_dss_pvc_exist,
+    does_mlflow_deployment_exist,
     does_notebook_exist,
     get_mlflow_tracking_uri,
     get_notebook_url,
     wait_for_deployment_ready,
 )
-
-NOTEBOOK_IMAGES_ALIASES = {
-    "pytorch": "charmedkubeflow/jupyter-pytorch-full:1.8.0-3058193",
-    # TODO: add the rest of the rocks once updated in https://github.com/canonical/kubeflow-rocks
-    # "pytorch-cuda": "charmedkubeflow/jupyter-pytorch-cuda-full:1.8.0-xxxxx",
-    # "tensorflow-cuda": "charmedkubeflow/jupyter-tensorflow-cuda-full:1.8.0-xxxx",
-    # "tensorflow": "charmedkubeflow/jupyter-tensorflow-full:1.8.0-xxxx"
-}
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -44,21 +39,23 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         image (str): The image used for the notebook server.
         lightkube_client (Client): The Kubernetes client.
     """
-    if not does_dss_pvc_exist(lightkube_client):
+    if not does_dss_pvc_exist(lightkube_client) or not does_mlflow_deployment_exist(
+        lightkube_client
+    ):
         logger.error(
-            "Failed to create notebook. DSS was not correctly initialized."
-            "   You might want to run"
-            "   dss status      to check the current status"
-            "   dss logs --all  to review all logs"
-            "   dss initialize  to install dss"
+            "Failed to create notebook. DSS was not correctly initialized.\n"
+            " You might want to run\n"
+            "   dss status      to check the current status\n"
+            "   dss logs --all  to review all logs\n"
+            "   dss initialize  to install dss\n"
         )
         return
     if does_notebook_exist(name, DSS_NAMESPACE, lightkube_client):
         url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
         logger.error(
-            f"Failed to create Notebook. Notebook with name '{name}' already exists."
-            f"  Please specify a different name."
-            f"  To connect to the existing notebook, go to {url}."
+            f"Failed to create Notebook. Notebook with name '{name}' already exists\n."
+            f"Please specify a different name.\n"
+            f"To connect to the existing notebook, go to {url}."
         )
         return
 
@@ -66,7 +63,8 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "notebook_deployment.yaml.j2"
     )
 
-    config = _get_notebook_config(image, name)
+    image_full_name = _get_notebook_image_name(image)
+    config = _get_notebook_config(image_full_name, name)
 
     # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
@@ -92,12 +90,19 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         logger.debug(f"Failed to create Notebook {name} with error {err}")
     except TimeoutError as err:
         logger.error(str(err))
-        logger.warn(f"Notebook {name} might be in the cluster. Check the status with `dss list`.")
-        return
-    except ImagePullBackOffError:
-        logger.error(
-            f"Failed to create Notebook {name}. Image {image} does not exist or is not accessible."
+        logger.warn(
+            f"Timed out while trying to create Notebook {name}.\n"
+            "Some resources might be left in the cluster. Check the status with `dss list`."
         )
+        return
+    except ImagePullBackOffError as err:
+        logger.error(
+            f"Timed out while trying to create Notebook {name}.\n"
+            "Image {image_full_name} does not exist or is not accessible.\n"
+            "Note: You might want to use some of these recommended images:\n"
+            f"{RECOMMENDED_IMAGES_MESSAGE}"
+        )
+        logger.debug(f"Timed out while trying to create Notebook {name} with error {err}.")
         return
     notebook_url = get_notebook_url(name, DSS_NAMESPACE, lightkube_client)
     logger.info(f"Access the notebook at {notebook_url}.")
@@ -105,12 +110,11 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
 
 def _get_notebook_config(image, name):
     mlflow_tracking_uri = get_mlflow_tracking_uri()
-    full_image = _get_notebook_image_name(image)
     context = {
         "mlflow_tracking_uri": mlflow_tracking_uri,
         "notebook_name": name,
         "namespace": DSS_NAMESPACE,
-        "notebook_image": full_image,
+        "notebook_image": image,
         "pvc_name": NOTEBOOK_PVC_NAME,
     }
     return context

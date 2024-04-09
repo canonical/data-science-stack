@@ -6,3 +6,20 @@ DSS_NAMESPACE = "dss"
 MANIFEST_TEMPLATES_LOCATION = "./manifest_templates"
 MLFLOW_DEPLOYMENT_NAME = "mlflow"
 NOTEBOOK_PVC_NAME = "notebooks"
+NOTEBOOK_IMAGES_ALIASES = {
+    "pytorch": "charmedkubeflow/jupyter-pytorch-full:1.8.0-3058193",
+    # TODO: add the rest of the rocks once updated in https://github.com/canonical/kubeflow-rocks
+    # "pytorch-cuda": "charmedkubeflow/jupyter-pytorch-cuda-full:1.8.0-xxxxx",
+    # "tensorflow-cuda": "charmedkubeflow/jupyter-tensorflow-cuda-full:1.8.0-xxxx",
+    # "tensorflow": "charmedkubeflow/jupyter-tensorflow-full:1.8.0-xxxx"
+}
+
+
+def format_images_message(images_dict):
+    formatted_string = "Recommended images:\n"
+    for key, value in images_dict.items():
+        formatted_string += f"  - {key} = {value}\n"
+    return formatted_string
+
+
+RECOMMENDED_IMAGES_MESSAGE = format_images_message(NOTEBOOK_IMAGES_ALIASES)

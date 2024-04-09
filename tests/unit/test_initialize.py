@@ -59,5 +59,5 @@ def test_initialize_success(
             mock_client_instance, namespace="dss", deployment_name="mlflow"
         )
         mock_logger.info.assert_called_with(
-            "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"
+            "DSS initialized. To create your first notebook run the command:\n\ndss create"
         )
