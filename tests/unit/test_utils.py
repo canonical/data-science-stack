@@ -15,7 +15,7 @@ from dss.utils import (
     get_default_kubeconfig,
     get_lightkube_client,
     get_mlflow_tracking_uri,
-    get_notebook_url,
+    get_service_url,
     wait_for_deployment_ready,
 )
 
@@ -136,21 +136,21 @@ def test_get_mlflow_tracking_uri() -> None:
     assert get_mlflow_tracking_uri() == expected
 
 
-def test_get_notebook_url() -> None:
+def test_get_service_url() -> None:
     """
-    Test the get_notebook_url helper.
+    Test the get_service_url helper.
     """
     name = "name"
     namespace = "namespace"
     ip = "1.1.1.1"
     port = 8765
-    expected_url = f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"
+    expected_url = f"http://{ip}:{port}"
 
     mock_service = Service(spec=ServiceSpec(clusterIP=ip, ports=[ServicePort(port=port)]))
     mock_client = MagicMock()
     mock_client.get.return_value = mock_service
 
-    actual_url = get_notebook_url(name=name, namespace=namespace, lightkube_client=mock_client)
+    actual_url = get_service_url(name=name, namespace=namespace, lightkube_client=mock_client)
 
     assert actual_url == expected_url
 
