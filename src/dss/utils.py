@@ -36,7 +36,7 @@ def wait_for_deployment_ready(
     client: Client,
     namespace: str,
     deployment_name: str,
-    timeout_seconds: int = 60,
+    timeout_seconds: int = 180,
     interval_seconds: int = 10,
 ) -> None:
     """
@@ -119,18 +119,23 @@ def get_mlflow_tracking_uri() -> str:
     return f"http://{MLFLOW_DEPLOYMENT_NAME}.{DSS_NAMESPACE}.svc.cluster.local:5000"
 
 
-def get_notebook_url(name: str, namespace: str, lightkube_client: Client) -> str:
+def get_service_url(name: str, namespace: str, lightkube_client: Client) -> str:
     """
-    Returns the URL of the notebook server given the name of the server.
-
-    Assumes the following conventions:
-    * the notebook server is exposed by a service of the same name
-    * the notebook service exposes the notebook on the first port in the service
+    Returns the URL of the service given the name of the service and None if the service is not
+    found. Assumes that the service is exposed on its first port.
     """
-    service = lightkube_client.get(Service, namespace=DSS_NAMESPACE, name=name)
+    try:
+        service = lightkube_client.get(Service, namespace=namespace, name=name)
+    except ApiError as err:
+        logger.error(
+            f"Failed to get the url of notebook {name} with error code {err.status.code}.\n"
+            "  Check the debug logs for more details."
+        )
+        logger.debug(f"Failed to get the url of notebook {name} with error: {err}")
+        return
     ip = service.spec.clusterIP
     port = service.spec.ports[0].port
-    return f"http://{ip}:{port}/notebook/{namespace}/{name}/lab"
+    return f"http://{ip}:{port}"
 
 
 def does_notebook_exist(name: str, namespace: str, lightkube_client: Client) -> bool:

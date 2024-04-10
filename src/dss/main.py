@@ -33,7 +33,7 @@ def initialize_command(kubeconfig: str) -> None:
     initialize(lightkube_client=lightkube_client)
 
 
-IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n" + RECOMMENDED_IMAGES_MESSAGE
+IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
 
 
 @main.command(name="create")
@@ -53,13 +53,10 @@ IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n" + RECOMMENDE
     help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
 )
 def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
-    """Create a Jupyter notebook in DSS and connect it to MLflow.
-    This command also outputs the URL to access the notebook on success.
+    """Create a Jupyter notebook in DSS and connect it to MLflow. This command also
+    outputs the URL to access the notebook on success.
 
     \b
-    Examples:
-        dss create my-notebook --image=pytorch
-        dss create my-notebook --image=kubeflownotebookswg/jupyter-scipy:v1.8.0
     """
     logger.info("Executing create command")
     if image == DEFAULT_NOTEBOOK_IMAGE:
@@ -72,6 +69,15 @@ def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+
+
+create_notebook_command.help += f"""
+Examples
+  dss create my-notebook --image=pytorch
+  dss create my-notebook --image={DEFAULT_NOTEBOOK_IMAGE}
+
+    \b\n{RECOMMENDED_IMAGES_MESSAGE}
+"""
 
 
 @main.command(name="logs")

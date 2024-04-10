@@ -21,8 +21,6 @@ spec:
     spec:
       containers:
         - env:
-          - name: NB_PREFIX
-            value: /notebook/{{ namespace }}/{{ notebook_name }}
           - name: MLFLOW_TRACKING_URI
             value: {{ mlflow_tracking_uri }}
           image: {{ notebook_image }}

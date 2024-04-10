@@ -168,7 +168,7 @@ def test_create_notebook_failure_notebook_exists(
 
         # Assertions
         mock_logger.error.assert_called_with(
-            f"Failed to create Notebook. Notebook with name '{notebook_name}' already exists\n."
+            f"Failed to create Notebook. Notebook with name '{notebook_name}' already exists.\n"
             f"Please specify a different name.\n"
             f"To connect to the existing notebook, go to {notebook_url}."
         )
