@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from test_utils import FakeApiError
 
-from dss.config import DSS_NAMESPACE, NOTEBOOK_PVC_NAME, RECOMMENDED_IMAGES_MESSAGE
-from dss.create_notebook import _get_notebook_config, create_notebook
+from dss.config import DSS_NAMESPACE, RECOMMENDED_IMAGES_MESSAGE
+from dss.create_notebook import create_notebook
 from dss.utils import ImagePullBackOffError
 
 
