@@ -6,6 +6,7 @@ from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import (
+    DEFAULT_NOTEBOOK_IMAGE,
     DSS_CLI_MANAGER_LABELS,
     DSS_NAMESPACE,
     FIELD_MANAGER,
@@ -59,7 +60,10 @@ def initialize(lightkube_client: Client) -> None:
         wait_for_deployment_ready(lightkube_client, namespace="dss", deployment_name="mlflow")
 
         logger.info(
-            "DSS initialized. To create your first notebook run the command:\n\ndss create-notebook"  # noqa E501
+            "DSS initialized. To create your first notebook run the command:\n\ndss create\n\n"  # noqa E501
+            "Examples:\n"
+            "  dss create my-notebook --image=pytorch\n"
+            f"  dss create my-notebook --image={DEFAULT_NOTEBOOK_IMAGE}\n"
         )
 
     except TimeoutError:

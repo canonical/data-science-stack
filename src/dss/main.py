@@ -1,5 +1,7 @@
 import click
 
+from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
+from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
@@ -29,6 +31,53 @@ def initialize_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     initialize(lightkube_client=lightkube_client)
+
+
+IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
+
+
+@main.command(name="create")
+@click.argument(
+    "name",
+    required=True,
+)
+@click.option(
+    "--image",
+    default=DEFAULT_NOTEBOOK_IMAGE,
+    help=IMAGE_OPTION_HELP,
+)
+# FIXME: Remove the kubeconfig param from the create command (and any tests) after
+#  https://github.com/canonical/data-science-stack/issues/37
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
+    """Create a Jupyter notebook in DSS and connect it to MLflow. This command also
+    outputs the URL to access the notebook on success.
+
+    \b
+    """
+    logger.info("Executing create command")
+    if image == DEFAULT_NOTEBOOK_IMAGE:
+        logger.info(
+            f"No image is specified. Using default value {DEFAULT_NOTEBOOK_IMAGE}."
+            " For more information on using a specific image, see dss create --help."
+        )
+
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+
+
+create_notebook_command.help += f"""
+Examples
+  dss create my-notebook --image=pytorch
+  dss create my-notebook --image={DEFAULT_NOTEBOOK_IMAGE}
+
+    \b\n{RECOMMENDED_IMAGES_MESSAGE}
+"""
 
 
 @main.command(name="logs")
