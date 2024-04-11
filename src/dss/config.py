@@ -15,7 +15,7 @@ NOTEBOOK_IMAGES_ALIASES = {
 }
 
 
-def format_images_message(images_dict):
+def format_images_message(images_dict: dict) -> str:
     formatted_string = "Recommended images:\n"
     for key, value in images_dict.items():
         formatted_string += f"  - {key} = {value}\n"

@@ -115,7 +115,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         logger.info(f"Access the notebook at {url}.")
 
 
-def _get_notebook_config(image, name):
+def _get_notebook_config(image: str, name: str) -> dict:
     mlflow_tracking_uri = get_mlflow_tracking_uri()
     context = {
         "mlflow_tracking_uri": mlflow_tracking_uri,
@@ -127,7 +127,7 @@ def _get_notebook_config(image, name):
     return context
 
 
-def _get_notebook_image_name(image) -> str:
+def _get_notebook_image_name(image: str) -> str:
     """
     Returns the image's full name if the input is a key in `NOTEBOOK_IMAGES_ALIASES`
     else it returns the input.

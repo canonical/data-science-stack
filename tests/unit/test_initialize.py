@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from dss.initialize import initialize
+from dss.config import DEFAULT_NOTEBOOK_IMAGE
 
 
 @pytest.fixture
@@ -59,5 +60,8 @@ def test_initialize_success(
             mock_client_instance, namespace="dss", deployment_name="mlflow"
         )
         mock_logger.info.assert_called_with(
-            "DSS initialized. To create your first notebook run the command:\n\ndss create"
+            "DSS initialized. To create your first notebook run the command:\n\ndss create\n\n"
+            "Examples:\n"
+            "  dss create my-notebook --image=pytorch\n"
+            f"  dss create my-notebook --image={DEFAULT_NOTEBOOK_IMAGE}\n"
         )

@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from test_utils import FakeApiError
 
-from dss.config import DSS_NAMESPACE, RECOMMENDED_IMAGES_MESSAGE
-from dss.create_notebook import create_notebook
+from dss.config import DSS_NAMESPACE, RECOMMENDED_IMAGES_MESSAGE, NOTEBOOK_PVC_NAME
+from dss.create_notebook import create_notebook, _get_notebook_config
 from dss.utils import ImagePullBackOffError
 
 
@@ -278,20 +278,20 @@ def test_create_notebook_failure_image_pull(
         )
 
 
-# def test_get_notebook_config() -> None:
-#     """
-#     Test case to verify behavior when an ImagePullBackOffError is raised.
-#     """
-#     notebook_name = "test-notebook"
-#     notebook_image = "test-image"
-#     mlflow_tracking_uri = "http://mlflow.dss.svc.cluster.local:5000"
-#     expected_context = {
-#         "mlflow_tracking_uri": mlflow_tracking_uri,
-#         "notebook_name": notebook_name,
-#         "namespace": DSS_NAMESPACE,
-#         "notebook_image": notebook_image,
-#         "pvc_name": NOTEBOOK_PVC_NAME,
-#     }
-#     with patch("dss.create_notebook.get_mlflow_tracking_uri", return_value=mlflow_tracking_uri):
-#         actual_context = _get_notebook_config(notebook_image, notebook_name)
-#         assert actual_context == expected_context
+def test_get_notebook_config() -> None:
+    """
+    Test case to verify behavior when an ImagePullBackOffError is raised.
+    """
+    notebook_name = "test-notebook"
+    notebook_image = "test-image"
+    mlflow_tracking_uri = "http://mlflow.dss.svc.cluster.local:5000"
+    expected_context = {
+        "mlflow_tracking_uri": mlflow_tracking_uri,
+        "notebook_name": notebook_name,
+        "namespace": DSS_NAMESPACE,
+        "notebook_image": notebook_image,
+        "pvc_name": NOTEBOOK_PVC_NAME,
+    }
+    with patch("dss.create_notebook.get_mlflow_tracking_uri", return_value=mlflow_tracking_uri):
+        actual_context = _get_notebook_config(notebook_image, notebook_name)
+        assert actual_context == expected_context
