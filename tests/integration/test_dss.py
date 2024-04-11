@@ -12,6 +12,27 @@ NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
 
 
+def test_status_before_initialize(cleanup_after_initialize) -> None:
+    """
+    Integration test to verify 'dss status' command before initialization.
+    """
+    kubeconfig = "~/.kube/config"
+
+    # Run the status command
+    result = subprocess.run(
+        ["dss", "status", "--kubeconfig", kubeconfig], capture_output=True, text=True
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the output indicates MLflow deployment is not ready
+    assert "MLflow deployment: Not ready" in result.stderr
+
+    # Check if the output indicates GPU acceleration is disabled
+    assert "GPU acceleration: Disabled" in result.stderr
+
+
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
@@ -89,6 +110,27 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     # Check if the notebook deployment is active in the dss namespace
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.status.availableReplicas == deployment.spec.replicas
+
+
+def test_status_after_initialize(cleanup_after_initialize) -> None:
+    """
+    Integration test to verify 'dss status' command before initialization.
+    """
+    kubeconfig = "~/.kube/config"
+
+    # Run the status command
+    result = subprocess.run(
+        ["dss", "status", "--kubeconfig", kubeconfig], capture_output=True, text=True
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the output indicates MLflow deployment is ready
+    assert "MLflow deployment: Ready" in result.stderr
+
+    # Check if the output indicates GPU acceleration is enabled
+    assert "GPU acceleration: Disabled" in result.stderr
 
 
 def test_log_command(cleanup_after_initialize) -> None:
