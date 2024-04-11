@@ -6,13 +6,13 @@ from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import (
+    DEFAULT_NOTEBOOK_IMAGE,
     DSS_CLI_MANAGER_LABELS,
     DSS_NAMESPACE,
     FIELD_MANAGER,
     MANIFEST_TEMPLATES_LOCATION,
     MLFLOW_DEPLOYMENT_NAME,
     NOTEBOOK_PVC_NAME,
-    DEFAULT_NOTEBOOK_IMAGE
 )
 from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready

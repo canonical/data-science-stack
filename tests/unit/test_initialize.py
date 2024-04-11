@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from dss.initialize import initialize
 from dss.config import DEFAULT_NOTEBOOK_IMAGE
+from dss.initialize import initialize
 
 
 @pytest.fixture
