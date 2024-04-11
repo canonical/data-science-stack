@@ -1,3 +1,6 @@
+from typing import Dict, List
+from unittest.mock import MagicMock
+
 import pytest
 
 from dss.status import get_status
@@ -34,7 +37,11 @@ from dss.status import get_status
     ],
 )
 def test_get_status_with_different_scenarios(
-    mocker, mlflow_exist, mlflow_url, gpu_labels, expected_logs
+    mocker: MagicMock,
+    mlflow_exist: bool,
+    mlflow_url: str,
+    gpu_labels: Dict[str, str],
+    expected_logs: List[str],
 ):
     """
     Test case to verify different scenarios of MLflow deployment and GPU acceleration status.
