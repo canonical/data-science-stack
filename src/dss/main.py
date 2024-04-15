@@ -4,8 +4,8 @@ from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
-from dss.remove_notebook import remove_notebook
 from dss.logs import get_logs
+from dss.remove_notebook import remove_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -138,6 +138,7 @@ def remove_notebook_command(name: str, kubeconfig: str):
     lightkube_client = get_lightkube_client(kubeconfig)
 
     remove_notebook(name=name, lightkube_client=lightkube_client)
+
 
 if __name__ == "__main__":
     main()
