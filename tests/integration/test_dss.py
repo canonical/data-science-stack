@@ -132,7 +132,7 @@ def test_log_command(cleanup_after_initialize) -> None:
 
 def test_remove_notebook(cleanup_after_initialize) -> None:
     """
-    Tests that `dss remove-notebook` successfully removes a notebook as expected.
+    Tests that `dss remove` successfully removes a notebook as expected.
     Must be run after `dss initialize`
     """
     # FIXME: remove the `--kubeconfig`` option
@@ -144,7 +144,7 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     result = subprocess.run(
         [
             DSS_NAMESPACE,
-            "remove-notebook",
+            "remove",
             NOTEBOOK_NAME,
             "--kubeconfig",
             kubeconfig_file,

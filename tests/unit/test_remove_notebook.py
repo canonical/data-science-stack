@@ -29,7 +29,7 @@ def test_remove_notebook_success(
     mock_logger: MagicMock,
 ) -> None:
     """
-    Test case to verify successful remove-notebook call.
+    Test case to verify successful remove call.
     """
     notebook_name = "test-notebook"
 
@@ -46,7 +46,7 @@ def test_remove_notebook_not_found(
     mock_logger: MagicMock,
 ) -> None:
     """
-    Tests case to verify failed remove-notebook call with 404 error.
+    Tests case to verify failed remove call with 404 error.
     """
     notebook_name = "test-notebook"
 
@@ -65,7 +65,7 @@ def test_remove_notebook_unexpected_error(
     mock_logger: MagicMock,
 ) -> None:
     """
-    Tests case to verify failed remove-notebook call with unexpected error (not 404).
+    Tests case to verify failed remove call with unexpected error (not 404).
     """
     notebook_name = "test-notebook"
 

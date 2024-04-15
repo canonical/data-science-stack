@@ -119,7 +119,7 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
 
 # FIXME: remove the `--kubeconfig`` option
 # after fixing https://github.com/canonical/data-science-stack/issues/37
-@main.command(name="remove-notebook")
+@main.command(name="remove")
 @click.argument(
     "name",
     required=True,
@@ -132,7 +132,7 @@ def remove_notebook_command(name: str, kubeconfig: str):
     """
     Remove a Jupter Notebook in DSS with the name NAME.
     """
-    logger.info("Executing remove-notebook command")
+    logger.info("Executing remove command")
 
     kubeconfig = get_default_kubeconfig(kubeconfig)
     lightkube_client = get_lightkube_client(kubeconfig)
