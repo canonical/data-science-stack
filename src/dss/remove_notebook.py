@@ -12,7 +12,9 @@ logger = setup_logger("logs/dss.log")
 
 def remove_notebook(name: str, lightkube_client: Client) -> None:
     """
-    Removes a Notebook server from the Kubernetes cluster.
+    Removes the Notebook of name `name` from the Kubernetes cluster.
+
+    To remove the Notebook, this function Removes the Deployment and Service of name `name`.
 
     Args:
         name (str): The name of the notebook server.
