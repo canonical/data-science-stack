@@ -38,7 +38,7 @@ def test_remove_notebook_success(
 
     # Assertions
     mock_client.delete.call_count == 2
-    mock_logger.info.assert_called_with(f"Notebook {notebook_name} removed.")
+    mock_logger.info.assert_called_with(f"Notebook {notebook_name} removed successfully.")
 
 
 def test_remove_notebook_not_found(
@@ -56,5 +56,5 @@ def test_remove_notebook_not_found(
     remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
     mock_logger.warn.assert_called_with(
-        "Failed to delete K8s resources not found. Ignoring remove-notebook.\nTry dss list-notebooks to use the correct notebook name."  # noqa E501
+        f"Failed to remove notebook. Notebook {notebook_name} does not exist. Run 'dss list' to check all notebooks."  # noqa E501
     )

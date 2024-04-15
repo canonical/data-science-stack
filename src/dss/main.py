@@ -130,7 +130,7 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
 )
 def remove_notebook_command(name: str, kubeconfig: str):
     """
-    Remove a Notebook server with the name NAME.
+    Remove a Jupter Notebook in DSS with the name NAME.
     """
     logger.info("Executing remove-notebook command")
 
