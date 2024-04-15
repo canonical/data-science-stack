@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ notebook_name }}
+  namespace: {{ namespace }}
+  labels:
+    app.kubernetes.io/name: {{ notebook_name }}
+    app.kubernetes.io/part-of: dss
+    canonical.com/dss-notebook: {{ notebook_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: dss
+      canonical.com/dss-notebook: {{ notebook_name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: dss
+        canonical.com/dss-notebook: {{ notebook_name }}
+    spec:
+      containers:
+        - env:
+          - name: MLFLOW_TRACKING_URI
+            value: {{ mlflow_tracking_uri }}
+          image: {{ notebook_image }}
+          imagePullPolicy: IfNotPresent
+          name: {{ notebook_name }}
+          ports:
+          - containerPort: 8888
+            name: notebook-port
+            protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /dev/shm
+            name: dshm
+          - mountPath: /home/jovyan
+            name: home-volume
+          workingDir: /home/jovyan
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: dshm
+      - name: home-volume
+        persistentVolumeClaim:
+          claimName: {{ pvc_name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ notebook_name }}
+  namespace: {{ namespace }}
+  labels:
+    app.kubernetes.io/name: {{ notebook_name }}
+    app.kubernetes.io/part-of: dss
+spec:
+  selector:
+    app.kubernetes.io/part-of: dss
+    canonical.com/dss-notebook: {{ notebook_name }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888

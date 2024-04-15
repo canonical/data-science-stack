@@ -2,24 +2,41 @@ import os
 import time
 from typing import Optional
 
-from lightkube import Client, KubeConfig
+from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
+from lightkube.resources.core_v1 import PersistentVolumeClaim, Pod, Service
 
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME
 from dss.logger import setup_logger
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
+
+# Resource types used for a DSS Notebook
+NOTEBOOK_RESOURCES = (Service, Deployment)
 
 # Name for the environment variable storing kubeconfig
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
 KUBECONFIG_DEFAULT = "./kubeconfig"
 
 
+class ImagePullBackOffError(Exception):
+    """
+    Raised when the Notebook Pod is unable to pull the image.
+    """
+
+    __module__ = None
+
+    def __init__(self, msg: str, *args):
+        super().__init__(str(msg), *args)
+        self.msg = str(msg)
+
+
 def wait_for_deployment_ready(
     client: Client,
     namespace: str,
     deployment_name: str,
-    timeout_seconds: int = 60,
+    timeout_seconds: int = 180,
     interval_seconds: int = 10,
 ) -> None:
     """
@@ -45,6 +62,21 @@ def wait_for_deployment_ready(
             logger.info(f"Deployment {deployment_name} in namespace {namespace} is ready")
             break
         elif time.time() - start_time >= timeout_seconds:
+            # Surround the following block with try-except?
+            # ----Block-start----
+            pod: Pod = list(
+                client.list(
+                    Pod,
+                    namespace=namespace,
+                    labels={"canonical.com/dss-notebook": deployment_name},
+                )
+            )[0]
+            reason = pod.status.containerStatuses[0].state.waiting.reason
+            if reason in ["ImagePullBackOff", "ErrImagePull"]:
+                raise ImagePullBackOffError(
+                    f"Failed to create Deployment {deployment_name} with {reason}"
+                )
+            # ----Block-end----
             raise TimeoutError(
                 f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be ready"  # noqa E501
             )
@@ -81,3 +113,84 @@ def get_lightkube_client(kubeconfig: Optional[str] = None):
     kubeconfig = KubeConfig.from_file(kubeconfig)
     lightkube_client = Client(config=kubeconfig)
     return lightkube_client
+
+
+def get_mlflow_tracking_uri() -> str:
+    return f"http://{MLFLOW_DEPLOYMENT_NAME}.{DSS_NAMESPACE}.svc.cluster.local:5000"
+
+
+def get_service_url(name: str, namespace: str, lightkube_client: Client) -> str:
+    """
+    Returns the URL of the service given the name of the service and None if the service is not
+    found. Assumes that the service is exposed on its first port.
+    """
+    try:
+        service = lightkube_client.get(Service, namespace=namespace, name=name)
+    except ApiError as err:
+        logger.error(
+            f"Failed to get the url of notebook {name} with error code {err.status.code}.\n"
+            "  Check the debug logs for more details."
+        )
+        logger.debug(f"Failed to get the url of notebook {name} with error: {err}")
+        return
+    ip = service.spec.clusterIP
+    port = service.spec.ports[0].port
+    return f"http://{ip}:{port}"
+
+
+def does_notebook_exist(name: str, namespace: str, lightkube_client: Client) -> bool:
+    """
+    Returns True if a notebook server with the given name exists in the given namespace.
+
+    This function returns true if either a Service or Deployment of the standard naming convention
+    exists.
+    """
+    for resource in NOTEBOOK_RESOURCES:
+        try:
+            lightkube_client.get(resource, namespace=namespace, name=name)
+            return True
+        except ApiError as e:
+            if e.response.status_code == 404:
+                # Request succeeded but resource does not exist.  Continue searching
+                continue
+            else:
+                # Something went wrong
+                raise e
+
+    # No resources found
+    return False
+
+
+def does_dss_pvc_exist(lightkube_client: Client) -> bool:
+    """
+    Returns True if the Notebooks PVC created during `dss initialize` exists in the DSS namespace.
+    """
+    try:
+        lightkube_client.get(
+            PersistentVolumeClaim, namespace=DSS_NAMESPACE, name=NOTEBOOK_PVC_NAME
+        )
+        return True
+    except ApiError as e:
+        if e.response.status_code == 404:
+            # PVC not found
+            return False
+        else:
+            # Something went wrong
+            raise e
+
+
+def does_mlflow_deployment_exist(lightkube_client: Client) -> bool:
+    """
+    Returns True if the `mlflow` Deployment created during `dss initialize`
+    exists in the DSS namespace.
+    """
+    try:
+        lightkube_client.get(Deployment, namespace=DSS_NAMESPACE, name=MLFLOW_DEPLOYMENT_NAME)
+        return True
+    except ApiError as e:
+        if e.response.status_code == 404:
+            # Deployment not found
+            return False
+        else:
+            # Something went wrong
+            raise e
