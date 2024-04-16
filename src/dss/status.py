@@ -8,9 +8,9 @@ from dss.utils import does_mlflow_deployment_exist, get_labels_for_node, get_ser
 logger = setup_logger("logs/dss.log")
 
 
-def get_status(lightkube_client: Client):
+def get_status(lightkube_client: Client) -> None:
     """
-    Checks the status of key components within the DSS environment.
+    Logs  the status of key components within the DSS environment.
 
     Args:
         lightkube_client (Client): The Kubernetes client.
@@ -36,12 +36,15 @@ def get_status(lightkube_client: Client):
             and "nvidia.com/gpu.deploy.device-plugin" in node_labels
         ):
             gpu_acceleration = True
+            card_name = node_labels.get("nvidia.com/gpu.product", "NVIDIA GPU")
 
         # Log GPU status
         if gpu_acceleration:
-            logger.info("GPU acceleration: Enabled (NVIDIA GPU)")
+            logger.info(f"GPU acceleration: Enabled ({card_name})")
         else:
             logger.info("GPU acceleration: Disabled")
     except Exception as e:
         logger.error(f"Failed to retrieve status: {e}")
+        logger.info("MLflow deployment: Not ready")
+        logger.info("GPU acceleration: Not detected")
         return

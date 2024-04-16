@@ -16,11 +16,12 @@ from dss.status import get_status
                 "nvidia.com/gpu.present": "true",
                 "nvidia.com/gpu.deploy.container-toolkit": "true",
                 "nvidia.com/gpu.deploy.device-plugin": "true",
+                "nvidia.com/gpu.product": "Test-GPU",
             },
             [
                 "MLflow deployment: Ready",
                 "MLflow URL: <Mocked MLflow URL>",
-                "GPU acceleration: Enabled (NVIDIA GPU)",
+                "GPU acceleration: Enabled (Test-GPU)",
             ],
         ),
         (

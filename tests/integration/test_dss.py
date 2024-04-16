@@ -8,6 +8,8 @@ from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Servic
 
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
 
+# TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
+KUBECONFIG = "~/.kube/config"
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
 
@@ -16,11 +18,10 @@ def test_status_before_initialize(cleanup_after_initialize) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
     """
-    kubeconfig = "~/.kube/config"
 
     # Run the status command
     result = subprocess.run(
-        ["dss", "status", "--kubeconfig", kubeconfig], capture_output=True, text=True
+        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
     )
 
     # Check if the command executed successfully
@@ -38,11 +39,8 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
     """
-    # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
-    kubeconfig = "~/.kube/config"
-
     result = subprocess.run(
-        ["dss", "initialize", "--kubeconfig", kubeconfig],
+        ["dss", "initialize", "--kubeconfig", KUBECONFIG],
         capture_output=True,
         text=True,
     )
@@ -81,9 +79,7 @@ def test_create_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss initialize`
     """
-    # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
-    kubeconfig_file = "~/.kube/config"
-    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
     lightkube_client = lightkube.Client(kubeconfig)
 
     notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
@@ -96,7 +92,7 @@ def test_create_notebook(cleanup_after_initialize) -> None:
             "--image",
             notebook_image,
             "--kubeconfig",
-            kubeconfig_file,
+            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -116,11 +112,9 @@ def test_status_after_initialize(cleanup_after_initialize) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
     """
-    kubeconfig = "~/.kube/config"
-
     # Run the status command
     result = subprocess.run(
-        ["dss", "status", "--kubeconfig", kubeconfig], capture_output=True, text=True
+        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
     )
 
     # Check if the command executed successfully
@@ -137,8 +131,6 @@ def test_log_command(cleanup_after_initialize) -> None:
     """
     Integration test for the 'logs' command.
     """
-    kubeconfig_file = "~/.kube/config"
-
     # Run the logs command with the notebook name and kubeconfig file
     result = subprocess.run(
         [
@@ -146,7 +138,7 @@ def test_log_command(cleanup_after_initialize) -> None:
             "logs",
             NOTEBOOK_NAME,
             "--kubeconfig",
-            kubeconfig_file,
+            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -160,7 +152,7 @@ def test_log_command(cleanup_after_initialize) -> None:
 
     # Run the logs command for MLflow with the kubeconfig file
     result = subprocess.run(
-        ["dss", "logs", "--mlflow", "--kubeconfig", kubeconfig_file],
+        ["dss", "logs", "--mlflow", "--kubeconfig", KUBECONFIG],
         capture_output=True,
         text=True,
     )
