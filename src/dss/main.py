@@ -5,6 +5,7 @@ from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
+from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -114,6 +115,26 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
         get_logs("mlflow", None, lightkube_client)
     elif notebook_name:
         get_logs("notebooks", notebook_name, lightkube_client)
+
+
+@main.command(name="stop")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+@click.argument("notebook_name", required=True)
+def stop_notebook_command(kubeconfig: str, notebook_name: str):
+    """
+    Stops a running notebook in the DSS environment.
+
+    \b
+    Example:
+        dss stop my-notebook
+    """
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
 
 
 if __name__ == "__main__":
