@@ -153,12 +153,14 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the notebook Deployment is not found in the namespace
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as err:
         lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
 
     # Check if the notebook Service is not found in the namespace
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as err:
         lightkube_client.get(Service, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
 
 
 @pytest.fixture(scope="module")
