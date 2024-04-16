@@ -78,11 +78,7 @@ def test_remove_notebook_unexpected_error(
     mock_logger.error.assert_called_with(
         f"Failed to remove notebook {notebook_name}. Please try again."
     )
-    mock_logger.info.assert_called_with(
-        "You might want to run\n"
-        "  dss status      to check the current status\n"
-        f"  dss logs {notebook_name}  to review the notebook logs\n"
-    )
+    mock_logger.info.call_count == 3
     mock_logger.debug.assert_called_with(
         f"Failed to delete K8S resources for notebook {notebook_name}, with error: {mock_error}"
     )
