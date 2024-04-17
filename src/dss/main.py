@@ -3,6 +3,7 @@ import click
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
+from dss.list import list_notebooks
 from dss.logger import setup_logger
 from dss.logs import get_logs
 from dss.status import get_status
@@ -128,6 +129,24 @@ def status_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     get_status(lightkube_client)
+
+@main.command(name="list")
+@click.option(
+    "--wide",
+    default=False,
+    is_flag=True,
+    help="Display full information without truncation.",
+)
+def list_command(kubeconfig: str, wide: bool):
+    """
+    Lists all created notebooks in the DSS environment.
+
+    The output is truncated to 80 characters. Use the --wide flag to display full information.
+    """
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    list_notebooks(lightkube_client, wide)
 
 
 if __name__ == "__main__":

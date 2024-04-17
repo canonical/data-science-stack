@@ -211,3 +211,29 @@ def get_labels_for_node(lightkube_client: Client) -> dict:
         raise ValueError("Expected exactly one node in the cluster")
 
     return nodes[0].metadata.labels
+
+def truncate_row(name: str, image: str, url: str, max_length: int = 80) -> tuple[str, str, str]:
+    """
+    Truncate the row components if the total length exceeds the maximum length.
+
+    Args:
+        name (str): The name component of the row.
+        image (str): The image component of the row.
+        url (str): The URL component of the row.
+        max_length (int, optional): The maximum total length allowed for the row. Defaults to 80.
+
+    Returns:
+        tuple[str, str, str]: The truncated components of the row (name, image, url).
+    """
+    print("called")
+    table_chars = 10  # Extra chars needed for table
+    total_length = len(name) + len(image) + len(url) + table_chars
+    if total_length <= max_length:
+        return name, image, url
+    else:
+        available_space = max_length - len(name) - len(url)
+        if available_space <= 0:
+            return name[:max_length], "", ""
+        else:
+            truncated_image = image[: available_space - 3] + "..."  # Leave space for "..."
+            return name, truncated_image, url

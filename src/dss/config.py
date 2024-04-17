@@ -13,6 +13,7 @@ NOTEBOOK_IMAGES_ALIASES = {
     # "tensorflow-cuda": "charmedkubeflow/jupyter-tensorflow-cuda-full:1.8.0-xxxx",
     # "tensorflow": "charmedkubeflow/jupyter-tensorflow-full:1.8.0-xxxx"
 }
+NOTEBOOK_LABEL = "canonical.com/dss-notebook"
 
 
 def format_images_message(images_dict: dict) -> str:
