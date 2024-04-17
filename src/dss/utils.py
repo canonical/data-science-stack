@@ -4,7 +4,7 @@ from typing import Optional
 
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import PersistentVolumeClaim, Pod, Service
+from lightkube.resources.core_v1 import Node, PersistentVolumeClaim, Pod, Service
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME
 from dss.logger import setup_logger
@@ -194,3 +194,20 @@ def does_mlflow_deployment_exist(lightkube_client: Client) -> bool:
         else:
             # Something went wrong
             raise e
+
+
+def get_labels_for_node(lightkube_client: Client) -> dict:
+    """
+    Get the labels of the only node in the cluster.
+
+    Args:
+        lightkube_client (Client): The Kubernetes client.
+
+    Returns:
+        dict: A dictionary containing labels of the node matching the gpu_type.
+    """
+    nodes = list(lightkube_client.list(Node))
+    if len(nodes) != 1:
+        raise ValueError("Expected exactly one node in the cluster")
+
+    return nodes[0].metadata.labels
