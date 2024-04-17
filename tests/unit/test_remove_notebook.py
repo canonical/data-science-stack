@@ -55,8 +55,11 @@ def test_remove_notebook_not_found(
     mock_client.delete.side_effect = FakeApiError(404)
 
     # Call the function to test
-    remove_notebook(name=notebook_name, lightkube_client=mock_client)
+    with pytest.raises(SystemExit) as e:
+        remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
+    # Assert
+    assert e.value.code == 1
     mock_logger.warn.assert_called_with(
         f"Failed to remove notebook. Notebook {notebook_name} does not exist. Run 'dss list' to check all notebooks."  # noqa E501
     )
@@ -75,8 +78,11 @@ def test_remove_notebook_unexpected_error(
     mock_client.delete.side_effect = mock_error
 
     # Call the function to test
-    remove_notebook(name=notebook_name, lightkube_client=mock_client)
+    with pytest.raises(SystemExit) as e:
+        remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
+    # Assert
+    assert e.value.code == 1
     mock_logger.error.assert_called_with(
         f"Failed to remove notebook {notebook_name}. Please try again."
     )

@@ -29,12 +29,12 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
             logger.warn(
                 f"Failed to remove notebook. Notebook {name} does not exist. Run 'dss list' to check all notebooks."  # noqa E501
             )
-            return
+            exit(1)
         else:
             logger.error(f"Failed to remove notebook {name}. Please try again.")
             logger.info("Note: You might want to run")
             logger.info("  dss status      to check the current status")
             logger.info(f"  dss logs {name} to review the notebook logs")
             logger.debug(f"Failed to delete K8S resources for notebook {name}, with error: {err}")
-            return
+            exit(1)
     logger.info(f"Removing the notebook {name}. Check `dss list` for the status of the notebook.")
