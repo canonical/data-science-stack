@@ -129,7 +129,7 @@ def status_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     get_status(lightkube_client)
-    
+
 
 # FIXME: remove the `--kubeconfig`` option
 # after fixing https://github.com/canonical/data-science-stack/issues/37
@@ -137,6 +137,10 @@ def status_command(kubeconfig: str) -> None:
 @click.argument(
     "name",
     required=True,
+)
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
 )
 def remove_notebook_command(name: str, kubeconfig: str):
     """
