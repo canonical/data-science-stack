@@ -5,8 +5,8 @@ from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
-from dss.stop import stop_notebook
 from dss.status import get_status
+from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
