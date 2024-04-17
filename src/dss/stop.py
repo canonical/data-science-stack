@@ -34,7 +34,9 @@ def stop_notebook(name: str, lightkube_client: Client) -> None:
 
     try:
         lightkube_client.replace(obj)
-        logger.info(f"Success: Notebook {name} stopped successfully.")
+        logger.info(
+            f"Stopping the notebook {name}. Check `dss list` for the status of the notebook."
+        )
         return
     except ApiError as e:
         logger.error(f"Failed to stop Notebook {name}")

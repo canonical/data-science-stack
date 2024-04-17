@@ -46,7 +46,9 @@ def test_stop_notebook_success(
 
     # Assertions
     mock_client.replace.assert_called_once_with(expected_deployment_scale)
-    mock_logger.info.assert_called_with(f"Success: Notebook {notebook_name} stopped successfully.")
+    mock_logger.info.assert_called_with(
+        f"Stopping the notebook {notebook_name}. Check `dss list` for the status of the notebook."
+    )
 
 
 def test_stop_notebook_not_found(
