@@ -5,6 +5,7 @@ import pytest
 from lightkube import ApiError
 from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
 from lightkube.resources.apps_v1 import Deployment
+from lightkube.resources.core_v1 import Node
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.utils import (
@@ -13,6 +14,7 @@ from dss.utils import (
     does_dss_pvc_exist,
     does_notebook_exist,
     get_default_kubeconfig,
+    get_labels_for_node,
     get_lightkube_client,
     get_mlflow_tracking_uri,
     get_service_url,
@@ -260,3 +262,33 @@ def test_does_dss_pvc_exist(lightkube_client_side_effect, context_raised, expect
 
     with context_raised:
         assert does_dss_pvc_exist(mock_client) == expected_return
+
+
+def test_get_labels_for_node_with_single_node(mock_client: MagicMock):
+    """
+    Test to verify the behavior of get_labels_for_node when there is only one node in the cluster.
+    """
+    # Mock the list method of lightkube_client to return a list with a single node
+    mock_client.list.return_value = [MagicMock(metadata=MagicMock(labels={"gpu_type": "NVIDIA"}))]
+
+    # Call the function to test
+    labels = get_labels_for_node(mock_client)
+
+    # Assertions
+    assert labels == {"gpu_type": "NVIDIA"}
+    mock_client.list.assert_called_once_with(Node)
+
+
+def test_get_labels_for_node_with_multiple_nodes(mock_client: MagicMock):
+    """
+    Test to verify the behavior of get_labels_for_node when there are multiple nodes in the cluster.
+    """
+    # Mock the list method of lightkube_client to return a list with two nodes
+    mock_client.list.return_value = [MagicMock(), MagicMock()]
+
+    # Verify that the function raises a ValueError
+    with pytest.raises(ValueError):
+        get_labels_for_node(mock_client)
+
+    # Verify that lightkube_client.list was called once with Node
+    mock_client.list.assert_called_once_with(Node)
