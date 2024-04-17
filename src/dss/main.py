@@ -5,6 +5,7 @@ from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
+from dss.status import get_status
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -114,6 +115,19 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
         get_logs("mlflow", None, lightkube_client)
     elif notebook_name:
         get_logs("notebooks", notebook_name, lightkube_client)
+
+
+@main.command(name="status")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+def status_command(kubeconfig: str) -> None:
+    """Checks the status of key components within the DSS environment. Verifies if the MLflow deployment is ready and checks if GPU acceleration is enabled on the Kubernetes cluster by examining the labels of Kubernetes nodes for NVIDIA or Intel GPU devices."""  # noqa E501
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    get_status(lightkube_client)
 
 
 if __name__ == "__main__":
