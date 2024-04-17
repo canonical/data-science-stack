@@ -170,9 +170,8 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss create`.
     """
-    kubeconfig_file = "~/.kube/config"
-    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
-    lightkube_client = lightkube.Client(kubeconfig)
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(KUBECONFIG)
 
     # Run the stop command with the notebook name and kubeconfig file
     result = subprocess.run(
@@ -181,7 +180,7 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
             "stop",
             NOTEBOOK_NAME,
             "--kubeconfig",
-            kubeconfig_file,
+            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
