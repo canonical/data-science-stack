@@ -26,7 +26,7 @@ def stop_notebook(name: str, lightkube_client: Client) -> None:
     ):
         logger.warn(f"Failed to stop Notebook. Notebook {name} does not exist.")
         logger.info("Run 'dss list' to check all notebooks.")
-        return
+        exit(1)
 
     obj = Deployment.Scale(
         metadata=ObjectMeta(name=name, namespace=DSS_NAMESPACE), spec=ScaleSpec(replicas=0)
@@ -39,3 +39,4 @@ def stop_notebook(name: str, lightkube_client: Client) -> None:
     except ApiError as e:
         logger.error(f"Failed to stop Notebook {name}")
         logger.debug(f"Failed to scale down Deployment {name} with error: {e}")
+        exit(1)
