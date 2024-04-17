@@ -43,7 +43,6 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
                 else "(stopped)"
             )
 
-            print([name, image, url])
             if wide:
                 notebook_list.append([name, image, url])
             else:
