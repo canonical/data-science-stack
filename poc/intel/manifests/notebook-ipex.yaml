@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-notebook-pytorch
+  name: notebook-pytorch
+  namespace: dss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-notebook-pytorch
+  template:
+    metadata:
+      labels:
+        app: user-notebook-pytorch
+    spec:
+      containers:
+      - image: intel/intel-extension-for-pytorch:2.1.10-xpu-idp-jupyter
+        imagePullPolicy: IfNotPresent
+        name: pytorch
+        command:
+          - jupyter
+        args:
+          - lab
+          - --notebook-dir
+          - /home/jovyan
+          - --no-browser
+          - --NotebookApp.token
+          - ""
+          - --NotebookApp.password
+          - ""
+          - --NotebookApp.allow_origin
+          - "*"
+          - --ip
+          - 0.0.0.0
+          - --port
+          - "8888"
+          - --allow-root
+        env:
+          - name: MLFLOW_TRACKING_URI
+            value: http://mlflow.dss.svc
+        resources:
+          limits:
+            cpu: 4
+            memory: 16Gi
+            gpu.intel.com/i915: 1
+          requests:
+            cpu: 1
+            memory: 2Gi
+        ports:
+          - containerPort: 8888
+            name: notebook-port
+            protocol: TCP
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /home/jovyan
+          name: home-pvc
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: dshm
+      - name: home-pvc
+        persistentVolumeClaim:
+          claimName: notebooks-home
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-notebook-pytorch
+  namespace: dss
+  labels:
+    app: dss-user-notebooks
+    app.kubernetes.io/name: dss-user-notebooks
+spec:
+  selector:
+    app: user-notebook-pytorch
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
