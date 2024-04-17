@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-notebook-openvino
+  name: notebook-openvino
+  namespace: dss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-notebook-openvino
+  template:
+    metadata:
+      labels:
+        app: user-notebook-openvino
+    spec:
+      containers:
+      - image: local/openvinotoolkit:render-addon
+        imagePullPolicy: Never
+        name: openvino
+        command:
+          - jupyter
+        args:
+          - lab
+          - --notebook-dir
+          - /opt/app-root/src
+          - --no-browser
+          - --NotebookApp.token
+          - ""
+          - --NotebookApp.password
+          - ""
+          - --NotebookApp.allow_origin
+          - "*"
+          - --ip
+          - 0.0.0.0
+          - --port
+          - "8888"
+          - --allow-root
+        env:
+          - name: MLFLOW_TRACKING_URI
+            value: http://mlflow.dss.svc
+        resources:
+          limits:
+            cpu: 4
+            memory: 8Gi
+            gpu.intel.com/i915: 1
+          requests:
+            cpu: 1
+            memory: 2Gi
+        ports:
+          - containerPort: 8888
+            name: notebook-port
+            protocol: TCP
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /opt/app-root/src
+          name: home-app-root
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: dshm
+      - name: home-app-root
+        persistentVolumeClaim:
+          claimName: notebooks-home
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-notebook-openvino
+  namespace: dss
+  labels:
+    app: dss-user-notebooks
+    app.kubernetes.io/name: dss-user-notebooks
+spec:
+  selector:
+    app: user-notebook-openvino
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
