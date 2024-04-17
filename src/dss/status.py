@@ -45,6 +45,4 @@ def get_status(lightkube_client: Client) -> None:
             logger.info("GPU acceleration: Disabled")
     except Exception as e:
         logger.error(f"Failed to retrieve status: {e}")
-        logger.info("MLflow deployment: Not ready")
-        logger.info("GPU acceleration: Not detected")
         return
