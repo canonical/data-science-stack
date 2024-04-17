@@ -38,7 +38,9 @@ def test_remove_notebook_success(
 
     # Assertions
     mock_client.delete.call_count == 2
-    mock_logger.info.assert_called_with(f"Notebook {notebook_name} removed successfully.")
+    mock_logger.info.assert_called_with(
+        f"Removing the notebook {notebook_name}. Check `dss list` for the status of the notebook."
+    )
 
 
 def test_remove_notebook_not_found(

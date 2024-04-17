@@ -37,4 +37,4 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
             logger.info(f"  dss logs {name} to review the notebook logs")
             logger.debug(f"Failed to delete K8S resources for notebook {name}, with error: {err}")
             return
-    logger.info(f"Notebook {name} removed successfully.")
+    logger.info(f"Removing the notebook {name}. Check `dss list` for the status of the notebook.")
