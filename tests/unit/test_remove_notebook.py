@@ -55,7 +55,7 @@ def test_remove_notebook_not_found(
     mock_client.delete.side_effect = FakeApiError(404)
 
     # Call the function to test
-    with pytest.raises(FakeApiError) as e:
+    with pytest.raises(FakeApiError):
         remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
@@ -77,7 +77,7 @@ def test_remove_notebook_unexpected_error(
     mock_client.delete.side_effect = mock_error
 
     # Call the function to test
-    with pytest.raises(FakeApiError) as e:
+    with pytest.raises(FakeApiError):
         remove_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
