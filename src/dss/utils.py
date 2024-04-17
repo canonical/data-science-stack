@@ -225,7 +225,6 @@ def truncate_row(name: str, image: str, url: str, max_length: int = 80) -> tuple
     Returns:
         tuple[str, str, str]: The truncated components of the row (name, image, url).
     """
-    print("called")
     table_chars = 10  # Extra chars needed for table
     total_length = len(name) + len(image) + len(url) + table_chars
     if total_length <= max_length:
