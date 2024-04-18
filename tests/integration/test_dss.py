@@ -165,6 +165,36 @@ def test_log_command(cleanup_after_initialize) -> None:
     assert "Starting gunicorn" in result.stderr
 
 
+def test_stop_notebook(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss stop` successfully stops a notebook as expected.
+
+    Must be run after `dss create`.
+    """
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+
+    # Run the stop command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "stop",
+            NOTEBOOK_NAME,
+            "--kubeconfig",
+            KUBECONFIG,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check the command executed successfully
+    assert result.returncode == 0
+
+    # Check the notebook deployment was scaled down to 0
+    deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert deployment.spec.replicas == 0
+
+
 def test_remove_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss remove` successfully removes a notebook as expected.
