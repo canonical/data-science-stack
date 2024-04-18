@@ -171,10 +171,10 @@ def remove_notebook_command(name: str, kubeconfig: str):
     Remove a Jupter Notebook in DSS with the name NAME.
     """
     logger.info("Executing remove command")
-    
+
     kubeconfig = get_default_kubeconfig(kubeconfig)
     lightkube_client = get_lightkube_client(kubeconfig)
-    
+
     try:
         remove_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
