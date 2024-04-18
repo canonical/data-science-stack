@@ -1,4 +1,5 @@
 import click
+from lightkube import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
@@ -148,7 +149,10 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
     kubeconfig = get_default_kubeconfig(kubeconfig)
     lightkube_client = get_lightkube_client(kubeconfig)
 
-    stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
+    try:
+        stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
+    except (RuntimeError, ApiError):
+        exit(1)
 
 
 if __name__ == "__main__":
