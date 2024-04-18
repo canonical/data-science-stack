@@ -1,3 +1,5 @@
+from enum import Enum
+
 # Labels applied to any Kubernetes objects managed by the DSS CLI
 DSS_CLI_MANAGER_LABELS = {"app.kubernetes.io/managed-by": "dss-cli"}
 
@@ -25,3 +27,13 @@ def format_images_message(images_dict: dict) -> str:
 
 RECOMMENDED_IMAGES_MESSAGE = format_images_message(NOTEBOOK_IMAGES_ALIASES)
 DEFAULT_NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
+
+
+class DeploymentState(Enum):
+    ACTIVE = "Active"
+    DOWNLOADING = "Downloading"
+    STARTING = "Starting"
+    STOPPING = "Stopping"
+    REMOVING = "Removing"
+    STOPPED = "Stopped"
+    UNKNOWN = "Unknown"

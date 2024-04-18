@@ -6,7 +6,7 @@ from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Node, PersistentVolumeClaim, Pod, Service
 
-from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME, DeploymentState
 from dss.logger import setup_logger
 
 # Set up logger
@@ -121,20 +121,37 @@ def get_mlflow_tracking_uri() -> str:
 
 def get_service_url(name: str, namespace: str, lightkube_client: Client) -> str:
     """
-    Returns the URL of the service given the name of the service and None if the service is not
-    found. Assumes that the service is exposed on its first port.
+    Returns the URL of the service given the name of the service.
+    Assumes that the service is exposed on its first port.
+    Returns None if the service is not found or if an error occurs,
+    logging the issue as an error.
+
+    Args:
+        name (str): The name of the service.
+        namespace (str): The namespace where the service is located.
+        lightkube_client (Client): The Kubernetes client.
+
+    Returns:
+        str or None: The URL of the service if found and has at least one port, otherwise None.
     """
     try:
         service = lightkube_client.get(Service, namespace=namespace, name=name)
     except ApiError as err:
         logger.error(
-            f"Failed to get the url of notebook {name} with error code {err.status.code}.\n"
-            "  Check the debug logs for more details."
+            f"Failed to get the URL of notebook {name} with error code {err.status.code}.\n"
+            "Check the debug logs for more details."
         )
-        logger.debug(f"Failed to get the url of notebook {name} with error: {err}")
-        return
+        logger.debug(f"Failed to get the URL of notebook {name} with error: {err}")
+        return None
+
+    if not service.spec.ports:
+        logger.error(f"No ports defined for the service {name} in namespace {namespace}.")
+        return None
+
     ip = service.spec.clusterIP
-    port = service.spec.ports[0].port
+    port = service.spec.ports[
+        0
+    ].port  # Consider parameterizing or handling multiple ports if needed
     return f"http://{ip}:{port}"
 
 
@@ -212,27 +229,88 @@ def get_labels_for_node(lightkube_client: Client) -> dict:
 
     return nodes[0].metadata.labels
 
+
 def truncate_row(name: str, image: str, url: str, max_length: int = 80) -> tuple[str, str, str]:
     """
-    Truncate the row components if the total length exceeds the maximum length.
+    Truncate the image component to ensure the total length of name, image,
+    and url including delimiters does not exceed the maximum length.
 
     Args:
         name (str): The name component of the row.
         image (str): The image component of the row.
         url (str): The URL component of the row.
-        max_length (int, optional): The maximum total length allowed for the row. Defaults to 80.
+        max_length (int, optional): The maximum total length allowed for the
+                                    row including delimiters. Defaults to 80.
 
     Returns:
-        tuple[str, str, str]: The truncated components of the row (name, image, url).
+        tuple[str, str, str]: The components of the row (name, image, url)
+                              after adjusting the length.
     """
-    table_chars = 10  # Extra chars needed for table
-    total_length = len(name) + len(image) + len(url) + table_chars
-    if total_length <= max_length:
-        return name, image, url
-    else:
-        available_space = max_length - len(name) - len(url)
-        if available_space <= 0:
-            return name[:max_length], "", ""
+    # Account for table characters: 4 vertical bars and 6 spaces (2 per column for padding)
+    delimiter_length = 4 + 6
+    content_max_length = max_length - delimiter_length
+
+    current_length = len(name) + len(image) + len(url)
+    if current_length > content_max_length:
+        excess_length = current_length - content_max_length
+        new_image_length = len(image) - excess_length
+        if new_image_length > 3:
+            image = image[: new_image_length - 3] + "..."
         else:
-            truncated_image = image[: available_space - 3] + "..."  # Leave space for "..."
-            return name, truncated_image, url
+            image = "..."
+    return name, image, url
+
+
+def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> DeploymentState:
+    """
+    Determine the state of a Kubernetes deployment, which is constrained to 0 or 1 replicas.
+
+    Args:
+        deployment (Deployment): The deployment object.
+        lightkube_client (Client): The Kubernetes client.
+
+    Returns:
+        DeploymentState: The state of the deployment as an enumeration.
+    """
+    # Extract replica counts and deletion timestamp from deployment
+    desired_replicas = deployment.spec.replicas if deployment.spec.replicas is not None else 0
+    current_replicas = deployment.status.replicas if deployment.status.replicas is not None else 0
+    deletion_timestamp = deployment.metadata.deletionTimestamp
+
+    # Check for deployment deletion
+    if deletion_timestamp:
+        return DeploymentState.REMOVING
+
+    # Check pod statuses for image pulling issues and container creation
+    pods = lightkube_client.list(
+        Pod, namespace=deployment.metadata.namespace, labels=deployment.spec.selector.matchLabels
+    )
+    for pod in pods:
+        for container_status in pod.status.containerStatuses:
+            if container_status.state.waiting:
+                if container_status.state.waiting.reason in [
+                    "ImagePullBackOff",
+                    "ErrImagePull",
+                    "ContainerCreating",
+                ]:
+                    return DeploymentState.DOWNLOADING
+
+    # Determine the state based on replica counts
+    if desired_replicas == 0:
+        if current_replicas == 0:
+            return DeploymentState.STOPPED
+        else:
+            return DeploymentState.STOPPING
+    else:  # desired_replicas == 1
+        if current_replicas == 0:
+            return DeploymentState.STARTING
+        else:
+            # Check if all replicas are available
+            available_replicas = (
+                deployment.status.availableReplicas
+                if deployment.status.availableReplicas is not None
+                else 0
+            )
+            if available_replicas < 1:
+                return DeploymentState.STARTING
+            return DeploymentState.ACTIVE

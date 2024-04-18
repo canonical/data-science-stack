@@ -2,9 +2,11 @@ import subprocess
 
 import lightkube
 import pytest
+from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
 from lightkube.resources.apps_v1 import Deployment
+from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
-from dss.config import DSS_NAMESPACE
+from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
 
 # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
 KUBECONFIG = "~/.kube/config"
@@ -105,6 +107,30 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
 
+def test_list_after_create(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss list` lists notebooks as expected.
+    """
+    result = subprocess.run(
+        [
+            "dss",
+            "list",
+            "--kubeconfig",
+            KUBECONFIG,
+            "--wide",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=60 * 4,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the notebook name is presented in the output
+    assert NOTEBOOK_NAME in result.stderr
+
+
 def test_status_after_initialize(cleanup_after_initialize) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
@@ -122,28 +148,6 @@ def test_status_after_initialize(cleanup_after_initialize) -> None:
 
     # Check if the output indicates GPU acceleration is enabled
     assert "GPU acceleration: Disabled" in result.stderr
-
-def test_dss_status_after_creating_notebook(cleanup_after_initialize) -> None:
-    """
-    Integration test to verify if `dss status` displays the correct information.
-    """
-
-    kubeconfig_file = "~/.kube/config"
-
-    # Run dss status to check if the notebook is present
-    status_result = subprocess.run(
-        ["dss", "list", "--kubeconfig", kubeconfig_file],
-        capture_output=True,
-        text=True,
-    )
-
-    # Check if the command executed successfully
-    assert status_result.returncode == 0
-
-    # Check if the notebook information is present in the status output
-    assert NOTEBOOK_NAME in status_result.stderr
-    assert NOTEBOOK_IMAGE in status_result.stderr
-    # You might want to add additional checks for the URL if it's available in the status output
 
 
 def test_log_command(cleanup_after_initialize) -> None:
@@ -194,15 +198,15 @@ def cleanup_after_initialize():
     """
     yield
 
-    # k8s_resource_handler = KubernetesResourceHandler(
-    #     field_manager=FIELD_MANAGER,
-    #     labels=DSS_CLI_MANAGER_LABELS,
-    #     template_files=[],
-    #     context={},
-    #     resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
-    # )
+    k8s_resource_handler = KubernetesResourceHandler(
+        field_manager=FIELD_MANAGER,
+        labels=DSS_CLI_MANAGER_LABELS,
+        template_files=[],
+        context={},
+        resource_types={Deployment, Service, PersistentVolumeClaim, Namespace},
+    )
 
-    # # Attempt to clean up anything that initialize might create
-    # # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
-    # # the tests quickly can still cause an issue
-    # k8s_resource_handler.delete()
+    # Attempt to clean up anything that initialize might create
+    # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
+    # the tests quickly can still cause an issue
+    k8s_resource_handler.delete()

@@ -5,19 +5,21 @@ import pytest
 from lightkube import ApiError
 from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import Node
+from lightkube.resources.core_v1 import Node, Pod
 
-from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, DeploymentState
 from dss.utils import (
     KUBECONFIG_DEFAULT,
     ImagePullBackOffError,
     does_dss_pvc_exist,
     does_notebook_exist,
     get_default_kubeconfig,
+    get_deployment_state,
     get_labels_for_node,
     get_lightkube_client,
     get_mlflow_tracking_uri,
     get_service_url,
+    truncate_row,
     wait_for_deployment_ready,
 )
 
@@ -29,6 +31,12 @@ def mock_client() -> MagicMock:
     """
     with patch("dss.utils.Client") as mock_client:
         yield mock_client
+
+
+@pytest.fixture
+def mock_deployment():
+    """Fixture to create a mock Deployment object with variable attributes."""
+    return MagicMock(spec=Deployment)
 
 
 @pytest.fixture
@@ -292,3 +300,63 @@ def test_get_labels_for_node_with_multiple_nodes(mock_client: MagicMock):
 
     # Verify that lightkube_client.list was called once with Node
     mock_client.list.assert_called_once_with(Node)
+
+
+@pytest.mark.parametrize(
+    "desired_replicas, current_replicas, available_replicas, deletion_timestamp, waiting_reason, expected_state",  # noqa E501
+    [
+        (1, 1, 1, None, None, DeploymentState.ACTIVE),
+        (1, 0, 0, None, None, DeploymentState.STARTING),
+        (0, 1, 1, None, None, DeploymentState.STOPPING),
+        (0, 0, 0, None, None, DeploymentState.STOPPED),
+        (None, None, None, True, None, DeploymentState.REMOVING),
+        (1, 1, 0, None, "ImagePullBackOff", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, "ErrImagePull", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, "ContainerCreating", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, None, DeploymentState.STARTING),
+    ],
+)
+def test_get_deployment_state(
+    mock_deployment,
+    mock_client,
+    desired_replicas,
+    current_replicas,
+    available_replicas,
+    deletion_timestamp,
+    waiting_reason,
+    expected_state,
+):
+    # Arrange
+    mock_deployment.spec.replicas = desired_replicas
+    mock_deployment.status.replicas = current_replicas
+    mock_deployment.status.availableReplicas = available_replicas
+    mock_deployment.metadata.deletionTimestamp = deletion_timestamp
+
+    pod = MagicMock(spec=Pod)
+    container_status = MagicMock()
+    if waiting_reason:
+        container_status.state.waiting = MagicMock(reason=waiting_reason)
+    else:
+        container_status.state.waiting = None
+    pod.status.containerStatuses = [container_status]
+    mock_client.list.return_value = [pod]
+
+    # Act
+    state = get_deployment_state(mock_deployment, mock_client)
+
+    # Assert
+    assert state == expected_state, f"Expected {expected_state}, but got {state}"
+
+
+@pytest.mark.parametrize(
+    "name, image, url, max_length, expected",
+    [
+        ("name", "image", "url", 80, ("name", "image", "url")),
+        ("name", "longimagename", "url", 27, ("name", "longima...", "url")),
+        ("name", "img", "url", 19, ("name", "...", "url")),
+        ("name", "img", "url", 16, ("name", "...", "url")),
+    ],
+)
+def test_truncate_row(name, image, url, max_length, expected):
+    result = truncate_row(name, image, url, max_length)
+    assert result == expected, f"Expected {expected}, got {result}"
