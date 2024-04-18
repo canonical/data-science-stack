@@ -67,7 +67,7 @@ def test_stop_notebook_not_found(
         stop_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
-    mock_logger.warn.assert_called_with(
+    mock_logger.error.assert_called_with(
         f"Failed to stop Notebook. Notebook {notebook_name} does not exist."
     )
     mock_logger.info.assert_called_with("Run 'dss list' to check all notebooks.")
