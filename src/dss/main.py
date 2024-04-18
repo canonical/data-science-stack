@@ -1,5 +1,4 @@
 import click
-from lightkube.core.exceptions import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
@@ -154,7 +153,7 @@ def remove_notebook_command(name: str, kubeconfig: str):
 
     try:
         remove_notebook(name=name, lightkube_client=lightkube_client)
-    except ApiError:
+    except RuntimeError:
         exit(1)
 
 
