@@ -3,6 +3,7 @@ import subprocess
 import lightkube
 import pytest
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
+from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
@@ -192,6 +193,39 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     # Check the notebook deployment was scaled down to 0
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.spec.replicas == 0
+
+
+def test_remove_notebook(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss remove` successfully removes a notebook as expected.
+    Must be run after `dss initialize`
+    """
+    # FIXME: remove the `--kubeconfig`` option
+    # after fixing https://github.com/canonical/data-science-stack/issues/37
+    kubeconfig_file = "~/.kube/config"
+    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
+    lightkube_client = lightkube.Client(kubeconfig)
+
+    result = subprocess.run(
+        [
+            DSS_NAMESPACE,
+            "remove",
+            NOTEBOOK_NAME,
+            "--kubeconfig",
+            kubeconfig_file,
+        ]
+    )
+    assert result.returncode == 0
+
+    # Check if the notebook Deployment is not found in the namespace
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
+
+    # Check if the notebook Service is not found in the namespace
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Service, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
 
 
 @pytest.fixture(scope="module")
