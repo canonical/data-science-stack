@@ -1,4 +1,5 @@
 import click
+from lightkube import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
@@ -6,6 +7,7 @@ from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
 from dss.status import get_status
+from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -128,6 +130,29 @@ def status_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     get_status(lightkube_client)
+
+
+@main.command(name="stop")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+@click.argument("notebook_name", required=True)
+def stop_notebook_command(kubeconfig: str, notebook_name: str):
+    """
+    Stops a running notebook in the DSS environment.
+
+    \b
+    Example:
+        dss stop my-notebook
+    """
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    try:
+        stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
+    except (RuntimeError, ApiError):
+        exit(1)
 
 
 if __name__ == "__main__":
