@@ -1,5 +1,3 @@
-import sys
-
 import click
 from lightkube.core.exceptions import ApiError
 
@@ -159,10 +157,10 @@ def list_command(kubeconfig: str, wide: bool):
         list_notebooks(lightkube_client, wide)
     except ApiError as e:
         logger.error(f"Error interacting with Kubernetes: {e}")
-        sys.exit(1)
+        exit(1)
     except Exception as e:
         logger.error(f"An error occurred: {e}")
-        sys.exit(1)
+        exit(1)
 
 
 @main.command(name="stop")
