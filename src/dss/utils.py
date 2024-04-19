@@ -286,7 +286,10 @@ def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> De
         Pod, namespace=deployment.metadata.namespace, labels=deployment.spec.selector.matchLabels
     )
     for pod in pods:
-        for container_status in pod.status.containerStatuses:
+        container_statuses = (
+            pod.status.containerStatuses if pod.status.containerStatuses is not None else []
+        )
+        for container_status in container_statuses:
             if container_status.state.waiting:
                 if container_status.state.waiting.reason in [
                     "ImagePullBackOff",
@@ -301,7 +304,7 @@ def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> De
             return DeploymentState.STOPPED
         else:
             return DeploymentState.STOPPING
-    else:  # desired_replicas == 1
+    elif desired_replicas == 1:
         if current_replicas == 0:
             return DeploymentState.STARTING
         else:
@@ -314,3 +317,5 @@ def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> De
             if available_replicas < 1:
                 return DeploymentState.STARTING
             return DeploymentState.ACTIVE
+    else:
+        DeploymentState.UNKNOWN

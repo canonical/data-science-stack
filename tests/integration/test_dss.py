@@ -121,7 +121,7 @@ def test_list_after_create(cleanup_after_initialize) -> None:
         ],
         capture_output=True,
         text=True,
-        timeout=60 * 4,
+        timeout=30,
     )
 
     # Check if the command executed successfully

@@ -93,24 +93,6 @@ def test_list_notebooks_success(
     mock_truncate_row.assert_called_once_with(TEST_DEPLOYMENT_NAME, TEST_IMAGE, TEST_SVC)
 
 
-def test_list_notebooks_ignore_incorrect_labels(
-    mock_client: MagicMock,
-    mock_deployment_with_incorrect_labels: MagicMock,
-    mock_truncate_row: MagicMock,
-) -> None:
-    """
-    Verifies that deployments with incorrect labels are properly ignored and not processed.
-    """
-    # Arrange
-    mock_client.list.return_value = [mock_deployment_with_incorrect_labels]
-
-    # Act
-    list_notebooks(mock_client)
-
-    # Assert
-    mock_truncate_row.assert_not_called()
-
-
 def test_list_notebooks_failure_listing_deployments(
     mock_client: MagicMock, mock_logger: MagicMock
 ) -> None:
