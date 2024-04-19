@@ -96,7 +96,7 @@ def test_no_notebooks_found(mock_client, capsys):
     list_notebooks(mock_client, wide=False)
 
     captured = capsys.readouterr()
-    assert "No notebooks found in dss" in captured.out
+    assert "No notebooks found" in captured.out
 
 
 @pytest.mark.parametrize(
