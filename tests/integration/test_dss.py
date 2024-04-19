@@ -3,6 +3,7 @@ import subprocess
 import lightkube
 import pytest
 from charmed_kubeflow_chisme.kubernetes import KubernetesResourceHandler
+from lightkube.core.exceptions import ApiError
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
@@ -185,6 +186,69 @@ def test_log_command(cleanup_after_initialize) -> None:
 
     # Check if the expected logs are present in the output
     assert "Starting gunicorn" in result.stderr
+
+
+def test_stop_notebook(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss stop` successfully stops a notebook as expected.
+
+    Must be run after `dss create`.
+    """
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+
+    # Run the stop command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "stop",
+            NOTEBOOK_NAME,
+            "--kubeconfig",
+            KUBECONFIG,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check the command executed successfully
+    assert result.returncode == 0
+
+    # Check the notebook deployment was scaled down to 0
+    deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert deployment.spec.replicas == 0
+
+
+def test_remove_notebook(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss remove` successfully removes a notebook as expected.
+    Must be run after `dss initialize`
+    """
+    # FIXME: remove the `--kubeconfig`` option
+    # after fixing https://github.com/canonical/data-science-stack/issues/37
+    kubeconfig_file = "~/.kube/config"
+    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
+    lightkube_client = lightkube.Client(kubeconfig)
+
+    result = subprocess.run(
+        [
+            DSS_NAMESPACE,
+            "remove",
+            NOTEBOOK_NAME,
+            "--kubeconfig",
+            kubeconfig_file,
+        ]
+    )
+    assert result.returncode == 0
+
+    # Check if the notebook Deployment is not found in the namespace
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
+
+    # Check if the notebook Service is not found in the namespace
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Service, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert err.value.response.status_code == 404
 
 
 @pytest.fixture(scope="module")

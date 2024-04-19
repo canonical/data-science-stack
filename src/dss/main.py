@@ -9,7 +9,9 @@ from dss.initialize import initialize
 from dss.list import list_notebooks
 from dss.logger import setup_logger
 from dss.logs import get_logs
+from dss.remove_notebook import remove_notebook
 from dss.status import get_status
+from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -161,6 +163,54 @@ def list_command(kubeconfig: str, wide: bool):
     except Exception as e:
         logger.error(f"An error occurred: {e}")
         sys.exit(1)
+
+
+@main.command(name="stop")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+@click.argument("notebook_name", required=True)
+def stop_notebook_command(kubeconfig: str, notebook_name: str):
+    """
+    Stops a running notebook in the DSS environment.
+    \b
+    Example:
+        dss stop my-notebook
+    """
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    try:
+        stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
+    except (RuntimeError, ApiError):
+        exit(1)
+
+
+# FIXME: remove the `--kubeconfig`` option
+# after fixing https://github.com/canonical/data-science-stack/issues/37
+@main.command(name="remove")
+@click.argument(
+    "name",
+    required=True,
+)
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+def remove_notebook_command(name: str, kubeconfig: str):
+    """
+    Remove a Jupter Notebook in DSS with the name NAME.
+    """
+    logger.info("Executing remove command")
+
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    try:
+        remove_notebook(name=name, lightkube_client=lightkube_client)
+    except RuntimeError:
+        exit(1)
 
 
 if __name__ == "__main__":
