@@ -24,11 +24,13 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
                                Defaults to False.
     """
     try:
-        deployments = list(lightkube_client.list(
-            Deployment,
-            namespace=DSS_NAMESPACE,
-            labels={NOTEBOOK_LABEL: lightkube.operators.exists()},
-        ))
+        deployments = list(
+            lightkube_client.list(
+                Deployment,
+                namespace=DSS_NAMESPACE,
+                labels={NOTEBOOK_LABEL: lightkube.operators.exists()},
+            )
+        )
     except ApiError as e:
         logger.error(f"Failed to list notebooks: {e}")
         return
