@@ -14,14 +14,14 @@ TEST_SVC = "http://example.com"
 
 @pytest.fixture
 def mock_client() -> MagicMock:
-    """Provides a mock for the Kubernetes Client."""
+    """Mock Kubernetes Client."""
     with patch("dss.list.Client") as mock:
         yield mock.return_value
 
 
 @pytest.fixture
 def mock_deployment() -> MagicMock:
-    """Creates a mock Deployment object with correct labels and predefined attributes."""
+    """Mock Deployment with predefined attributes and correct labels."""
     deployment = MagicMock(spec=Deployment)
     deployment.metadata.name = TEST_DEPLOYMENT_NAME
     deployment.metadata.labels = {NOTEBOOK_LABEL: TEST_DEPLOYMENT_NAME}
@@ -33,126 +33,115 @@ def mock_deployment() -> MagicMock:
 
 
 @pytest.fixture
-def mock_deployment_with_incorrect_labels() -> MagicMock:
-    """Creates a mock Deployment object with incorrect labels to test label filtering."""
-    deployment = MagicMock(spec=Deployment)
-    deployment.metadata.labels = {}
-    return deployment
-
-
-@pytest.fixture
 def mock_get_deployment_state() -> MagicMock:
-    """Mocks the get_deployment_state function."""
+    """Mock the deployment state retrieval function."""
     with patch("dss.list.get_deployment_state") as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_get_service_url() -> MagicMock:
-    """Mocks the get_service_url function."""
+    """Mock the service URL retrieval function."""
     with patch("dss.list.get_service_url") as mock:
         yield mock
 
 
 @pytest.fixture
-def mock_truncate_row() -> MagicMock:
-    """Mocks the truncate_row function."""
-    with patch("dss.list.truncate_row") as mock:
-        yield mock
-
-
-@pytest.fixture
 def mock_logger() -> MagicMock:
-    """Mocks the logger used in list_notebooks."""
+    """Mock the logger for capturing log outputs."""
     with patch("dss.list.logger") as mock:
         yield mock
 
 
-def test_list_notebooks_success(
+@pytest.fixture
+def mock_pretty_table() -> MagicMock:
+    """Mock the PrettyTable class."""
+    with patch("dss.list.PrettyTable") as mock:
+        yield mock.return_value
+
+
+def test_successful_notebook_listing(
     mock_client: MagicMock,
     mock_deployment: MagicMock,
-    mock_truncate_row: MagicMock,
     mock_get_service_url: MagicMock,
     mock_get_deployment_state: MagicMock,
+    mock_pretty_table: MagicMock,
 ) -> None:
-    """
-    Ensures that listing notebooks with correct labels proceeds without errors and
-    that all dependent functions are called with expected parameters.
-    """
-    # Arrange
+    """Test successful listing of notebooks and correct function calls."""
     mock_client.list.return_value = [mock_deployment]
     mock_get_deployment_state.return_value = DeploymentState.ACTIVE
     mock_get_service_url.return_value = TEST_SVC
-    mock_truncate_row.return_value = (TEST_DEPLOYMENT_NAME, TEST_IMAGE, TEST_SVC)
 
-    # Act
     list_notebooks(mock_client, wide=False)
 
-    # Assert
     mock_get_service_url.assert_called_once_with(TEST_DEPLOYMENT_NAME, "dss", mock_client)
-    mock_truncate_row.assert_called_once_with(TEST_DEPLOYMENT_NAME, TEST_IMAGE, TEST_SVC)
+    mock_pretty_table.add_row.assert_called_once_with([TEST_DEPLOYMENT_NAME, TEST_IMAGE, TEST_SVC])
 
 
-def test_list_notebooks_failure_listing_deployments(
-    mock_client: MagicMock, mock_logger: MagicMock
-) -> None:
-    """
-    Checks that errors during the listing of deployments are logged correctly.
-    """
-    # Arrange
+def test_listing_failure_due_to_api_error(mock_client: MagicMock, mock_logger: MagicMock) -> None:
+    """Verify that API errors are logged when listing deployments fails."""
     mock_client.list.side_effect = ApiError(response=MagicMock())
 
-    # Act
     list_notebooks(mock_client)
 
-    # Assert
     mock_logger.error.assert_called_with("Failed to list notebooks: None")
 
 
+def test_no_notebooks_found(mock_client, capsys):
+    """
+    Test that the appropriate message is displayed when no deployments are found.
+    """
+    mock_client.list.return_value = []
+
+    list_notebooks(mock_client, wide=False)
+
+    captured = capsys.readouterr()
+    assert "No notebooks found in dss" in captured.out
+
+
 @pytest.mark.parametrize(
-    "state",
+    "state, expected_url",
     [
-        DeploymentState.DOWNLOADING,
-        DeploymentState.STOPPING,
-        DeploymentState.STOPPED,
-        DeploymentState.REMOVING,
-        DeploymentState.UNKNOWN,
+        (DeploymentState.DOWNLOADING, "(Downloading)"),
+        (DeploymentState.STOPPING, "(Stopping)"),
+        (DeploymentState.STOPPED, "(Stopped)"),
+        (DeploymentState.REMOVING, "(Removing)"),
+        (DeploymentState.UNKNOWN, "(Unknown)"),
     ],
 )
-def test_non_active_deployment_states(
+def test_non_active_deployment_url_representation(
     state: DeploymentState,
+    expected_url: str,
     mock_client: MagicMock,
     mock_deployment: MagicMock,
     mock_get_deployment_state: MagicMock,
-    mock_truncate_row: MagicMock,
+    mock_pretty_table: MagicMock,
 ) -> None:
-    """
-    Ensures that non-active deployment states are correctly reflected in the URL field.
-    """
-    # Arrange
+    """Ensure that non-active deployment states are correctly shown in the URL field."""
     mock_client.list.return_value = [mock_deployment]
     mock_get_deployment_state.return_value = state
-    expected_url = f"({state.value})"
-    mock_truncate_row.return_value = (TEST_DEPLOYMENT_NAME, TEST_IMAGE, expected_url)
 
-    # Act
     list_notebooks(mock_client, wide=False)
 
-    # Assert
-    mock_truncate_row.assert_called_with(TEST_DEPLOYMENT_NAME, TEST_IMAGE, expected_url)
+    mock_pretty_table.add_row.assert_called_once_with(
+        [TEST_DEPLOYMENT_NAME, TEST_IMAGE, expected_url]
+    )
 
 
-def test_list_notebooks_no_truncate_when_wide(
-    mock_client: MagicMock, mock_truncate_row: MagicMock, mock_deployment: MagicMock
+def test_no_service_url_returned(
+    mock_client: MagicMock,
+    mock_deployment: MagicMock,
+    mock_get_deployment_state: MagicMock,
+    mock_get_service_url: MagicMock,
+    mock_pretty_table: MagicMock,
 ) -> None:
-    """
-    Confirms that no truncation occurs when the 'wide' option is enabled.
-    """
-    # Arrange
+    """Test behavior when no service URL is found and a default message is displayed."""
     mock_client.list.return_value = [mock_deployment]
+    mock_get_deployment_state.return_value = DeploymentState.ACTIVE
+    mock_get_service_url.return_value = None
 
-    # Act
-    list_notebooks(mock_client, wide=True)
+    list_notebooks(mock_client, wide=False)
 
-    # Assert
-    mock_truncate_row.assert_not_called()
+    mock_pretty_table.add_row.assert_called_once_with(
+        [TEST_DEPLOYMENT_NAME, TEST_IMAGE, "(No service)"]
+    )

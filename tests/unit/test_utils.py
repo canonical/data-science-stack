@@ -19,7 +19,6 @@ from dss.utils import (
     get_lightkube_client,
     get_mlflow_tracking_uri,
     get_service_url,
-    truncate_row,
     wait_for_deployment_ready,
 )
 
@@ -346,17 +345,3 @@ def test_get_deployment_state(
 
     # Assert
     assert state == expected_state, f"Expected {expected_state}, but got {state}"
-
-
-@pytest.mark.parametrize(
-    "name, image, url, max_length, expected",
-    [
-        ("name", "image", "url", 80, ("name", "image", "url")),
-        ("name", "longimagename", "url", 27, ("name", "longima...", "url")),
-        ("name", "img", "url", 19, ("name", "...", "url")),
-        ("name", "img", "url", 16, ("name", "...", "url")),
-    ],
-)
-def test_truncate_row(name, image, url, max_length, expected):
-    result = truncate_row(name, image, url, max_length)
-    assert result == expected, f"Expected {expected}, got {result}"

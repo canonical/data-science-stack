@@ -230,37 +230,6 @@ def get_labels_for_node(lightkube_client: Client) -> dict:
     return nodes[0].metadata.labels
 
 
-def truncate_row(name: str, image: str, url: str, max_length: int = 80) -> tuple[str, str, str]:
-    """
-    Truncate the image component to ensure the total length of name, image,
-    and url including delimiters does not exceed the maximum length.
-
-    Args:
-        name (str): The name component of the row.
-        image (str): The image component of the row.
-        url (str): The URL component of the row.
-        max_length (int, optional): The maximum total length allowed for the
-                                    row including delimiters. Defaults to 80.
-
-    Returns:
-        tuple[str, str, str]: The components of the row (name, image, url)
-                              after adjusting the length.
-    """
-    # Account for table characters: 4 vertical bars and 6 spaces (2 per column for padding)
-    delimiter_length = 4 + 6
-    content_max_length = max_length - delimiter_length
-
-    current_length = len(name) + len(image) + len(url)
-    if current_length > content_max_length:
-        excess_length = current_length - content_max_length
-        new_image_length = len(image) - excess_length
-        if new_image_length > 3:
-            image = image[: new_image_length - 3] + "..."
-        else:
-            image = "..."
-    return name, image, url
-
-
 def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> DeploymentState:
     """
     Determine the state of a Kubernetes deployment, which is constrained to 0 or 1 replicas.
