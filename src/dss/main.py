@@ -212,6 +212,7 @@ def remove_notebook_command(name: str, kubeconfig: str):
     except RuntimeError:
         exit(1)
 
+
 @main.command(name="purge")
 @click.option(
     "--kubeconfig",
@@ -238,6 +239,9 @@ def purge_command(kubeconfig: str) -> None:
         logger.info("  dss status      to check the current status")
         logger.info("  dss logs --all  to review all logs")
         logger.info("  dss initialize  to install dss")
+        exit(1)
+    except Exception as err:
+        logger.error(f"An error occurred: {err}")
         exit(1)
 
 if __name__ == "__main__":
