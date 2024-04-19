@@ -7,6 +7,7 @@ from dss.initialize import initialize
 from dss.logger import setup_logger
 from dss.logs import get_logs
 from dss.remove_notebook import remove_notebook
+from dss.start import start_notebook
 from dss.status import get_status
 from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
@@ -151,6 +152,35 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
 
     try:
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
+    except (RuntimeError, ApiError):
+        exit(1)
+
+
+# FIXME: remove the `--kubeconfig`` option
+# after fixing https://github.com/canonical/data-science-stack/issues/37
+@main.command(name="start")
+@click.argument(
+    "name",
+    required=True,
+)
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+def start_notebook_command(name: str, kubeconfig: str):
+    """
+    Starts a stopped notebook in the DSS environment.
+    \b
+    Example:
+        dss start my-notebook
+    """
+    logger.info("Executing start command")
+
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
+    try:
+        start_notebook(name=name, lightkube_client=lightkube_client)
     except (RuntimeError, ApiError):
         exit(1)
 
