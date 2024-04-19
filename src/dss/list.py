@@ -37,7 +37,7 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
 
     if not deployments:
         # Use stdout for table so the output can be piped properly
-        print("No notebooks found in dss")
+        print("No notebooks found")
         return
 
     # Create a PrettyTable object
