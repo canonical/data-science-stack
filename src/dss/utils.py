@@ -4,7 +4,7 @@ from typing import Optional
 
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import Node, PersistentVolumeClaim, Pod, Service
+from lightkube.resources.core_v1 import Namespace, Node, PersistentVolumeClaim, Pod, Service
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, NOTEBOOK_PVC_NAME, DeploymentState
 from dss.logger import setup_logger
@@ -288,3 +288,49 @@ def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> De
             return DeploymentState.ACTIVE
     else:
         DeploymentState.UNKNOWN
+
+
+def does_namespace_exist(lightkube_client: Client, namespace: str) -> bool:
+    """
+    Returns:
+        True if the given namespace exists and False if the request returns a 404.
+
+    Raises:
+        ApiError if the request raises an error that is not a 404.
+    """
+    try:
+        lightkube_client.get(Namespace, name=namespace)
+        return True
+    except ApiError as err:
+        if err.response.status_code == 404:
+            # Namespace was not found
+            return False
+        else:
+            raise err
+
+
+def wait_for_namespace_to_be_deleted(
+    lightkube_client: Client,
+    namespace: str,
+    interval_seconds: int = 10,
+) -> None:
+    """
+    Waits for a namespace to be deleted.
+
+    Args:
+        lightkube_client (Client): The Kubernetes client.
+        namespace (str): The namespace being deleted.
+        interval_seconds (int): Interval between checks in seconds. Defaults to 10.
+
+    Returns:
+        None
+
+    Raises:
+        ApiError if helper does_namespace_exist() raises an ApiError.
+    """
+    while True:
+        logger.info(f"Waiting for namespace {namespace} to be deleted...")
+        if does_namespace_exist(lightkube_client, DSS_NAMESPACE):
+            time.sleep(interval_seconds)
+        else:
+            break

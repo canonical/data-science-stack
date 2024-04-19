@@ -1,6 +1,7 @@
 import click
 from lightkube.core.exceptions import ApiError
 
+from lightkube.core.exceptions import ApiError
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
@@ -10,6 +11,7 @@ from dss.logs import get_logs
 from dss.remove_notebook import remove_notebook
 from dss.status import get_status
 from dss.stop import stop_notebook
+from dss.purge import purge
 from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
 
 # Set up logger
@@ -210,6 +212,33 @@ def remove_notebook_command(name: str, kubeconfig: str):
     except RuntimeError:
         exit(1)
 
+@main.command(name="purge")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+# FIXME: Remove the kubeconfig param from the create command (and any tests) after
+#  https://github.com/canonical/data-science-stack/issues/37
+def purge_command(kubeconfig: str) -> None:
+    """
+    Removes all notebooks and DSS components.
+    """
+    logger.info("Executing purge command")
+
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        purge(lightkube_client=lightkube_client)
+    except ApiError as err:
+        logger.error(
+            f"Failed to purge DSS components with error code {err.status.code}. Please try again."
+        )
+        logger.debug(f"Failed to purge DSS components with error {err}.")
+        logger.info("You might want to run")
+        logger.info("  dss status      to check the current status")
+        logger.info("  dss logs --all  to review all logs")
+        logger.info("  dss initialize  to install dss")
+        exit(1)
 
 if __name__ == "__main__":
     main()

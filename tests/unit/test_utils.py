@@ -12,6 +12,7 @@ from dss.utils import (
     KUBECONFIG_DEFAULT,
     ImagePullBackOffError,
     does_dss_pvc_exist,
+    does_namespace_exist,
     does_notebook_exist,
     get_default_kubeconfig,
     get_deployment_state,
@@ -20,6 +21,7 @@ from dss.utils import (
     get_mlflow_tracking_uri,
     get_service_url,
     wait_for_deployment_ready,
+    wait_for_namespace_to_be_deleted,
 )
 
 
@@ -61,8 +63,17 @@ def mock_logger() -> MagicMock:
     """
     Fixture to mock the logger object.
     """
-    with patch("dss.initialize.logger") as mock_logger:
+    with patch("dss.utils.logger") as mock_logger:
         yield mock_logger
+
+
+@pytest.fixture
+def mock_does_namespace_exist() -> MagicMock:
+    """
+    Fixture to mock the does_namespace_exist function.
+    """
+    with patch("dss.utils.does_namespace_exist") as mock_does_namespace_exist:
+        yield mock_does_namespace_exist
 
 
 class _FakeResponse:
@@ -345,3 +356,64 @@ def test_get_deployment_state(
 
     # Assert
     assert state == expected_state, f"Expected {expected_state}, but got {state}"
+
+
+@pytest.mark.parametrize(
+    "lightkube_client_side_effect, context_raised, expected_return",
+    [
+        # The namespace is found (lightkube_client.get() does not fail)
+        (None, does_not_raise(), True),
+        # The namespace is not found
+        (FakeApiError(404), does_not_raise(), False),
+        # Some other ApiError is raised, which we don't know how to handle
+        (FakeApiError(999), pytest.raises(ApiError), None),
+    ],
+)
+def test_does_namespace_exist(lightkube_client_side_effect, context_raised, expected_return):
+    """Test the does_namespace_exist function."""
+    mock_client = MagicMock()
+    mock_client.get.side_effect = lightkube_client_side_effect
+
+    with context_raised:
+        assert does_namespace_exist(mock_client, "namespace") == expected_return
+
+
+@pytest.mark.parametrize(
+    "return_value, context_raised, side_effect, error_message, logger_info_call_count",
+    [
+        # Namespace has been deleted when the function is called
+        (False, does_not_raise(), None, None, 1),
+        # Raises an unexpected error.
+        (False, pytest.raises(FakeApiError), FakeApiError(999), "broken", 1),
+    ],
+)
+def test_wait_for_namespace_to_be_deleted(
+    mock_does_namespace_exist: MagicMock,
+    mock_logger: MagicMock,
+    return_value: bool,
+    context_raised,
+    side_effect: Exception,
+    error_message: str,
+    logger_info_call_count: int,
+) -> None:
+    """
+    Test the three cases for wait_for_namespace_to_be_deleted function.
+    """
+    mock_client_instance = MagicMock()
+    namespace = "test-namespace"
+    mock_does_namespace_exist.return_value = return_value
+    mock_does_namespace_exist.side_effect = side_effect
+
+    # Call the function to test
+    with context_raised as exc_info:
+        wait_for_namespace_to_be_deleted(
+            mock_client_instance,
+            namespace=namespace,
+            interval_seconds=1,
+        )
+
+    # Assertions
+    mock_logger.info.assert_called_with(f"Waiting for namespace {namespace} to be deleted...")
+    assert mock_logger.info.call_count == logger_info_call_count
+    if error_message:
+        assert str(exc_info.value) == error_message

@@ -81,8 +81,7 @@ def test_create_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss initialize`
     """
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
-    lightkube_client = lightkube.Client(kubeconfig)
+    notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
     result = subprocess.run(
         [
@@ -104,6 +103,8 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the notebook deployment is active in the dss namespace
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
@@ -194,8 +195,6 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss create`.
     """
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
-    lightkube_client = lightkube.Client(kubeconfig)
 
     # Run the stop command with the notebook name and kubeconfig file
     result = subprocess.run(
@@ -214,6 +213,8 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check the notebook deployment was scaled down to 0
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.spec.replicas == 0
 
@@ -251,10 +252,41 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     assert err.value.response.status_code == 404
 
 
+def test_purge(cleanup_after_initialize) -> None:
+    """
+    Tests that `purge` command removes all notebooks and DSS components.
+    """
+
+    # Run the purge command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "purge",
+            "--kubeconfig",
+            KUBECONFIG,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+    assert (
+        "Success: All DSS components and notebooks purged successfully from the Kubernetes cluster."
+        in result.stderr
+    )
+
+    # Check that namespace has been deleted
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Namespace, name=DSS_NAMESPACE)
+    assert str(err.value) == 'namespaces "dss" not found'
+
+
 @pytest.fixture(scope="module")
 def cleanup_after_initialize():
     """Cleans up resources that might have been deployed by dss initialize.
-
     Note that this is a white-box implementation - it depends on knowing what could be deployed and
     explicitly removing those objects, rather than truly restoring the cluster to a previous state.
     This could be leaky, depending on how `dss` is changed in future.  Hopefully though, by cleaning
