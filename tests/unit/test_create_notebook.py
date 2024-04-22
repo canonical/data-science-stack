@@ -226,7 +226,7 @@ def test_create_notebook_failure_time_out(
     mock_client_instance = MagicMock()
 
     # Mock the behavior of wait_for_deployment_ready
-    mock_wait_for_deployment_ready.side_effect = TimeoutError("test-excpetion-message")
+    mock_wait_for_deployment_ready.side_effect = TimeoutError("test-exception-message")
 
     with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
         "dss.create_notebook.does_notebook_exist", return_value=False

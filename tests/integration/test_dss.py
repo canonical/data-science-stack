@@ -225,8 +225,7 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     """
     # FIXME: remove the `--kubeconfig`` option
     # after fixing https://github.com/canonical/data-science-stack/issues/37
-    kubeconfig_file = "~/.kube/config"
-    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
     lightkube_client = lightkube.Client(kubeconfig)
 
     result = subprocess.run(
@@ -235,7 +234,7 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
             "remove",
             NOTEBOOK_NAME,
             "--kubeconfig",
-            kubeconfig_file,
+            KUBECONFIG,
         ]
     )
     assert result.returncode == 0
@@ -249,6 +248,38 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     with pytest.raises(ApiError) as err:
         lightkube_client.get(Service, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert err.value.response.status_code == 404
+
+
+def test_purge(cleanup_after_initialize) -> None:
+    """
+    Tests that `purge` command removes all notebooks and DSS components.
+    """
+
+    # Run the purge command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "purge",
+            "--kubeconfig",
+            KUBECONFIG,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+    assert (
+        "Success: All DSS components and notebooks purged successfully from the Kubernetes cluster."
+        in result.stderr
+    )
+
+    # Check that namespace has been deleted
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+    with pytest.raises(ApiError) as err:
+        lightkube_client.get(Namespace, name=DSS_NAMESPACE)
+    assert str(err.value) == 'namespaces "dss" not found'
 
 
 @pytest.fixture(scope="module")
