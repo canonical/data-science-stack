@@ -1,9 +1,10 @@
 import click
-from lightkube import ApiError
+from lightkube.core.exceptions import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
+from dss.list import list_notebooks
 from dss.logger import setup_logger
 from dss.logs import get_logs
 from dss.remove_notebook import remove_notebook
@@ -131,6 +132,35 @@ def status_command(kubeconfig: str) -> None:
     lightkube_client = get_lightkube_client(kubeconfig)
 
     get_status(lightkube_client)
+
+
+@main.command(name="list")
+@click.option(
+    "--wide",
+    default=False,
+    is_flag=True,
+    help="Display full information without truncation.",
+)
+@click.option(
+    "--kubeconfig",
+    help="Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to './kubeconfig'.",  # noqa E501
+)
+def list_command(kubeconfig: str, wide: bool):
+    """
+    Lists all created notebooks in the DSS environment.
+
+    The output is truncated to 80 characters. Use the --wide flag to display full information.
+    """
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
+        list_notebooks(lightkube_client, wide)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to list notebooks: {e}.", exc_info=True)
+        logger.error(f"Failed to list notebooks: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="stop")

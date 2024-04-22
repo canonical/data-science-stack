@@ -13,6 +13,7 @@ from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
 KUBECONFIG = "~/.kube/config"
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
+NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
 
 def test_status_before_initialize(cleanup_after_initialize) -> None:
@@ -83,15 +84,13 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
     lightkube_client = lightkube.Client(kubeconfig)
 
-    notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
-
     result = subprocess.run(
         [
             DSS_NAMESPACE,
             "create",
             NOTEBOOK_NAME,
             "--image",
-            notebook_image,
+            NOTEBOOK_IMAGE,
             "--kubeconfig",
             KUBECONFIG,
         ],
@@ -107,6 +106,30 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     # Check if the notebook deployment is active in the dss namespace
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.status.availableReplicas == deployment.spec.replicas
+
+
+def test_list_after_create(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss list` lists notebooks as expected.
+    """
+    result = subprocess.run(
+        [
+            "dss",
+            "list",
+            "--kubeconfig",
+            KUBECONFIG,
+            "--wide",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 0
+
+    # Check if the notebook name is presented in the output
+    assert NOTEBOOK_NAME in result.stderr
 
 
 def test_status_after_initialize(cleanup_after_initialize) -> None:
