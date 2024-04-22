@@ -96,7 +96,7 @@ def test_no_notebooks_found(mock_client: MagicMock, mock_logger: MagicMock) -> N
 
     list_notebooks(mock_client, wide=False)
 
-    mock_logger.info.assert_called_with("No notebooks found")
+    mock_logger.info.assert_called_with("No notebooks found.")
 
 
 @pytest.mark.parametrize(
