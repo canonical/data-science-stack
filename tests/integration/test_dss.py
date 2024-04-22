@@ -224,11 +224,6 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     Tests that `dss remove` successfully removes a notebook as expected.
     Must be run after `dss initialize`
     """
-    # FIXME: remove the `--kubeconfig`` option
-    # after fixing https://github.com/canonical/data-science-stack/issues/37
-    kubeconfig_file = "~/.kube/config"
-    kubeconfig = lightkube.KubeConfig.from_file(kubeconfig_file)
-    lightkube_client = lightkube.Client(kubeconfig)
 
     result = subprocess.run(
         [
@@ -236,10 +231,15 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
             "remove",
             NOTEBOOK_NAME,
             "--kubeconfig",
-            kubeconfig_file,
+            KUBECONFIG,
         ]
     )
     assert result.returncode == 0
+
+    # FIXME: remove the `--kubeconfig`` option
+    # after fixing https://github.com/canonical/data-science-stack/issues/37
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
 
     # Check if the notebook Deployment is not found in the namespace
     with pytest.raises(ApiError) as err:
@@ -287,6 +287,7 @@ def test_purge(cleanup_after_initialize) -> None:
 @pytest.fixture(scope="module")
 def cleanup_after_initialize():
     """Cleans up resources that might have been deployed by dss initialize.
+
     Note that this is a white-box implementation - it depends on knowing what could be deployed and
     explicitly removing those objects, rather than truly restoring the cluster to a previous state.
     This could be leaky, depending on how `dss` is changed in future.  Hopefully though, by cleaning
