@@ -32,12 +32,12 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
             )
         )
     except ApiError as e:
-        logger.debug(f"Failed to list notebooks: {e}", exc_info=True)
-        logger.error("Failed to list notebooks")
+        logger.debug(f"Failed to list notebooks: {e}.", exc_info=True)
+        logger.error(f"Failed to list notebooks: {str(e)}.")
         raise RuntimeError()
 
     if not deployments:
-        logger.info("No notebooks found")
+        logger.info("No notebooks found.")
         return
 
     # Create a PrettyTable object

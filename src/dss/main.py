@@ -158,8 +158,8 @@ def list_command(kubeconfig: str, wide: bool):
     except RuntimeError:
         click.get_current_context().exit(1)
     except Exception as e:
-        logger.debug(f"Failed to list notebooks {e}", exc_info=True)
-        logger.error(f"Failed to list notebooks {str(e)}")
+        logger.debug(f"Failed to list notebooks: {e}.", exc_info=True)
+        logger.error(f"Failed to list notebooks: {str(e)}.")
         click.get_current_context().exit(1)
 
 
