@@ -84,8 +84,6 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
     lightkube_client = lightkube.Client(kubeconfig)
 
-    notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
-
     result = subprocess.run(
         [
             DSS_NAMESPACE,
