@@ -81,6 +81,9 @@ def test_create_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss initialize`
     """
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+
     notebook_image = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
     result = subprocess.run(
@@ -103,8 +106,6 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the notebook deployment is active in the dss namespace
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
-    lightkube_client = lightkube.Client(kubeconfig)
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
@@ -195,6 +196,8 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
 
     Must be run after `dss create`.
     """
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
 
     # Run the stop command with the notebook name and kubeconfig file
     result = subprocess.run(
@@ -213,8 +216,6 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check the notebook deployment was scaled down to 0
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
-    lightkube_client = lightkube.Client(kubeconfig)
     deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
     assert deployment.spec.replicas == 0
 
@@ -224,6 +225,10 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     Tests that `dss remove` successfully removes a notebook as expected.
     Must be run after `dss initialize`
     """
+    # FIXME: remove the `--kubeconfig`` option
+    # after fixing https://github.com/canonical/data-science-stack/issues/37
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
 
     result = subprocess.run(
         [
@@ -235,11 +240,6 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
         ]
     )
     assert result.returncode == 0
-
-    # FIXME: remove the `--kubeconfig`` option
-    # after fixing https://github.com/canonical/data-science-stack/issues/37
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
-    lightkube_client = lightkube.Client(kubeconfig)
 
     # Check if the notebook Deployment is not found in the namespace
     with pytest.raises(ApiError) as err:
