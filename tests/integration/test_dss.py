@@ -129,7 +129,7 @@ def test_list_after_create(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the notebook name is presented in the output
-    assert NOTEBOOK_NAME in result.stdout
+    assert NOTEBOOK_NAME in result.stderr
 
 
 def test_status_after_initialize(cleanup_after_initialize) -> None:
