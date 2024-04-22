@@ -32,12 +32,12 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
             )
         )
     except ApiError as e:
-        logger.error(f"Failed to list notebooks: {e}")
-        return
+        logger.debug(f"Failed to list notebooks: {e}", exc_info=True)
+        logger.error("Failed to list notebooks")
+        raise RuntimeError()
 
     if not deployments:
-        # Use stdout for table so the output can be piped properly
-        print("No notebooks found")
+        logger.info("No notebooks found")
         return
 
     # Create a PrettyTable object
@@ -73,5 +73,5 @@ def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:
 
         table.add_row([name, image, url])
 
-    # Use stdout for table so the output can be piped properly
-    print(table)
+    # TODO: remove the newline after https://github.com/canonical/data-science-stack/issues/77
+    logger.info(f"\n{table}")

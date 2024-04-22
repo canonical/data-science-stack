@@ -155,12 +155,12 @@ def list_command(kubeconfig: str, wide: bool):
         kubeconfig = get_default_kubeconfig(kubeconfig)
         lightkube_client = get_lightkube_client(kubeconfig)
         list_notebooks(lightkube_client, wide)
-    except ApiError as e:
-        logger.error(f"Error interacting with Kubernetes: {e}")
-        exit(1)
+    except RuntimeError:
+        click.get_current_context().exit(1)
     except Exception as e:
-        logger.error(f"An error occurred: {e}")
-        exit(1)
+        logger.debug(f"Failed to list notebooks {e}", exc_info=True)
+        logger.error(f"Failed to list notebooks {str(e)}")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="stop")

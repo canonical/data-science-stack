@@ -78,16 +78,17 @@ def test_successful_notebook_listing(
     mock_pretty_table.add_row.assert_called_once_with([TEST_DEPLOYMENT_NAME, TEST_IMAGE, TEST_SVC])
 
 
-def test_listing_failure_due_to_api_error(mock_client: MagicMock, mock_logger: MagicMock) -> None:
-    """Verify that API errors are logged when listing deployments fails."""
+def test_listing_failure_due_to_api_error(mock_client: MagicMock) -> None:
+    """
+    Verify that a RuntimeError is raised when an API error occurs during the listing of deployments.
+    """
     mock_client.list.side_effect = ApiError(response=MagicMock())
 
-    list_notebooks(mock_client)
+    with pytest.raises(RuntimeError):
+        list_notebooks(mock_client)
 
-    mock_logger.error.assert_called_with("Failed to list notebooks: None")
 
-
-def test_no_notebooks_found(mock_client, capsys):
+def test_no_notebooks_found(mock_client: MagicMock, mock_logger: MagicMock) -> None:
     """
     Test that the appropriate message is displayed when no deployments are found.
     """
@@ -95,8 +96,7 @@ def test_no_notebooks_found(mock_client, capsys):
 
     list_notebooks(mock_client, wide=False)
 
-    captured = capsys.readouterr()
-    assert "No notebooks found" in captured.out
+    mock_logger.info.assert_called_with("No notebooks found")
 
 
 @pytest.mark.parametrize(
