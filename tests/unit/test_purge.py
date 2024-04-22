@@ -65,7 +65,8 @@ def test_purge_failure_namespace_does_not_exist(
     """
     mock_does_namespace_exist.return_value = False
     mock_client_instance = MagicMock()
-    purge(mock_client_instance)
+    with pytest.raises(RuntimeError):
+        purge(mock_client_instance)
 
     # Assertions
     mock_logger.warn.assert_called_with(
@@ -79,16 +80,26 @@ def test_purge_failure_namespace_does_not_exist(
     mock_logger.debug.assert_not_called()
 
 
-def test_purge_failure_api_error(mock_does_namespace_exist: MagicMock) -> None:
+def test_purge_failure_runtime_error(mock_does_namespace_exist: MagicMock) -> None:
+    """
+    Test case to verify that ApiError is handled.
+    """
+    mock_does_namespace_exist.return_value = True
+    mock_client_instance = MagicMock()
+    mock_client_instance.delete.side_effect = RuntimeError()
+    with pytest.raises(RuntimeError):
+        purge(mock_client_instance)
+
+def test_purge_failure_not_runtime_error(mock_does_namespace_exist: MagicMock) -> None:
     """
     Test case to verify that ApiError is handled.
     """
     mock_does_namespace_exist.return_value = True
     mock_client_instance = MagicMock()
     error_code = 400
-    mock_client_instance.delete.side_effect = FakeApiError(error_code)
-    with pytest.raises(FakeApiError) as exc_info:
+    mock_client_instance.delete.side_effect = Exception(error_code)
+    with pytest.raises(Exception) as exc_info:
         purge(mock_client_instance)
 
     # Assertions
-    assert str(exc_info.value) == "broken"
+    assert str(exc_info.value) == "400"

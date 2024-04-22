@@ -223,25 +223,16 @@ def purge_command(kubeconfig: str) -> None:
     """
     Removes all notebooks and DSS components.
     """
-    logger.info("Executing purge command")
-
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
         purge(lightkube_client=lightkube_client)
-    except ApiError as err:
-        logger.error(
-            f"Failed to purge DSS components with error code {err.status.code}. Please try again."
-        )
-        logger.debug(f"Failed to purge DSS components with error {err}.")
-        logger.info("You might want to run")
-        logger.info("  dss status      to check the current status")
-        logger.info("  dss logs --all  to review all logs")
-        logger.info("  dss initialize  to install dss")
-        exit(1)
-    except Exception as err:
-        logger.error(f"An error occurred: {err}")
-        exit(1)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to purge DSS components: {e}.", exc_info=True)
+        logger.error(f"Failed to purge DSS components: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 if __name__ == "__main__":

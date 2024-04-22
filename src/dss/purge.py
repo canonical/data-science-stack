@@ -1,4 +1,4 @@
-from lightkube import Client
+from lightkube import Client, ApiError
 from lightkube.resources.core_v1 import Namespace
 
 from dss.config import DSS_NAMESPACE
@@ -23,11 +23,22 @@ def purge(lightkube_client: Client) -> None:
         logger.info("  dss status      to check the current status")
         logger.info("  dss logs --all  to review all logs")
         logger.info("  dss initialize  to install dss")
-        return
+        raise RuntimeError()
     else:
-        lightkube_client.delete(Namespace, DSS_NAMESPACE)
-        # need to wait on namespace deletion to be completed
-        wait_for_namespace_to_be_deleted(lightkube_client, DSS_NAMESPACE)
-        logger.info(
-            "Success: All DSS components and notebooks purged successfully from the Kubernetes cluster."  # noqa E501
-        )
+        try:
+            lightkube_client.delete(Namespace, DSS_NAMESPACE)
+            # need to wait on namespace deletion to be completed
+            wait_for_namespace_to_be_deleted(lightkube_client, DSS_NAMESPACE)
+            logger.info(
+                "Success: All DSS components and notebooks purged successfully from the Kubernetes cluster."  # noqa E501
+            )
+        except ApiError as err:
+            logger.debug(f"Failed to purge DSS components: {err}.")
+            logger.error(
+                f"Failed to purge DSS components with error code {err.status.code}. Please try again."
+            )
+            logger.info("You might want to run")
+            logger.info("  dss status      to check the current status")
+            logger.info("  dss logs --all  to review all logs")
+            logger.info("  dss initialize  to install dss")
+            raise RuntimeError()
