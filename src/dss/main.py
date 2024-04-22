@@ -143,6 +143,7 @@ def status_command(kubeconfig: str) -> None:
 def stop_notebook_command(kubeconfig: str, notebook_name: str):
     """
     Stops a running notebook in the DSS environment.
+
     \b
     Example:
         dss stop my-notebook
@@ -181,8 +182,13 @@ def start_notebook_command(name: str, kubeconfig: str):
 
     try:
         start_notebook(name=name, lightkube_client=lightkube_client)
-    except (RuntimeError, ApiError):
-        exit(1)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to start notebook: {e}.", exc_info=True)
+        logger.error("Failed to start notebook.")
+        logger.info("Run 'dss list' to check all notebooks.")
+        click.get_current_context().exit(1)
 
 
 # FIXME: remove the `--kubeconfig`` option

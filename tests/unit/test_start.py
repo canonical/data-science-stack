@@ -68,9 +68,12 @@ def test_start_notebook_not_found(
 
     # Assert
     mock_logger.error.assert_called_with(
-        f"Failed to start Notebook. Notebook {notebook_name} does not exist."
+        f"Failed to start notebook. Notebook {notebook_name} does not exist."
     )
     mock_logger.info.assert_called_with("Run 'dss list' to check all notebooks.")
+    mock_logger.debug.assert_called_with(
+        f"Failed to start notebook {notebook_name}. Notebook {notebook_name} does not exist."
+    )
 
 
 def test_start_notebook_unexpected_error(
@@ -86,9 +89,9 @@ def test_start_notebook_unexpected_error(
     mock_client.replace.side_effect = mock_error
 
     # Call the function to test
-    with pytest.raises(FakeApiError):
+    with pytest.raises(RuntimeError):
         start_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
-    mock_logger.error.assert_called_with(f"Failed to start Notebook {notebook_name}")
-    mock_logger.debug(f"Failed to scale up Deployment {notebook_name} with error: {mock_error}")
+    mock_logger.error.assert_called_with(f"Failed to start notebook {notebook_name}.")
+    mock_logger.debug(f"Failed to scale up Deployment {notebook_name} with error: {mock_error}.")
