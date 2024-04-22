@@ -5,20 +5,23 @@ import pytest
 from lightkube import ApiError
 from lightkube.models.core_v1 import Service, ServicePort, ServiceSpec
 from lightkube.resources.apps_v1 import Deployment
-from lightkube.resources.core_v1 import Node
+from lightkube.resources.core_v1 import Node, Pod
 
-from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
+from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, DeploymentState
 from dss.utils import (
     KUBECONFIG_DEFAULT,
     ImagePullBackOffError,
     does_dss_pvc_exist,
+    does_namespace_exist,
     does_notebook_exist,
     get_default_kubeconfig,
+    get_deployment_state,
     get_labels_for_node,
     get_lightkube_client,
     get_mlflow_tracking_uri,
     get_service_url,
     wait_for_deployment_ready,
+    wait_for_namespace_to_be_deleted,
 )
 
 
@@ -29,6 +32,12 @@ def mock_client() -> MagicMock:
     """
     with patch("dss.utils.Client") as mock_client:
         yield mock_client
+
+
+@pytest.fixture
+def mock_deployment():
+    """Fixture to create a mock Deployment object with variable attributes."""
+    return MagicMock(spec=Deployment)
 
 
 @pytest.fixture
@@ -54,8 +63,17 @@ def mock_logger() -> MagicMock:
     """
     Fixture to mock the logger object.
     """
-    with patch("dss.initialize.logger") as mock_logger:
+    with patch("dss.utils.logger") as mock_logger:
         yield mock_logger
+
+
+@pytest.fixture
+def mock_does_namespace_exist() -> MagicMock:
+    """
+    Fixture to mock the does_namespace_exist function.
+    """
+    with patch("dss.utils.does_namespace_exist") as mock_does_namespace_exist:
+        yield mock_does_namespace_exist
 
 
 class _FakeResponse:
@@ -292,3 +310,110 @@ def test_get_labels_for_node_with_multiple_nodes(mock_client: MagicMock):
 
     # Verify that lightkube_client.list was called once with Node
     mock_client.list.assert_called_once_with(Node)
+
+
+@pytest.mark.parametrize(
+    "desired_replicas, current_replicas, available_replicas, deletion_timestamp, waiting_reason, expected_state",  # noqa E501
+    [
+        (1, 1, 1, None, None, DeploymentState.ACTIVE),
+        (1, 0, 0, None, None, DeploymentState.STARTING),
+        (0, 1, 1, None, None, DeploymentState.STOPPING),
+        (0, 0, 0, None, None, DeploymentState.STOPPED),
+        (None, None, None, True, None, DeploymentState.REMOVING),
+        (1, 1, 0, None, "ImagePullBackOff", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, "ErrImagePull", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, "ContainerCreating", DeploymentState.DOWNLOADING),
+        (1, 1, 0, None, None, DeploymentState.STARTING),
+    ],
+)
+def test_get_deployment_state(
+    mock_deployment,
+    mock_client,
+    desired_replicas,
+    current_replicas,
+    available_replicas,
+    deletion_timestamp,
+    waiting_reason,
+    expected_state,
+):
+    # Arrange
+    mock_deployment.spec.replicas = desired_replicas
+    mock_deployment.status.replicas = current_replicas
+    mock_deployment.status.availableReplicas = available_replicas
+    mock_deployment.metadata.deletionTimestamp = deletion_timestamp
+
+    pod = MagicMock(spec=Pod)
+    container_status = MagicMock()
+    if waiting_reason:
+        container_status.state.waiting = MagicMock(reason=waiting_reason)
+    else:
+        container_status.state.waiting = None
+    pod.status.containerStatuses = [container_status]
+    mock_client.list.return_value = [pod]
+
+    # Act
+    state = get_deployment_state(mock_deployment, mock_client)
+
+    # Assert
+    assert state == expected_state, f"Expected {expected_state}, but got {state}"
+
+
+@pytest.mark.parametrize(
+    "lightkube_client_side_effect, context_raised, expected_return",
+    [
+        # The namespace is found (lightkube_client.get() does not fail)
+        (None, does_not_raise(), True),
+        # The namespace is not found
+        (FakeApiError(404), does_not_raise(), False),
+        # Some other ApiError is raised, which we don't know how to handle
+        (FakeApiError(999), pytest.raises(ApiError), None),
+    ],
+)
+def test_does_namespace_exist(lightkube_client_side_effect, context_raised, expected_return):
+    """Test the does_namespace_exist function."""
+    mock_client = MagicMock()
+    mock_client.get.side_effect = lightkube_client_side_effect
+
+    with context_raised:
+        assert does_namespace_exist(mock_client, "namespace") == expected_return
+
+
+@pytest.mark.parametrize(
+    "return_value, context_raised, side_effect, error_message, logger_info_call_count",
+    [
+        # Namespace has been deleted when the function is called
+        (False, does_not_raise(), None, None, 1),
+        # Raises an unexpected error.
+        (False, pytest.raises(FakeApiError), FakeApiError(999), "broken", 1),
+    ],
+)
+def test_wait_for_namespace_to_be_deleted(
+    mock_does_namespace_exist: MagicMock,
+    mock_logger: MagicMock,
+    return_value: bool,
+    context_raised,
+    side_effect: Exception,
+    error_message: str,
+    logger_info_call_count: int,
+) -> None:
+    """
+    Test the three cases for wait_for_namespace_to_be_deleted function.
+    """
+    mock_client_instance = MagicMock()
+    namespace = "test-namespace"
+    mock_does_namespace_exist.return_value = return_value
+    mock_does_namespace_exist.side_effect = side_effect
+
+    # Call the function to test
+    with context_raised as exc_info:
+        wait_for_namespace_to_be_deleted(
+            mock_client_instance,
+            namespace=namespace,
+            interval_seconds=1,
+        )
+
+    # Assertions
+    mock_logger.info.assert_called_with(f"Waiting for namespace {namespace} to be deleted...")
+    assert mock_logger.info.call_count == logger_info_call_count
+    if error_message:
+        assert str(exc_info.value) == error_message
