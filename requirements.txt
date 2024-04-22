@@ -52,6 +52,8 @@ ops==2.10.0
     #   serialized-data-interface
 ordered-set==4.1.0
     # via deepdiff
+prettytable==3.10.0
+    # via -r requirements.in
 pyrsistent==0.20.0
     # via jsonschema
 pyyaml==6.0.1
@@ -78,5 +80,7 @@ typing-extensions==4.9.0
     # via anyio
 urllib3==2.2.0
     # via requests
+wcwidth==0.2.13
+    # via prettytable
 websocket-client==1.7.0
     # via ops

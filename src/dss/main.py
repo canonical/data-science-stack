@@ -1,11 +1,13 @@
 import click
-from lightkube import ApiError
+from lightkube.core.exceptions import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
+from dss.list import list_notebooks
 from dss.logger import setup_logger
 from dss.logs import get_logs
+from dss.purge import purge
 from dss.remove_notebook import remove_notebook
 from dss.start import start_notebook
 from dss.status import get_status
@@ -134,6 +136,35 @@ def status_command(kubeconfig: str) -> None:
     get_status(lightkube_client)
 
 
+@main.command(name="list")
+@click.option(
+    "--wide",
+    default=False,
+    is_flag=True,
+    help="Display full information without truncation.",
+)
+@click.option(
+    "--kubeconfig",
+    help="Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to './kubeconfig'.",  # noqa E501
+)
+def list_command(kubeconfig: str, wide: bool):
+    """
+    Lists all created notebooks in the DSS environment.
+
+    The output is truncated to 80 characters. Use the --wide flag to display full information.
+    """
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
+        list_notebooks(lightkube_client, wide)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to list notebooks: {e}.", exc_info=True)
+        logger.error(f"Failed to list notebooks: {str(e)}.")
+        click.get_current_context().exit(1)
+
+
 @main.command(name="stop")
 @click.option(
     "--kubeconfig",
@@ -209,6 +240,29 @@ def remove_notebook_command(name: str, kubeconfig: str):
         remove_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
         exit(1)
+
+
+@main.command(name="purge")
+@click.option(
+    "--kubeconfig",
+    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+)
+# FIXME: Remove the kubeconfig param from the create command (and any tests) after
+#  https://github.com/canonical/data-science-stack/issues/37
+def purge_command(kubeconfig: str) -> None:
+    """
+    Removes all notebooks and DSS components.
+    """
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
+        purge(lightkube_client=lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to purge DSS components: {e}.", exc_info=True)
+        logger.error(f"Failed to purge DSS components: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 if __name__ == "__main__":

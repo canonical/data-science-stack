@@ -90,6 +90,8 @@ packaging==23.2
     # via pytest
 pluggy==1.3.0
     # via pytest
+prettytable==3.10.0
+    # via -r requirements.txt
 pyrsistent==0.20.0
     # via
     #   -r requirements.txt
@@ -144,6 +146,10 @@ urllib3==2.2.0
     # via
     #   -r requirements.txt
     #   requests
+wcwidth==0.2.13
+    # via
+    #   -r requirements.txt
+    #   prettytable
 websocket-client==1.7.0
     # via
     #   -r requirements.txt
