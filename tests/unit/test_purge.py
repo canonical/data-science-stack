@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from test_utils import FakeApiError
 
 from dss.config import DSS_NAMESPACE
 from dss.purge import purge
@@ -89,6 +88,7 @@ def test_purge_failure_runtime_error(mock_does_namespace_exist: MagicMock) -> No
     mock_client_instance.delete.side_effect = RuntimeError()
     with pytest.raises(RuntimeError):
         purge(mock_client_instance)
+
 
 def test_purge_failure_not_runtime_error(mock_does_namespace_exist: MagicMock) -> None:
     """

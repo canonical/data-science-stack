@@ -1,4 +1,4 @@
-from lightkube import Client, ApiError
+from lightkube import ApiError, Client
 from lightkube.resources.core_v1 import Namespace
 
 from dss.config import DSS_NAMESPACE
@@ -35,7 +35,7 @@ def purge(lightkube_client: Client) -> None:
         except ApiError as err:
             logger.debug(f"Failed to purge DSS components: {err}.")
             logger.error(
-                f"Failed to purge DSS components with error code {err.status.code}. Please try again."
+                f"Failed to purge DSS components with error code {err.status.code}. Please try again."  # noqa E501
             )
             logger.info("You might want to run")
             logger.info("  dss status      to check the current status")
