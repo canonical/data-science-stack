@@ -218,6 +218,36 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     assert deployment.spec.replicas == 0
 
 
+def test_start_notebook(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss start` successfully starts a notebook as expected.
+
+    Must be run after `dss create` and `dss stop`.
+    """
+    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    lightkube_client = lightkube.Client(kubeconfig)
+
+    # Run the start command with the notebook name and kubeconfig file
+    result = subprocess.run(
+        [
+            "dss",
+            "start",
+            NOTEBOOK_NAME,
+            "--kubeconfig",
+            KUBECONFIG,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Check the command executed successfully
+    assert result.returncode == 0
+
+    # Check the notebook deployment was scaled up to 1
+    deployment = lightkube_client.get(Deployment, name=NOTEBOOK_NAME, namespace=DSS_NAMESPACE)
+    assert deployment.spec.replicas == 1
+
+
 def test_remove_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss remove` successfully removes a notebook as expected.
