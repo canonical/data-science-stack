@@ -15,11 +15,11 @@ import datetime
 # information" section.
 
 ############################################################
-### Project information
+# Project information
 ############################################################
 
 # Product name
-project = 'Documentation starter pack'
+project = 'Data Science Stack'
 author = 'Canonical Group Ltd'
 
 # The title you want to display for the documentation in the sidebar.
@@ -43,8 +43,8 @@ html_title = project + ' documentation'
 
 copyright = '%s, %s' % (datetime.date.today().year, author)
 
-## Open Graph configuration - defines what is displayed as a link preview
-## when linking to the documentation from another website (see https://ogp.me/)
+# Open Graph configuration - defines what is displayed as a link preview
+# when linking to the documentation from another website (see https://ogp.me/)
 # The URL where the documentation will be hosted (leave empty if you
 # don't know yet)
 # NOTE: If no ogp_* variable is defined (e.g. if you remove this section) the
@@ -77,7 +77,7 @@ html_context = {
     # Change to the discourse instance you want to be able to link to
     # using the :discourse: metadata at the top of a file
     # (use an empty value if you don't want to link)
-    'discourse': 'https://discourse.ubuntu.com',
+    'discourse': 'https://discourse.ubuntu.com/tag/data-science-stack',
 
     # Change to the Mattermost channel you want to link to
     # (use an empty value if you don't want to link)
@@ -85,17 +85,17 @@ html_context = {
 
     # Change to the Matrix channel you want to link to
     # (use an empty value if you don't want to link)
-    'matrix': 'https://matrix.to/#/#documentation:ubuntu.com',
+    'matrix': 'https://matrix.to/#/#dss:ubuntu.com',
 
     # Change to the GitHub URL for your project
-    'github_url': 'https://github.com/canonical/starter-pack',
+    'github_url': 'https://github.com/canonical/data-science-stack',
 
     # Change to the branch for this version of the documentation
     'github_version': 'main',
 
     # Change to the folder that contains the documentation
     # (usually "/" or "/docs/")
-    'github_folder': '/',
+    'github_folder': '/docs',
 
     # Change to an empty value if your GitHub repo doesn't have issues enabled.
     # This will disable the feedback button and the issue link in the footer.
@@ -111,7 +111,7 @@ html_context = {
 slug = ""
 
 ############################################################
-### Redirects
+# Redirects
 ############################################################
 
 # Set up redirects (https://documatt.gitlab.io/sphinx-reredirects/usage.html)
@@ -123,24 +123,24 @@ slug = ""
 redirects = {}
 
 ############################################################
-### Link checker exceptions
+# Link checker exceptions
 ############################################################
 
 # Links to ignore when checking links
 linkcheck_ignore = [
     'http://127.0.0.1:8000'
-    ]
+]
 
 # Pages on which to ignore anchors
 # (This list will be appended to linkcheck_anchors_ignore_for_url)
 custom_linkcheck_anchors_ignore_for_url = []
 
 ############################################################
-### Additions to default configuration
+# Additions to default configuration
 ############################################################
 
-## The following settings are appended to the default configuration.
-## Use them to extend the default functionality.
+# The following settings are appended to the default configuration.
+# Use them to extend the default functionality.
 # NOTE: Remove this variable to disable the MyST parser extensions.
 custom_myst_extensions = []
 
@@ -156,7 +156,7 @@ custom_extensions = [
     'canonical.custom-rst-roles',
     'canonical.terminal-output',
     'notfound.extension'
-    ]
+]
 
 # Add custom required Python modules that must be added to the
 # .sphinx/requirements.txt file.
@@ -170,7 +170,7 @@ custom_required_modules = []
 # Add files or directories that should be excluded from processing.
 custom_excludes = [
     'doc-cheat-sheet*',
-    ]
+]
 
 # Add CSS files (located in .sphinx/_static/)
 custom_html_css_files = []
@@ -178,7 +178,7 @@ custom_html_css_files = []
 # Add JavaScript files (located in .sphinx/_static/)
 custom_html_js_files = []
 
-## The following settings override the default configuration.
+# The following settings override the default configuration.
 
 # Specify a reST string that is included at the end of each file.
 # If commented out, use the default (which pulls the reuse/links.txt
@@ -194,10 +194,10 @@ disable_feedback_button = False
 custom_tags = []
 
 ############################################################
-### Additional configuration
+# Additional configuration
 ############################################################
 
-## Add any configuration that is not covered by the common conf.py file.
+# Add any configuration that is not covered by the common conf.py file.
 
 # Define a :center: role that can be used to center the content of table cells.
 rst_prolog = '''
