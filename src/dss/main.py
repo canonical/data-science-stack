@@ -179,10 +179,9 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
     Example:
         dss stop my-notebook
     """
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
     except (RuntimeError, ApiError):
         exit(1)
