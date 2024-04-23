@@ -1,10 +1,10 @@
-name: dss
+name: data-science-stack
 summary: ML development and experimentation environment manager
 description: |
      The DSS is a tool that allows workstations users to deploy
      and manage development and experimentation environments
      in systems with GPU support.
-adopt-info: dss
+adopt-info: data-science-stack
 base: core22
 confinement: strict
 architectures:
@@ -22,7 +22,7 @@ apps:
       - home
       - network
 parts:
-  dss:
+  data-science-stack:
     plugin: python
     source: .
     override-pull: |
