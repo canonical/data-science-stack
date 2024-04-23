@@ -179,9 +179,10 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
     Example:
         dss stop my-notebook
     """
+    kubeconfig = get_default_kubeconfig(kubeconfig)
+    lightkube_client = get_lightkube_client(kubeconfig)
+
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
     except (RuntimeError, ApiError):
         exit(1)
@@ -207,10 +208,9 @@ def start_notebook_command(name: str, kubeconfig: str):
     """
     logger.info("Executing start command")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
         start_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)
