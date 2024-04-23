@@ -16,7 +16,7 @@ plugs:
     read:
       - $HOME/.dss/config
 apps:
-  data-science-stack:
+  dss:
     command: bin/dss
     plugs:
       - home
