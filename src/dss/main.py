@@ -71,10 +71,17 @@ def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
             " For more information on using a specific image, see dss create --help."
         )
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+        create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to create notebook {name}: {e}.", exc_info=True)
+        logger.error(f"Failed to create notebook {name}: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 create_notebook_command.help += f"""
