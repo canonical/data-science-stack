@@ -174,7 +174,6 @@ def list_command(kubeconfig: str, wide: bool):
 def stop_notebook_command(kubeconfig: str, notebook_name: str):
     """
     Stops a running notebook in the DSS environment.
-
     \b
     Example:
         dss stop my-notebook
