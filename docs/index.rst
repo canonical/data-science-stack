@@ -1,20 +1,71 @@
-Starter pack
+
+.. _home:
+
+Data Science Stack
 ============
 
-This starter pack contains the files you need to quickly set up your Sphinx documentation.
+Data science stack (DSS) is a ready-to-run environment for machine learning
+and data science.  It’s built on open-source tooling (including MicroK8s,
+JupyterLab and MLFlow) and usable on any Ubuntu/Snap-enabled workstation.
 
-Before you start, see the information about `Read the Docs at Canonical`_ and the instructions for `How to publish documentation on Read the Docs`_.
+DSS provides a CLI for managing containerised ML environments images such as
+PyTorch or TensorFlow, on top of MicroK8s.
 
-Then, to start setting up your docs, check the :doc:`ReadMe <readme>` for instructions.
-The `Example product documentation`_ shows how to set up a Diátaxis structure in Sphinx.
+Typically, creating ML environments on a workstation involves complex and
+hard-to-reverse configuration. DSS solves this problem by making accessible,
+production-ready, isolated and reproducible ML environments, that make full
+use of a workstation’s GPUs.
 
-For quick help on reST or MyST syntax, see the :file:`doc-cheat-sheet.rst.txt` or :file:`doc-cheat-sheet-myst.md.txt` files in the repository.
-(Open the files in your text editor; the rendered output is not very useful.)
+Both ML beginners and engineers who need to build complex development and
+runtime environments will see set-up time reduced to a minimum, allowing
+them to get on with useful work within minutes.
 
-More information is available in the `reStructuredText style guide`_.
+---------
+
+In this documentation
+---------------------
+
+..  grid:: 1 1 2 2
+
+   ..  grid-item:: :doc:`Tutorial <tutorial/index>`
+
+       **Start here**: a hands-on introduction to Data science stack (DSS)
+       for newcomers
+
+   ..  grid-item:: :doc:`How-to guides <how-to/index>`
+
+      **Step-by-step guides** covering key operations and common tasks with
+      DSS
+
+.. grid:: 1 1 2 2
+   :reverse:
+
+   .. grid-item:: :doc:`Reference <reference/index>`
+
+      **Technical information** - specifications, APIs, architecture of
+      the DSS
+
+   .. grid-item:: :doc:`Explanation <explanation/index>`
+
+      **Discussion and clarification** of key concepts and features about DSS
+
+---------
+
+Project and community
+---------------------
+
+Charmed MLflow is an open-source project that values its community. We warmly welcome contributions, suggestions, fixes, and constructive feedback from everyone.
+
+* `Code of conduct`_
+* `Contribute`_
+* `Join our online chat`_
+* `Discourse Forum`_
 
 .. toctree::
    :hidden:
    :maxdepth: 2
 
-   ReadMe <readme>
+   tutorial/index
+   how-to/index
+   reference/index
+   explanation/index
