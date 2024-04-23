@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Optional
+from typing import List, Optional
 
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
@@ -30,6 +30,25 @@ class ImagePullBackOffError(Exception):
     def __init__(self, msg: str, *args):
         super().__init__(str(msg), *args)
         self.msg = str(msg)
+
+
+def node_has_gpu_labels(lightkube_client: Client, labels: List[str]) -> bool:
+    """
+    Check if at least one node in the Kubernetes cluster has all the specified labels.
+
+    Args:
+        lightkube_client (Client): The Kubernetes client.
+        labels (List[str]): A list of label keys that must be present on the node.
+
+    Returns:
+        bool: True if at least one node has all the specified labels, False otherwise.
+    """
+    nodes = lightkube_client.list(Node)
+    for node in nodes:
+        node_labels = node.metadata.labels
+        if all(label in node_labels for label in labels):
+            return True
+    return False
 
 
 def wait_for_deployment_ready(

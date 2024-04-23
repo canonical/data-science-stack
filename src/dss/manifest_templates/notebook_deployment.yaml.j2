@@ -23,6 +23,11 @@ spec:
         - env:
           - name: MLFLOW_TRACKING_URI
             value: {{ mlflow_tracking_uri }}
+          {% if gpu %}
+          resources:
+            limits:
+              {{ gpu }}: 1
+          {% endif %}
           image: {{ notebook_image }}
           imagePullPolicy: IfNotPresent
           name: {{ notebook_name }}

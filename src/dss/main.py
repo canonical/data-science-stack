@@ -1,7 +1,7 @@
 import click
 from lightkube.core.exceptions import ApiError
 
-from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
+from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE, SUPPORTED_GPUS
 from dss.create_notebook import create_notebook
 from dss.initialize import initialize
 from dss.list import list_notebooks
@@ -59,23 +59,37 @@ IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
     "--kubeconfig",
     help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
 )
-def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
+@click.option("--no-gpu", is_flag=True, help="Create a notebook without GPU support.")
+@click.option("--gpu", type=click.Choice(SUPPORTED_GPUS), help="Specify the type of GPU acceleration, e.g., 'nvidia'.")
+def create_notebook_command(name: str, image: str, kubeconfig: str, no_gpu: bool, gpu: str) -> None:
     """Create a Jupyter notebook in DSS and connect it to MLflow. This command also
     outputs the URL to access the notebook on success.
 
     \b
     """
-    logger.info("Executing create command")
-    if image == DEFAULT_NOTEBOOK_IMAGE:
-        logger.info(
-            f"No image is specified. Using default value {DEFAULT_NOTEBOOK_IMAGE}."
-            " For more information on using a specific image, see dss create --help."
-        )
+    try:
+        logger.info("Executing create command")
+        if image == DEFAULT_NOTEBOOK_IMAGE:
+            logger.info(
+                f"No image is specified. Using default value {DEFAULT_NOTEBOOK_IMAGE}."
+                " For more information on using a specific image, see dss create --help."
+            )
+        
+        # Check mutual exclusivity
+        if no_gpu and gpu:
+            logger.error("You cannot specify both --no-gpu and --gpu options.")
+            raise click.UsageError("Options --no-gpu and --gpu are mutually exclusive.")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+        create_notebook(name=name, image=image, lightkube_client=lightkube_client, gpu=None if no_gpu else gpu)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to create notebook {name}: {e}.", exc_info=True)
+        logger.error(f"Failed to create notebook {name}: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 create_notebook_command.help += f"""
