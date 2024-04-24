@@ -50,7 +50,7 @@ def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
                     labels=mlflow_deployment.spec.selector.matchLabels,
                 )
             except ApiError as e:
-                logger.debug(f"Failed to retrieve logs for MLflow: {e}")
+                logger.debug(f"Failed to retrieve logs for MLflow: {e}", exc_info=True)
                 logger.error(
                     "Failed to retrieve logs. MLflow seems to be not present. Make sure DSS is correctly initialized."  # noqa: E501
                 )

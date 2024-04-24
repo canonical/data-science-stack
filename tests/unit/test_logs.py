@@ -87,7 +87,9 @@ def test_get_logs_failure_retrieve_mlflow(mock_client: MagicMock, mock_logger: M
         get_logs("mlflow", None, mock_client_instance)
 
     # Assertions
-    mock_logger.debug.assert_called_with(f"Failed to retrieve logs for MLflow: {api_error}")
+    mock_logger.debug.assert_called_with(
+        f"Failed to retrieve logs for MLflow: {api_error}", exc_info=True
+    )
     mock_logger.error.assert_called_with(
         "Failed to retrieve logs. MLflow seems to be not present. Make sure DSS is correctly initialized."  # noqa: E501
     )
