@@ -25,10 +25,10 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
     if not does_notebook_exist(
         name=name, namespace=DSS_NAMESPACE, lightkube_client=lightkube_client
     ):
-        logger.error(
-            f"Failed to remove Notebook. Notebook {name} does not exist. Run 'dss list' to check all notebooks."  # noqa E501
-        )
-        raise RuntimeError("Failed to remove Notebook not found.")
+        logger.debug(f"Failed to remove Notebook. Notebook {name} does not exist.")
+        logger.error(f"Failed to remove Notebook. Notebook {name} does not exist.")  # noqa E501
+        logger.info("Run 'dss list' to check all notebooks.")
+        raise RuntimeError()
 
     # From this point forward we know either one or both
     # resources (Deployment, Service) exist for the Notebook.
@@ -49,11 +49,12 @@ def remove_notebook(name: str, lightkube_client: Client) -> None:
                 exceptions.append(err)
 
     if exceptions:
+        logger.debug(f"Failed to remove notebook {name}: {exceptions}")
         logger.error(f"Failed to remove notebook {name}. Please try again.")
         logger.info("Note: You might want to run")
         logger.info("  dss status      to check the current status")
         logger.info(f"  dss logs {name} to review the notebook logs")
-        raise RuntimeError(f"Failed to remove notebook {name} with errors", exceptions)
+        raise RuntimeError()
     else:
         logger.info(
             f"Removing the notebook {name}. Check `dss list` for the status of the notebook."

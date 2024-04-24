@@ -15,34 +15,35 @@ def get_status(lightkube_client: Client) -> None:
     Args:
         lightkube_client (Client): The Kubernetes client.
     """
+    # Check MLflow deployment
+    mlflow_ready = does_mlflow_deployment_exist(lightkube_client)
+
+    # Log MLflow deployment status and URL
+    if mlflow_ready:
+        mlflow_url = get_service_url(MLFLOW_DEPLOYMENT_NAME, DSS_NAMESPACE, lightkube_client)
+        logger.info("MLflow deployment: Ready")
+        logger.info(f"MLflow URL: {mlflow_url}")
+    else:
+        logger.info("MLflow deployment: Not ready")
+
+    # Check NVIDIA GPU acceleration
+    gpu_acceleration = False
     try:
-        # Check MLflow deployment
-        mlflow_ready = does_mlflow_deployment_exist(lightkube_client)
-
-        # Log MLflow deployment status and URL
-        if mlflow_ready:
-            mlflow_url = get_service_url(MLFLOW_DEPLOYMENT_NAME, DSS_NAMESPACE, lightkube_client)
-            logger.info("MLflow deployment: Ready")
-            logger.info(f"MLflow URL: {mlflow_url}")
-        else:
-            logger.info("MLflow deployment: Not ready")
-
-        # Check NVIDIA GPU acceleration
-        gpu_acceleration = False
         node_labels = get_labels_for_node(lightkube_client)
-        if (
-            "nvidia.com/gpu.present" in node_labels
-            and "nvidia.com/gpu.deploy.container-toolkit" in node_labels
-            and "nvidia.com/gpu.deploy.device-plugin" in node_labels
-        ):
-            gpu_acceleration = True
-            card_name = node_labels.get("nvidia.com/gpu.product", "NVIDIA GPU")
+    except ValueError as e:
+        logger.debug(f"Failed to get labels for nodes: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve status: {e}.")
+        raise RuntimeError()
+    if (
+        "nvidia.com/gpu.present" in node_labels
+        and "nvidia.com/gpu.deploy.container-toolkit" in node_labels
+        and "nvidia.com/gpu.deploy.device-plugin" in node_labels
+    ):
+        gpu_acceleration = True
+        card_name = node_labels.get("nvidia.com/gpu.product", "NVIDIA GPU")
 
-        # Log GPU status
-        if gpu_acceleration:
-            logger.info(f"GPU acceleration: Enabled ({card_name})")
-        else:
-            logger.info("GPU acceleration: Disabled")
-    except Exception as e:
-        logger.error(f"Failed to retrieve status: {e}")
-        return
+    # Log GPU status
+    if gpu_acceleration:
+        logger.info(f"GPU acceleration: Enabled ({card_name})")
+    else:
+        logger.info("GPU acceleration: Disabled")

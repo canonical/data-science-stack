@@ -1,5 +1,4 @@
 import click
-from lightkube.core.exceptions import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
@@ -34,10 +33,17 @@ def initialize_command(kubeconfig: str) -> None:
     """
     logger.info("Executing initialize command")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    initialize(lightkube_client=lightkube_client)
+        initialize(lightkube_client=lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to initialize dss: {e}.", exc_info=True)
+        logger.error(f"Failed to initialize dss: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
@@ -72,10 +78,17 @@ def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
             " For more information on using a specific image, see dss create --help."
         )
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+        create_notebook(name=name, image=image, lightkube_client=lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to create notebook {name}: {e}.", exc_info=True)
+        logger.error(f"Failed to create notebook {name}: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 create_notebook_command.help += f"""
@@ -112,15 +125,22 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
         )
         return
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    if print_all:
-        get_logs("all", None, lightkube_client)
-    elif mlflow:
-        get_logs("mlflow", None, lightkube_client)
-    elif notebook_name:
-        get_logs("notebooks", notebook_name, lightkube_client)
+        if print_all:
+            get_logs("all", None, lightkube_client)
+        elif mlflow:
+            get_logs("mlflow", None, lightkube_client)
+        elif notebook_name:
+            get_logs("notebooks", notebook_name, lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to retrieve logs: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve logs: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="status")
@@ -130,10 +150,17 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
 )
 def status_command(kubeconfig: str) -> None:
     """Checks the status of key components within the DSS environment. Verifies if the MLflow deployment is ready and checks if GPU acceleration is enabled on the Kubernetes cluster by examining the labels of Kubernetes nodes for NVIDIA or Intel GPU devices."""  # noqa E501
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    get_status(lightkube_client)
+        get_status(lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to retrieve status: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve status: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="list")
@@ -178,13 +205,16 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
     Example:
         dss stop my-notebook
     """
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
-    except (RuntimeError, ApiError):
-        exit(1)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to stop notebook: {e}.", exc_info=True)
+        logger.error(f"Failed to stop notebook: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 # FIXME: remove the `--kubeconfig`` option
@@ -237,13 +267,17 @@ def remove_notebook_command(name: str, kubeconfig: str):
     """
     logger.info("Executing remove command")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
+
         remove_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
-        exit(1)
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to remove notebook: {e}.", exc_info=True)
+        logger.error(f"Failed to remove notebook: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="purge")
