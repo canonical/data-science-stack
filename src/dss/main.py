@@ -32,10 +32,15 @@ def initialize_command(kubeconfig: str) -> None:
     """
     logger.info("Executing initialize command")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    initialize(lightkube_client=lightkube_client)
+        initialize(lightkube_client=lightkube_client)
+    except Exception as e:
+        logger.debug(f"Failed to initialize dss: {e}.", exc_info=True)
+        logger.error(f"Failed to initialize dss: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
