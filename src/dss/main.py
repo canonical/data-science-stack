@@ -222,13 +222,17 @@ def remove_notebook_command(name: str, kubeconfig: str):
     """
     logger.info("Executing remove command")
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
+
         remove_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
-        exit(1)
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to remove notebook: {e}.", exc_info=True)
+        logger.error(f"Failed to remove notebook: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="purge")

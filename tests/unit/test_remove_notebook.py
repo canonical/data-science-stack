@@ -62,13 +62,17 @@ def test_remove_notebook_not_found(
 
     mock_does_notebook_exist.return_value = False
 
-    with pytest.raises(RuntimeError) as exc_info:
+    with pytest.raises(RuntimeError):
         remove_notebook(notebook_name, mock_client)
 
-    assert str(exc_info.value) == "Failed to remove Notebook not found."
-    mock_logger.error.assert_called_once_with(
-        f"Failed to remove Notebook. Notebook {notebook_name} does not exist. Run 'dss list' to check all notebooks."  # noqa E501
+    # Assertions
+    mock_logger.debug.assert_called_once_with(
+        f"Failed to remove Notebook. Notebook {notebook_name} does not exist."
     )
+    mock_logger.error.assert_called_once_with(
+        f"Failed to remove Notebook. Notebook {notebook_name} does not exist."
+    )
+    mock_logger.info.assert_called_once_with("Run 'dss list' to check all notebooks.")
 
 
 @pytest.mark.parametrize(
@@ -104,11 +108,11 @@ def test_remove_notebook_one_resource_not_exist(
     "lightkube_client_side_effects, debug_log_calls",
     [
         # Removing the Deployment error
-        ([FakeApiError(400), None], 1),
+        ([FakeApiError(400), None], 2),
         # Removing the Service error
-        ([None, FakeApiError(400)], 1),
+        ([None, FakeApiError(400)], 2),
         # Removing both the Deployment and Service error
-        ([FakeApiError(400), FakeApiError(400)], 2),
+        ([FakeApiError(400), FakeApiError(400)], 3),
     ],
 )
 def test_remove_notebook_unexpected_error(
