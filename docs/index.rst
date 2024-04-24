@@ -2,7 +2,7 @@
 .. _home:
 
 Data Science Stack
-============
+==================
 
 Data science stack (DSS) is a ready-to-run environment for machine learning
 and data science.  It’s built on open-source tooling (including MicroK8s,
