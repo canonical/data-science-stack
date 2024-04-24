@@ -118,15 +118,22 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
         )
         return
 
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    if print_all:
-        get_logs("all", None, lightkube_client)
-    elif mlflow:
-        get_logs("mlflow", None, lightkube_client)
-    elif notebook_name:
-        get_logs("notebooks", notebook_name, lightkube_client)
+        if print_all:
+            get_logs("all", None, lightkube_client)
+        elif mlflow:
+            get_logs("mlflow", None, lightkube_client)
+        elif notebook_name:
+            get_logs("notebooks", notebook_name, lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to retrieve logs: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve logs: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="status")
