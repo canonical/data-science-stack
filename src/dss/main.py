@@ -38,6 +38,8 @@ def initialize_command(kubeconfig: str) -> None:
         lightkube_client = get_lightkube_client(kubeconfig)
 
         initialize(lightkube_client=lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
     except Exception as e:
         logger.debug(f"Failed to initialize dss: {e}.", exc_info=True)
         logger.error(f"Failed to initialize dss: {str(e)}.")
