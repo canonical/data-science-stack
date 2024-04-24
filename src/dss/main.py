@@ -1,5 +1,4 @@
 import click
-from lightkube.core.exceptions import ApiError
 
 from dss.config import DEFAULT_NOTEBOOK_IMAGE, RECOMMENDED_IMAGES_MESSAGE
 from dss.create_notebook import create_notebook
@@ -143,10 +142,13 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
 )
 def status_command(kubeconfig: str) -> None:
     """Checks the status of key components within the DSS environment. Verifies if the MLflow deployment is ready and checks if GPU acceleration is enabled on the Kubernetes cluster by examining the labels of Kubernetes nodes for NVIDIA or Intel GPU devices."""  # noqa E501
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
+    try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
 
-    get_status(lightkube_client)
+        get_status(lightkube_client)
+    except RuntimeError:
+        click.get_current_context().exit(1)
 
 
 @main.command(name="list")
@@ -191,13 +193,16 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
     Example:
         dss stop my-notebook
     """
-    kubeconfig = get_default_kubeconfig(kubeconfig)
-    lightkube_client = get_lightkube_client(kubeconfig)
-
     try:
+        kubeconfig = get_default_kubeconfig(kubeconfig)
+        lightkube_client = get_lightkube_client(kubeconfig)
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
-    except (RuntimeError, ApiError):
-        exit(1)
+    except RuntimeError:
+        click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to stop notebook: {e}.", exc_info=True)
+        logger.error(f"Failed to stop notebook: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 # FIXME: remove the `--kubeconfig`` option

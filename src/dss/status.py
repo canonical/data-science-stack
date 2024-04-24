@@ -44,5 +44,6 @@ def get_status(lightkube_client: Client) -> None:
         else:
             logger.info("GPU acceleration: Disabled")
     except Exception as e:
+        logger.debug(f"Failed to retrieve status: {e}", exc_info=True)
         logger.error(f"Failed to retrieve status: {e}")
-        return
+        raise RuntimeError()
