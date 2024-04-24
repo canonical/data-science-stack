@@ -104,6 +104,7 @@ create_notebook_command.help += f"""
 Examples
   dss create my-notebook --image=pytorch
   dss create my-notebook --image={DEFAULT_NOTEBOOK_IMAGE}
+  dss create my-notebook --image=charmedkubeflow/jupyter-pytorch-cuda-full:1.8.0 --gpu=nvidia
 
     \b\n{RECOMMENDED_IMAGES_MESSAGE}
 """
