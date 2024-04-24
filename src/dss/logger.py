@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from logging.handlers import RotatingFileHandler
 
 
@@ -36,7 +37,7 @@ def setup_logger(log_file_path: str, log_level: int = logging.DEBUG) -> logging.
         file_handler.setFormatter(formatter)
 
         # Create console handler
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(log_level)
         console_handler.setFormatter(formatter)
 
