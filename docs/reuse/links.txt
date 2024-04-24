@@ -5,5 +5,5 @@
 .. _Code of conduct: https://ubuntu.com/community/ethos/code-of-conduct
 .. _Join our online chat: https://matrix.to/#/#dss:ubuntu.com
 .. _Contribute: https://github.com/canonical/data-science-stack/blob/main/CONTRIBUTING.md
-.. _Discourse Forum: https://discourse.charmhub.io/tag/dss
+.. _Discourse Forum: https://discourse.charmhub.io/tag/data-science-stack
 .. _MicroK8s: https://microk8s.io/
