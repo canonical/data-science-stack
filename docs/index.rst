@@ -54,7 +54,7 @@ In this documentation
 Project and community
 ---------------------
 
-Charmed MLflow is an open-source project that values its community. We warmly welcome contributions, suggestions, fixes, and constructive feedback from everyone.
+Data Science Stack is an open-source project that values its community. We warmly welcome contributions, suggestions, fixes, and constructive feedback from everyone.
 
 * `Code of conduct`_
 * `Contribute`_
