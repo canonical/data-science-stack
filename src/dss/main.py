@@ -155,6 +155,10 @@ def status_command(kubeconfig: str) -> None:
         get_status(lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)
+    except Exception as e:
+        logger.debug(f"Failed to retrieve status: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve status: {str(e)}.")
+        click.get_current_context().exit(1)
 
 
 @main.command(name="list")
