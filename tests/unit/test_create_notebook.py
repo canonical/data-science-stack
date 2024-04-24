@@ -9,6 +9,13 @@ from dss.utils import ImagePullBackOffError
 
 
 @pytest.fixture
+def mock_client() -> MagicMock:
+    """Mock Kubernetes Client."""
+    with patch("dss.list.Client") as mock:
+        yield mock.return_value
+
+
+@pytest.fixture
 def mock_get_service_url() -> MagicMock:
     """
     Fixture to mock the get_service_url function.
@@ -48,6 +55,7 @@ def test_create_notebook_success(
     mock_get_service_url: MagicMock,
     mock_resource_handler: MagicMock,
     mock_logger: MagicMock,
+    mock_client: MagicMock,
 ) -> None:
     """
     Test case to verify successful create_notebook call.
@@ -55,9 +63,6 @@ def test_create_notebook_success(
     notebook_name = "test-notebook"
     notebook_image = "test-image"
     notebook_url = "http://somewhere.com:1234/notebook/namespace/name/lab"
-
-    # Mock the behavior of Client
-    mock_client_instance = MagicMock()
 
     mock_get_service_url.return_value = notebook_url
 
@@ -69,14 +74,15 @@ def test_create_notebook_success(
         "dss.create_notebook.does_notebook_exist", return_value=False
     ), patch("dss.create_notebook.wait_for_deployment_ready") as mock_wait_for_deployment_ready:
         # Call the function to test
-        create_notebook(
-            name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
-        )
+        create_notebook(name=notebook_name, image=notebook_image, lightkube_client=mock_client)
 
         # Assertions
         mock_resource_handler_instance.apply.assert_called_once()
         mock_wait_for_deployment_ready.assert_called_once_with(
-            mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
+            mock_client,
+            namespace=DSS_NAMESPACE,
+            deployment_name=notebook_name,
+            timeout_seconds=None,
         )
         mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")
 
@@ -96,8 +102,8 @@ def test_create_notebook_failure_pvc_does_not_exist(
     with patch("dss.create_notebook.does_dss_pvc_exist", return_value=False), patch(
         "dss.create_notebook.does_notebook_exist", return_value=False
     ):
+        # Call the function to test
         with pytest.raises(RuntimeError):
-            # Call the function to test
             create_notebook(
                 name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
             )
@@ -130,8 +136,8 @@ def test_create_notebook_failure_mlflow_does_not_exist(
     with patch("dss.create_notebook.does_mlflow_deployment_exist", return_value=False), patch(
         "dss.create_notebook.does_notebook_exist", return_value=False
     ):
+        # Call the function to test
         with pytest.raises(RuntimeError):
-            # Call the function to test
             create_notebook(
                 name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
             )
@@ -167,8 +173,8 @@ def test_create_notebook_failure_notebook_exists(
     with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
         "dss.create_notebook.does_notebook_exist", return_value=True
     ):
+        # Call the function to test
         with pytest.raises(RuntimeError):
-            # Call the function to test
             create_notebook(
                 name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
             )
@@ -205,8 +211,8 @@ def test_create_notebook_failure_api(
     with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
         "dss.create_notebook.does_notebook_exist", return_value=False
     ):
+        # Call the function to test
         with pytest.raises(RuntimeError):
-            # Call the function to test
             create_notebook(
                 name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
             )
@@ -219,42 +225,6 @@ def test_create_notebook_failure_api(
             f"Failed to create Notebook with error code {error_code}."
         )
         mock_logger.info.assert_called_with(" Check the debug logs for more details.")
-
-
-def test_create_notebook_failure_time_out(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
-) -> None:
-    """
-    Test case to verify behavior when a TimeoutError is raised.
-    """
-    notebook_name = "test-notebook"
-    notebook_image = "test-image"
-    exception_message = "test-exception-message"
-
-    # Mock the behavior of Client
-    mock_client_instance = MagicMock()
-
-    # Mock the behavior of wait_for_deployment_ready
-    mock_wait_for_deployment_ready.side_effect = TimeoutError(exception_message)
-
-    with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
-        "dss.create_notebook.does_notebook_exist", return_value=False
-    ):
-        with pytest.raises(RuntimeError):
-            # Call the function to test
-            create_notebook(
-                name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
-            )
-
-        # Assertions
-        mock_logger.debug.assert_called_with(
-            f"Failed to create Notebook {notebook_name}: {exception_message}", exc_info=True
-        )
-        mock_logger.error.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}."
-        )
-        mock_logger.warn.assert_called_with(" Some resources might be left in the cluster.")
-        mock_logger.info.assert_called_with(" Check the status with `dss list`.")
 
 
 def test_create_notebook_failure_image_pull(
@@ -284,14 +254,10 @@ def test_create_notebook_failure_image_pull(
 
         # Assertions
         mock_logger.debug.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}: {exception_message}.",
-            exc_info=True,
-        )
-        mock_logger.error.assert_any_call(
-            f"Timed out while trying to create Notebook {notebook_name}."
+            f"Failed to create notebook {notebook_name}: {exception_message}.", exc_info=True
         )
         mock_logger.error.assert_called_with(
-            f"Image {notebook_image} does not exist or is not accessible."
+            f"Failed to create notebook {notebook_name}: Image {notebook_image} does not exist or is not accessible.\n"  # noqa E501
         )
         mock_logger.info.assert_called_with(
             "Note: You might want to use some of these recommended images:\n"
@@ -316,3 +282,68 @@ def test_get_notebook_config() -> None:
     with patch("dss.create_notebook.get_mlflow_tracking_uri", return_value=mlflow_tracking_uri):
         actual_context = _get_notebook_config(notebook_image, notebook_name)
         assert actual_context == expected_context
+
+
+def test_create_notebook_success_with_gpu(
+    mock_get_service_url: MagicMock,
+    mock_resource_handler: MagicMock,
+    mock_logger: MagicMock,
+    mock_client: MagicMock,
+) -> None:
+    """
+    Test case to verify successful notebook creation with GPU support.
+    """
+    notebook_name = "gpu-notebook"
+    notebook_image = "gpu-image"
+    notebook_url = "http://somewhere.com:1234/notebook/namespace/name/lab"
+    gpu_type = "nvidia"
+
+    # Set up mocks
+    mock_get_service_url.return_value = notebook_url
+    mock_resource_handler_instance = MagicMock()
+    mock_resource_handler.return_value = mock_resource_handler_instance
+    with patch("dss.create_notebook.node_has_gpu_labels", return_value=True), patch(
+        "dss.create_notebook.does_dss_pvc_exist", return_value=True
+    ), patch("dss.create_notebook.does_notebook_exist", return_value=False), patch(
+        "dss.create_notebook.wait_for_deployment_ready"
+    ) as mock_wait_for_deployment_ready:
+        # Act
+        create_notebook(
+            name=notebook_name, image=notebook_image, lightkube_client=mock_client, gpu=gpu_type
+        )
+
+        # Assert
+        mock_resource_handler_instance.apply.assert_called_once()
+        mock_wait_for_deployment_ready.assert_called_once()
+        mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")
+        mock_logger.info.assert_any_call("Nvidia GPU attached to notebook.")
+
+
+def test_create_notebook_failure_no_gpu_labels(
+    mock_logger: MagicMock, mock_client: MagicMock
+) -> None:
+    """
+    Test case to verify failure in notebook creation due to missing GPU labels on the cluster.
+    """
+    notebook_name = "gpu-notebook"
+    notebook_image = "gpu-image"
+    gpu_type = "nvidia"
+
+    # Set up mocks
+    with patch("dss.create_notebook.node_has_gpu_labels", return_value=False), patch(
+        "dss.create_notebook.does_dss_pvc_exist", return_value=True
+    ), patch("dss.create_notebook.does_notebook_exist", return_value=False):
+        # Act & Assert
+        with pytest.raises(RuntimeError):
+            create_notebook(
+                name=notebook_name,
+                image=notebook_image,
+                lightkube_client=mock_client,
+                gpu=gpu_type,
+            )
+        mock_logger.error.assert_called_with(
+            f"Failed to create notebook with {gpu_type} GPU acceleration.\n"
+        )
+        mock_logger.info.assert_called_with(
+            "You are trying to setup notebook backed by GPU but the GPU devices were not properly set up in the Kubernetes cluster. Please refer to this guide http://<data-science-stack-docs>/setup-gpu for more information on the setup."  # noqa E501
+        )
