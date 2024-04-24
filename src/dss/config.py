@@ -29,12 +29,15 @@ RECOMMENDED_IMAGES_MESSAGE = format_images_message(NOTEBOOK_IMAGES_ALIASES)
 DEFAULT_NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
 SUPPORTED_GPUS = ["nvidia"]
-GPU_DEPLOYMENT_LABEL = { "nvidia": "nvidia.com/gpu"}
-NODE_LABELS = { "nvidia": [
-    "nvidia.com/gpu.present",
-    "nvidia.com/gpu.deploy.container-toolkit",
-    "nvidia.com/gpu.deploy.device-plugin"
-]}
+GPU_DEPLOYMENT_LABEL = {"nvidia": "nvidia.com/gpu"}
+NODE_LABELS = {
+    "nvidia": [
+        "nvidia.com/gpu.present",
+        "nvidia.com/gpu.deploy.container-toolkit",
+        "nvidia.com/gpu.deploy.device-plugin",
+    ]
+}
+
 
 class DeploymentState(Enum):
     ACTIVE = "Active"

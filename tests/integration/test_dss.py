@@ -75,6 +75,38 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     assert "notebooks" in kubectl_result.stdout
 
 
+def test_create_notebook_gpu_failure(cleanup_after_initialize) -> None:
+    """
+    Tests that `dss create` fails to creates a notebook on machine without GPU
+    (its expected to be run on GH runner without GPU).
+
+    Must be run after `dss initialize`
+    """
+
+    result = subprocess.run(
+        [
+            DSS_NAMESPACE,
+            "create",
+            NOTEBOOK_NAME,
+            "--image",
+            NOTEBOOK_IMAGE,
+            "--kubeconfig",
+            KUBECONFIG,
+            "--gpu=nvidia",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=60 * 4,
+    )
+
+    # Check if the command executed successfully
+    assert result.returncode == 1
+    assert (
+        "You are trying to setup notebook backed by GPU but the GPU devices were not properly set up in the Kubernetes cluster."  # noqa E501
+        in result.stderr
+    )
+
+
 def test_create_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss create` successfully creates a notebook as expected.

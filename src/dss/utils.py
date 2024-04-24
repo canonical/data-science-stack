@@ -55,21 +55,23 @@ def wait_for_deployment_ready(
     client: Client,
     namespace: str,
     deployment_name: str,
-    timeout_seconds: int = 180,
+    timeout_seconds: Optional[int] = 180,
     interval_seconds: int = 10,
 ) -> None:
     """
-    Waits for a Kubernetes deployment to be ready.
+    Waits for a Kubernetes deployment to be ready. Can wait indefinitely if timeout_seconds is None.
 
     Args:
         client (Client): The Kubernetes client.
         namespace (str): The namespace of the deployment.
         deployment_name (str): The name of the deployment.
-        timeout_seconds (int): Timeout in seconds. Defaults to 600.
+        timeout_seconds (Optional[int]): Timeout in seconds, or None for no timeout.
+                                         Defaults to 180.
         interval_seconds (int): Interval between checks in seconds. Defaults to 10.
 
-    Returns:
-        None
+    Raises:
+        ImagePullBackOffError: If there is an issue pulling the deployment image.
+        TimeoutError: If the timeout is reached before the deployment is ready.
     """
     logger.info(
         f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."
@@ -77,32 +79,41 @@ def wait_for_deployment_ready(
     start_time = time.time()
     while True:
         deployment: Deployment = client.get(Deployment, namespace=namespace, name=deployment_name)
-        if deployment.status.availableReplicas == deployment.spec.replicas:
+        if deployment.status and deployment.status.availableReplicas == deployment.spec.replicas:
             logger.info(f"Deployment {deployment_name} in namespace {namespace} is ready")
             break
-        elif time.time() - start_time >= timeout_seconds:
-            # Surround the following block with try-except?
-            # ----Block-start----
-            pod: Pod = list(
+        try:
+            pods = list(
                 client.list(
                     Pod,
                     namespace=namespace,
                     labels={"canonical.com/dss-notebook": deployment_name},
                 )
-            )[0]
-            reason = pod.status.containerStatuses[0].state.waiting.reason
+            )
+        except ApiError as e:
+            if e.response.status_code == 404:
+                pods = []
+
+        if pods:
+            reason = (
+                pods[0].status.containerStatuses[0].state.waiting.reason
+                if pods[0].status.containerStatuses
+                and pods[0].status.containerStatuses[0].state.waiting
+                else "Unknown"
+            )
             if reason in ["ImagePullBackOff", "ErrImagePull"]:
                 raise ImagePullBackOffError(
                     f"Failed to create Deployment {deployment_name} with {reason}"
                 )
-            # ----Block-end----
+
+        if timeout_seconds is not None and time.time() - start_time >= timeout_seconds:
             raise TimeoutError(
                 f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be ready"  # noqa E501
             )
         else:
             time.sleep(interval_seconds)
-            logger.info(
-                f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."
+            logger.debug(
+                f"Still waiting for deployment {deployment_name} in namespace {namespace} to be ready..."  # noqa E501
             )
 
 
