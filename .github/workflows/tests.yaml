@@ -36,6 +36,8 @@ jobs:
     # is resolved and applied to all ROCKs repositories
     - name: Install python version from input
       run: |
+        # TODO: remove when fixed: https://github.com/microsoft/linux-package-repositories/issues/130#issuecomment-2074645171
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update -y
         VERSION=3.10
