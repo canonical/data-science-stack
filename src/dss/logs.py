@@ -30,9 +30,12 @@ def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
                 if deployment.metadata.name == name:
                     break
             else:
+                logger.debug(
+                    f"Failed to retrieve logs. Deployment '{name}' does not exist in {DSS_NAMESPACE} namespace."  # noqa E501
+                )
                 logger.error(f"Failed to retrieve logs. Notebook '{name}' does not exist.")
                 logger.info("Run 'dss list' to check all notebooks.")
-                return
+                raise RuntimeError()
             pods = lightkube_client.list(
                 Pod, namespace=DSS_NAMESPACE, labels=deployment.spec.selector.matchLabels
             )
@@ -46,15 +49,16 @@ def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
                     namespace=DSS_NAMESPACE,
                     labels=mlflow_deployment.spec.selector.matchLabels,
                 )
-            except ApiError:
+            except ApiError as e:
+                logger.debug(f"Failed to retrieve logs for MLflow: {e}", exc_info=True)
                 logger.error(
-                    "Failed to retrieve logs. MLflow seems to be not present.Make sure DSS is correctly initialized."  # noqa: E501
+                    "Failed to retrieve logs. MLflow seems to be not present. Make sure DSS is correctly initialized."  # noqa: E501
                 )
                 logger.info("Note: You might want to run")
                 logger.info("  dss status      to check the current status")
                 logger.info("  dss logs --all  to view all logs")
                 logger.info("  dss initialize  to install dss")
-                return
+                raise RuntimeError()
         elif parts == "all":
             deployments = list(lightkube_client.list(Deployment, namespace=DSS_NAMESPACE))
             pods = []
@@ -65,18 +69,19 @@ def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
                     )
                 )
     except ApiError as e:
-        logger.error(e)
+        logger.debug(f"Failed to retrieve logs for {parts} {name}: {e}", exc_info=True)
         logger.error(
             f"Failed to retrieve logs for {parts} {name}. Make sure DSS is correctly initialized."  # noqa: E501
         )
         logger.info("Note: You might want to run")
         logger.info("  dss status      to check the current status")
         logger.info("  dss initialize  to install dss")
-        return
+        raise RuntimeError()
 
     if not pods:
+        logger.debug(f"Failed to retrieve logs. No pods found for {parts} {name}.")
         logger.error(f"Failed to retrieve logs. No pods found for {parts} {name}.")
-        return
+        raise RuntimeError()
 
     for pod in pods:
         # Retrieve logs from the pod
@@ -87,7 +92,10 @@ def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
                 line = line.rstrip("\n")
                 logger.info(line)
         except ApiError as e:
-            logger.error(e)
+            logger.debug(
+                f"Failed to retrieve logs for pod {pod.metadata.name}: {e}", exc_info=True
+            )
             logger.error(
                 f"Failed to retrieve logs. There was a problem while getting the logs for {pod.metadata.name}"  # noqa: E501
             )
+            raise RuntimeError()

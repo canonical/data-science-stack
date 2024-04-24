@@ -67,6 +67,9 @@ def test_stop_notebook_not_found(
         stop_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
+    mock_logger.debug.assert_called_with(
+        f"Failed to stop Notebook. Notebook {notebook_name} does not exist."
+    )
     mock_logger.error.assert_called_with(
         f"Failed to stop Notebook. Notebook {notebook_name} does not exist."
     )
@@ -86,9 +89,11 @@ def test_stop_notebook_unexpected_error(
     mock_client.replace.side_effect = mock_error
 
     # Call the function to test
-    with pytest.raises(FakeApiError):
+    with pytest.raises(RuntimeError):
         stop_notebook(name=notebook_name, lightkube_client=mock_client)
 
     # Assert
-    mock_logger.error.assert_called_with(f"Failed to stop Notebook {notebook_name}")
-    mock_logger.debug(f"Failed to scale down Deployment {notebook_name} with error: {mock_error}")
+    mock_logger.debug.assert_called_with(
+        f"Failed to scale down Deployment {notebook_name}: {mock_error}", exc_info=True
+    )
+    mock_logger.error.assert_called_with(f"Failed to stop notebook {notebook_name}.")

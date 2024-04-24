@@ -109,15 +109,16 @@ def test_create_notebook_failure_pvc_does_not_exist(
             )
 
         # Assertions
+        mock_logger.debug.assert_called_with(
+            "Failed to create notebook. DSS was not correctly initialized."
+        )
         mock_logger.error.assert_called_with(
-            "Failed to create notebook. DSS was not correctly initialized.\n"
+            "Failed to create notebook. DSS was not correctly initialized."
         )
-        mock_logger.info.assert_called_with(
-            "You might want to run\n"
-            "  dss status      to check the current status\n"
-            "  dss logs --all  to review all logs\n"
-            "  dss initialize  to install dss\n"
-        )
+        mock_logger.info.assert_any_call("Note: You might want to run")
+        mock_logger.info.assert_any_call("  dss status      to check the current status")
+        mock_logger.info.assert_any_call("  dss logs --all  to view all logs")
+        mock_logger.info.assert_called_with("  dss initialize  to install dss")
 
 
 def test_create_notebook_failure_mlflow_does_not_exist(
@@ -142,15 +143,16 @@ def test_create_notebook_failure_mlflow_does_not_exist(
             )
 
         # Assertions
+        mock_logger.debug.assert_called_with(
+            "Failed to create notebook. DSS was not correctly initialized."
+        )
         mock_logger.error.assert_called_with(
-            "Failed to create notebook. DSS was not correctly initialized.\n"
+            "Failed to create notebook. DSS was not correctly initialized."
         )
-        mock_logger.info.assert_called_with(
-            "You might want to run\n"
-            "  dss status      to check the current status\n"
-            "  dss logs --all  to review all logs\n"
-            "  dss initialize  to install dss\n"
-        )
+        mock_logger.info.assert_any_call("Note: You might want to run")
+        mock_logger.info.assert_any_call("  dss status      to check the current status")
+        mock_logger.info.assert_any_call("  dss logs --all  to view all logs")
+        mock_logger.info.assert_called_with("  dss initialize  to install dss")
 
 
 def test_create_notebook_failure_notebook_exists(
@@ -158,7 +160,7 @@ def test_create_notebook_failure_notebook_exists(
     mock_logger: MagicMock,
 ) -> None:
     """
-    Test case to verify behavior when MLflow deployment does not exist.
+    Test case to verify behavior when a Notebook with the same name exists.
     """
     notebook_name = "test-notebook"
     notebook_image = "test-image"
@@ -178,10 +180,13 @@ def test_create_notebook_failure_notebook_exists(
             )
 
         # Assertions
-        mock_logger.error.assert_called_with(
-            f"Failed to create Notebook. Notebook with name '{notebook_name}' already exists.\n"
-            f"Please specify a different name."
+        mock_logger.debug.assert_called_with(
+            f"Failed to create Notebook. Notebook with name '{notebook_name}' already exists."
         )
+        mock_logger.error.assert_called_with(
+            f"Failed to create Notebook. Notebook with name '{notebook_name}' already exists."
+        )
+        mock_logger.info.assert_any_call("Please specify a different name.")
         mock_logger.info.assert_called_with(
             f"To connect to the existing notebook, go to {notebook_url}."
         )
@@ -213,14 +218,13 @@ def test_create_notebook_failure_api(
             )
 
         # Assertions
+        mock_logger.debug.assert_called_with(
+            f"Failed to create Notebook {notebook_name}: broken.", exc_info=True
+        )
         mock_logger.error.assert_called_with(
             f"Failed to create Notebook with error code {error_code}."
-            " Check the debug logs for more details."
         )
-        mock_logger.debug.assert_called_with(
-            f"Failed to create Notebook {notebook_name} with error broken"
-        )
-        mock_logger.info.assert_not_called()
+        mock_logger.info.assert_called_with(" Check the debug logs for more details.")
 
 
 def test_create_notebook_failure_image_pull(
@@ -231,12 +235,13 @@ def test_create_notebook_failure_image_pull(
     """
     notebook_name = "test-notebook"
     notebook_image = "test-image"
+    exception_message = "test-exception-message"
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
 
     # Mock the behavior of wait_for_deployment_ready
-    mock_wait_for_deployment_ready.side_effect = ImagePullBackOffError("test-excpetion-message")
+    mock_wait_for_deployment_ready.side_effect = ImagePullBackOffError(exception_message)
 
     with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
         "dss.create_notebook.does_notebook_exist", return_value=False
@@ -248,8 +253,11 @@ def test_create_notebook_failure_image_pull(
             )
 
         # Assertions
+        mock_logger.debug.assert_called_with(
+            f"Failed to create notebook {notebook_name}: {exception_message}.", exc_info=True
+        )
         mock_logger.error.assert_called_with(
-            f"Image {notebook_image} does not exist or is not accessible.\n"
+            f"Failed to create notebook {notebook_name}: Image {notebook_image} does not exist or is not accessible.\n"  # noqa E501
         )
         mock_logger.info.assert_called_with(
             "Note: You might want to use some of these recommended images:\n"

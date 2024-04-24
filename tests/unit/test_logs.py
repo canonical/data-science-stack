@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from lightkube import ApiError
 
+from dss.config import DSS_NAMESPACE
 from dss.logs import get_logs
 
 
@@ -48,17 +49,22 @@ def test_get_logs_failure_notebook_not_exist(
     """
     Test case to verify behavior when the specified notebook does not exist.
     """
+    notebook_name = "test_notebook"
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
     mock_client_instance.get.return_value = None
 
-    # Call the function to test
-    get_logs("notebooks", "non_existent_notebook", mock_client_instance)
+    with pytest.raises(RuntimeError):
+        # Call the function to test
+        get_logs("notebooks", notebook_name, mock_client_instance)
 
     # Assertions
+    mock_logger.debug.assert_called_with(
+        f"Failed to retrieve logs. Deployment '{notebook_name}' does not exist in {DSS_NAMESPACE} namespace."  # noqa E501
+    )
     mock_logger.error.assert_called_with(
-        "Failed to retrieve logs. Notebook 'non_existent_notebook' does not exist."
+        f"Failed to retrieve logs. Notebook '{notebook_name}' does not exist."
     )
     mock_logger.info.assert_called_with("Run 'dss list' to check all notebooks.")
 
@@ -77,11 +83,15 @@ def test_get_logs_failure_retrieve_mlflow(mock_client: MagicMock, mock_logger: M
     mock_client.return_value = mock_client_instance
 
     # Call the function to test
-    get_logs("mlflow", None, mock_client_instance)
+    with pytest.raises(RuntimeError):
+        get_logs("mlflow", None, mock_client_instance)
 
     # Assertions
+    mock_logger.debug.assert_called_with(
+        f"Failed to retrieve logs for MLflow: {api_error}", exc_info=True
+    )
     mock_logger.error.assert_called_with(
-        "Failed to retrieve logs. MLflow seems to be not present.Make sure DSS is correctly initialized."  # noqa: E501
+        "Failed to retrieve logs. MLflow seems to be not present. Make sure DSS is correctly initialized."  # noqa: E501
     )
     mock_logger.info.assert_any_call("Note: You might want to run")
     mock_logger.info.assert_any_call("  dss status      to check the current status")
@@ -95,6 +105,7 @@ def test_get_logs_failure_retrieve_pod(
     """
     Test case to verify behavior when retrieval of pods fails.
     """
+    notebook_name = "test_notebook"
 
     # Mock the behavior of Client and Deployment
     mock_client_instance = MagicMock()
@@ -104,12 +115,17 @@ def test_get_logs_failure_retrieve_pod(
     mock_client_instance.get.return_value = mock_deployment_instance
 
     # Mock the behavior of Pod with an ApiError
-    mock_client_instance.list.side_effect = ApiError(response=MagicMock())
+    api_error = ApiError(response=MagicMock())
+    mock_client_instance.list.side_effect = api_error
 
-    # Call the function to test
-    get_logs("notebooks", "test_notebook", mock_client_instance)
+    with pytest.raises(RuntimeError):
+        # Call the function to test
+        get_logs("notebooks", notebook_name, mock_client_instance)
 
     # Assertions
+    mock_logger.debug.assert_called_with(
+        f"Failed to retrieve logs for notebooks {notebook_name}: {api_error}", exc_info=True
+    )
     mock_logger.error.assert_called_with(
         "Failed to retrieve logs for notebooks test_notebook. Make sure DSS is correctly initialized."  # noqa: E501
     )
@@ -255,16 +271,24 @@ def test_get_logs_failure_retrieve_pod_logs(
 
     # Mock the behavior of Pod
     mock_pod_instance = MagicMock()
-    mock_pod_instance.metadata.name = "test_pod"
+    pod_name = "test_pod"
+    mock_pod_instance.metadata.name = pod_name
 
     # Set the return values for list method calls
     mock_client_instance.list.side_effect = [[mock_deployment_instance], [mock_pod_instance]]
 
     # Mock the log method of Client to raise an exception
-    mock_client_instance.log.side_effect = ApiError("Test error", response=MagicMock())
+    api_error = ApiError("Test error", response=MagicMock())
+    mock_client_instance.log.side_effect = api_error
 
     # Call the function to test
-    get_logs("notebooks", "test_notebook", mock_client_instance)
+    with pytest.raises(RuntimeError):
+        get_logs("notebooks", "test_notebook", mock_client_instance)
+
+    # Assertions
+    mock_logger.debug.assert_called_with(
+        f"Failed to retrieve logs for pod {pod_name}: {api_error}", exc_info=True
+    )
     mock_logger.error.assert_any_call(
-        "Failed to retrieve logs. There was a problem while getting the logs for test_pod"
+        f"Failed to retrieve logs. There was a problem while getting the logs for {pod_name}"
     )

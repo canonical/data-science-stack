@@ -59,21 +59,19 @@ def create_notebook(
     if not does_dss_pvc_exist(lightkube_client) or not does_mlflow_deployment_exist(
         lightkube_client
     ):
-        logger.error("Failed to create notebook. DSS was not correctly initialized.\n")
-        logger.info(
-            "You might want to run\n"
-            "  dss status      to check the current status\n"
-            "  dss logs --all  to review all logs\n"
-            "  dss initialize  to install dss\n"
-        )
+        logger.debug("Failed to create notebook. DSS was not correctly initialized.")
+        logger.error("Failed to create notebook. DSS was not correctly initialized.")
+        logger.info("Note: You might want to run")
+        logger.info("  dss status      to check the current status")
+        logger.info("  dss logs --all  to view all logs")
+        logger.info("  dss initialize  to install dss")
         raise RuntimeError()
-
     if does_notebook_exist(name, DSS_NAMESPACE, lightkube_client):
-        logger.error(
-            f"Failed to create Notebook. Notebook with name '{name}' already exists.\n"
-            f"Please specify a different name."
-        )
-        url = get_service_url(name, DSS_NAMESPACE, lightkube_client)
+        # Assumes that the notebook server is exposed by a service of the same name.
+        logger.debug(f"Failed to create Notebook. Notebook with name '{name}' already exists.")
+        logger.error(f"Failed to create Notebook. Notebook with name '{name}' already exists.")
+        logger.info("Please specify a different name.")
+        url = get_service_url("name", DSS_NAMESPACE, lightkube_client)
         if url:
             logger.info(f"To connect to the existing notebook, go to {url}.")
         raise RuntimeError()
@@ -102,19 +100,19 @@ def create_notebook(
         if gpu:
             logger.info(f"{gpu.title()} GPU attached to notebook.")
     except ApiError as err:
-        logger.error(
-            f"Failed to create Notebook with error code {err.status.code}."
-            " Check the debug logs for more details."
-        )
-        logger.debug(f"Failed to create Notebook {name} with error {err}")
+        logger.debug(f"Failed to create Notebook {name}: {err}.", exc_info=True)
+        logger.error(f"Failed to create Notebook with error code {err.status.code}.")
+        logger.info(" Check the debug logs for more details.")
         raise RuntimeError()
     except ImagePullBackOffError as err:
-        logger.error(f"Image {image_full_name} does not exist or is not accessible.\n")
+        logger.debug(f"Failed to create notebook {name}: {err}.", exc_info=True)
+        logger.error(
+            f"Failed to create notebook {name}: Image {image_full_name} does not exist or is not accessible.\n"  # noqa E501
+        )
         logger.info(
             "Note: You might want to use some of these recommended images:\n"
             + RECOMMENDED_IMAGES_MESSAGE
         )
-        logger.debug(f"Image pull back off error while creating Notebook {name} with error {err}.")
         raise RuntimeError()
 
     url = get_service_url(name, DSS_NAMESPACE, lightkube_client)
