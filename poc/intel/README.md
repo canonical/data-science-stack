@@ -3,11 +3,11 @@
 Launch Jupyter notebooks with Intel xGPU support enabled for Tensorflow
 PyTorch, and OpenVINO. Note that MLFlow is also deployed along side Jupyter.
 
-## Verify Intel xGPU Availablity
+## Verify Intel xGPU Availability
 
-Running this PoC requires an Intel discreet or integrated GPU to be available
+Running this PoC requires an Intel discrete or integrated GPU to be available
 on your system in order to run. In cases where a system contains both a dGPU
-and iGPU (e.g. NVIDIA discreet card with Intel iGPU), it is important to
+and iGPU (e.g. NVIDIA discrete card with Intel iGPU), it is important to
 verify that the Intel xGPU is visible to the OS. This can be done with a
 command like:
 
