@@ -1,11 +1,16 @@
 name: GPU snap integration CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-  
+  workflow_run:
+    workflows:
+      - Build and test Snap
+    types:
+      - completed
+
+env:
+  SNAP_ARTIFACT_NAME: dss-snap
+  SNAP_FILE: dss.snap
+  KUBECONFIG: ~/.dss/config
 
 jobs:
   start-runner:
@@ -40,10 +45,35 @@ jobs:
     - name: Check out repo
       uses: actions/checkout@v2
 
-    - name: Test
-      # The runner will run the code as root. There is problem when using juju under root so here is small workaround to exec as ubuntu user
+    - name: Download artifact
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v3
+      with:
+        run_id: ${{ github.event.workflow_run.id }}
+        name: ${{ env.SNAP_ARTIFACT_NAME }}
+
+    - name: Install the snap locally
+      # use --dangerous so we trust the snap even though it doesn't have signatures
       run: |
-        ls -la
+        sudo snap install ${{ env.SNAP_FILE }} --dangerous
+        sudo snap connect data-science-stack:dot-dss-config
+
+    - name: Set up Microk8s
+      uses: balchua/microk8s-actions@v0.3.2
+      with:
+        channel: '1.28/stable'
+        addons: '["hostpath-storage"]'
+
+    - name: Export kubeconfig where strict snap can access it
+      run: |
+        mkdir -p ~/.dss
+        cp ~/.kube/config ${{ env.KUBECONFIG }}
+
+    - name: Test dss snap
+      run: |
+        data-science-stack.dss initialize --kubeconfig ${{ env.KUBECONFIG }}
+        data-science-stack.dss create x --image kubeflownotebookswg/jupyter-scipy:v1.8.0 --kubeconfig ${{ env.KUBECONFIG }}
+        # do gpu things somehow?
 
   stop-runner:
     name: Stop self-hosted EC2 runner
