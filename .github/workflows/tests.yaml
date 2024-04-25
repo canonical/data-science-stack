@@ -44,9 +44,6 @@ jobs:
     name: Stop self-hosted EC2 runner
     needs:
       - start-runner 
-      - lint
-      - unit-tests
-      - integration-tests
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
