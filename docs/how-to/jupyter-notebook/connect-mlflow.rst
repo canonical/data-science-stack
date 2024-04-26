@@ -6,7 +6,7 @@ This guide provides instructions on how to integrate MLFlow with your Jupyter No
 Overview
 --------
 
-MLFlow is a platform for managing the end-to-end machine learning lifecycle. It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models. DSS environments are pre-configured to interact with an MLFlow server through the `MLFLOW_TRACKING_URI` environment variable set in each notebook.
+MLFlow is a platform for managing the end-to-end machine learning life cycle. It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models. DSS environments are pre-configured to interact with an MLFlow server through the `MLFLOW_TRACKING_URI` environment variable set in each notebook.
 
 Prerequisites
 -------------

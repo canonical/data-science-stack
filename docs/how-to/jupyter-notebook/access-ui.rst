@@ -6,7 +6,7 @@ This guide explains how to access the user interface of a Jupyter Notebook runni
 Overview
 --------
 
-Accessing the Jupyter Notebook UI allows you to interact directly with your notebooks, run code, and visualize data. This is done through a web browser by navigating to the URL associated with your active notebook.
+Accessing the Jupyter Notebook UI allows you to interact directly with your notebooks, run code, and visualise data. This is done through a web browser by navigating to the URL associated with your active notebook.
 
 Prerequisites
 -------------

@@ -61,5 +61,5 @@ Deleting a Notebook
 Conclusion
 ----------
 
-Deleting a notebook effectively frees up resources and helps maintain an organized environment. This guide has outlined how to safely remove a notebook from your DSS setup, ensuring you can manage your workspace efficiently.
+Deleting a notebook effectively frees up resources and helps maintain an organised environment. This guide has outlined how to safely remove a notebook from your DSS setup, ensuring you can manage your workspace efficiently.
 

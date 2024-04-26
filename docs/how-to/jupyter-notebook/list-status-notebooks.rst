@@ -51,5 +51,5 @@ Here is an example of what you might see when running the `dss list` command:
 Conclusion
 ----------
 
-Understanding and utilizing the `dss list` command is crucial for effective notebook management in the DSS environment. This command helps monitor and manage the state of your notebooks, ensuring you can access, start, or stop them as needed.
+Understanding and utilising the `dss list` command is crucial for effective notebook management in the DSS environment. This command helps monitor and manage the state of your notebooks, ensuring you can access, start, or stop them as needed.
 
