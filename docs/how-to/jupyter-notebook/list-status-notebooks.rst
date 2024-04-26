@@ -30,7 +30,7 @@ Each notebook can be in one of the following states:
 
 - **Stopping**: The notebook is in the process of stopping. It is advisable to wait until the process completes, transitioning to "Stopped".
 
-- **Starting**: The notebook is starting up. This state indicates that the notebook is initializing and will soon be active.
+- **Starting**: The notebook is starting up. This state indicates that the notebook is initialising and will soon be active.
 
 - **Downloading**: The notebook is downloading necessary data or software. This is usually a transient state before it becomes "Active".
 

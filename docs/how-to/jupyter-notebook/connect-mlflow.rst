@@ -49,7 +49,7 @@ After installing MLFlow, you can directly interact with the MLFlow server config
 
     import mlflow
 
-    # Initialize the MLFlow client
+    # Initialise the MLFlow client
     c = mlflow.MlflowClient()
 
     # The tracking URI should be set automatically from the environment variable
@@ -58,7 +58,7 @@ After installing MLFlow, you can directly interact with the MLFlow server config
     # Create a new experiment
     c.create_experiment("test-experiment")
 
-This example shows how to initialize the MLFlow client, check the tracking URI, and create a new experiment. The `MLFLOW_TRACKING_URI` should already be set in your environment, allowing you to focus on your experiments without manual configuration.
+This example shows how to initialise the MLFlow client, check the tracking URI, and create a new experiment. The `MLFLOW_TRACKING_URI` should already be set in your environment, allowing you to focus on your experiments without manual configuration.
 
 Further Information
 -------------------

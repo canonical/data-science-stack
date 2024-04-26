@@ -50,6 +50,7 @@ subfolders
 subtree
 Ubuntu
 UI
+URI
 UUID
 VM
 YAML
