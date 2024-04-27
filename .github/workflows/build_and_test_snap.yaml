@@ -57,6 +57,9 @@ jobs:
         channel: '1.28/stable'
         addons: '["hostpath-storage"]'
 
+    - name: Install dependencies
+      run: python3 -m pip install tox
+
     - name: Export kubeconfig where strict snap can access it
       run: |
         mkdir -p ~/.dss
