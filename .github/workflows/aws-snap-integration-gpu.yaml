@@ -60,7 +60,7 @@ jobs:
         rm get-pip.py
     
     - name: Install library
-      run: sg microk8s -c "tox -e integration-gpu -- -vv -s"
+      run: tox -e integration-gpu -- -vv -s
 
   stop-runner:
     name: Stop self-hosted EC2 runner
