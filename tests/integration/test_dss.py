@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 import lightkube
@@ -8,23 +9,36 @@ from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Service
 
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER
+from dss.utils import KUBECONFIG_ENV_VAR
 
 # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
-KUBECONFIG = "~/.kube/config"
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
 NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 
 
-def test_status_before_initialize(cleanup_after_initialize) -> None:
+@pytest.fixture()
+def set_dss_kubeconfig_environment_variable(monkeypatch):
+    """Sets the DSS_KUBECONFIG environment variable to ~/.kube/config unless it is already set.
+
+    Yields the value of the environment variable, for convenience."""
+    if not os.environ.get(KUBECONFIG_ENV_VAR):
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setenv(KUBECONFIG_ENV_VAR, "~/.kube/config")
+            yield os.environ.get(KUBECONFIG_ENV_VAR)
+    else:
+        yield os.environ.get(KUBECONFIG_ENV_VAR)
+
+
+def test_status_before_initialize(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
     """
 
     # Run the status command
-    result = subprocess.run(
-        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
-    )
+    result = subprocess.run(["dss", "status"], capture_output=True, text=True)
 
     # Check if the command executed successfully
     assert result.returncode == 0
@@ -36,13 +50,15 @@ def test_status_before_initialize(cleanup_after_initialize) -> None:
     assert "GPU acceleration: Disabled" in result.stderr
 
 
-def test_initialize_creates_dss(cleanup_after_initialize) -> None:
+def test_initialize_creates_dss(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
     """
     result = subprocess.run(
-        ["dss", "initialize", "--kubeconfig", KUBECONFIG],
+        ["dss", "initialize"],
         capture_output=True,
         text=True,
     )
@@ -75,13 +91,15 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     assert "notebooks" in kubectl_result.stdout
 
 
-def test_create_notebook(cleanup_after_initialize) -> None:
+def test_create_notebook(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Tests that `dss create` successfully creates a notebook as expected.
 
     Must be run after `dss initialize`
     """
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    kubeconfig = lightkube.KubeConfig.from_file(set_dss_kubeconfig_environment_variable)
     lightkube_client = lightkube.Client(kubeconfig)
 
     result = subprocess.run(
@@ -91,8 +109,6 @@ def test_create_notebook(cleanup_after_initialize) -> None:
             NOTEBOOK_NAME,
             "--image",
             NOTEBOOK_IMAGE,
-            "--kubeconfig",
-            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -108,7 +124,9 @@ def test_create_notebook(cleanup_after_initialize) -> None:
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
 
-def test_list_after_create(cleanup_after_initialize) -> None:
+def test_list_after_create(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Tests that `dss list` lists notebooks as expected.
     """
@@ -116,8 +134,6 @@ def test_list_after_create(cleanup_after_initialize) -> None:
         [
             "dss",
             "list",
-            "--kubeconfig",
-            KUBECONFIG,
             "--wide",
         ],
         capture_output=True,
@@ -132,14 +148,14 @@ def test_list_after_create(cleanup_after_initialize) -> None:
     assert NOTEBOOK_NAME in result.stderr
 
 
-def test_status_after_initialize(cleanup_after_initialize) -> None:
+def test_status_after_initialize(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
     """
     # Run the status command
-    result = subprocess.run(
-        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
-    )
+    result = subprocess.run(["dss", "status"], capture_output=True, text=True)
 
     # Check if the command executed successfully
     assert result.returncode == 0
@@ -151,7 +167,7 @@ def test_status_after_initialize(cleanup_after_initialize) -> None:
     assert "GPU acceleration: Disabled" in result.stderr
 
 
-def test_log_command(cleanup_after_initialize) -> None:
+def test_log_command(set_dss_kubeconfig_environment_variable, cleanup_after_initialize) -> None:
     """
     Integration test for the 'logs' command.
     """
@@ -161,8 +177,6 @@ def test_log_command(cleanup_after_initialize) -> None:
             "dss",
             "logs",
             NOTEBOOK_NAME,
-            "--kubeconfig",
-            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -176,7 +190,7 @@ def test_log_command(cleanup_after_initialize) -> None:
 
     # Run the logs command for MLflow with the kubeconfig file
     result = subprocess.run(
-        ["dss", "logs", "--mlflow", "--kubeconfig", KUBECONFIG],
+        ["dss", "logs", "--mlflow"],
         capture_output=True,
         text=True,
     )
@@ -188,13 +202,13 @@ def test_log_command(cleanup_after_initialize) -> None:
     assert "Starting gunicorn" in result.stderr
 
 
-def test_stop_notebook(cleanup_after_initialize) -> None:
+def test_stop_notebook(set_dss_kubeconfig_environment_variable, cleanup_after_initialize) -> None:
     """
     Tests that `dss stop` successfully stops a notebook as expected.
 
     Must be run after `dss create`.
     """
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    kubeconfig = lightkube.KubeConfig.from_file(set_dss_kubeconfig_environment_variable)
     lightkube_client = lightkube.Client(kubeconfig)
 
     # Run the stop command with the notebook name and kubeconfig file
@@ -203,8 +217,6 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
             "dss",
             "stop",
             NOTEBOOK_NAME,
-            "--kubeconfig",
-            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -218,13 +230,13 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     assert deployment.spec.replicas == 0
 
 
-def test_start_notebook(cleanup_after_initialize) -> None:
+def test_start_notebook(set_dss_kubeconfig_environment_variable, cleanup_after_initialize) -> None:
     """
     Tests that `dss start` successfully starts a notebook as expected.
 
     Must be run after `dss create` and `dss stop`.
     """
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    kubeconfig = lightkube.KubeConfig.from_file(set_dss_kubeconfig_environment_variable)
     lightkube_client = lightkube.Client(kubeconfig)
 
     # Run the start command with the notebook name and kubeconfig file
@@ -233,8 +245,6 @@ def test_start_notebook(cleanup_after_initialize) -> None:
             "dss",
             "start",
             NOTEBOOK_NAME,
-            "--kubeconfig",
-            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -248,14 +258,14 @@ def test_start_notebook(cleanup_after_initialize) -> None:
     assert deployment.spec.replicas == 1
 
 
-def test_remove_notebook(cleanup_after_initialize) -> None:
+def test_remove_notebook(
+    set_dss_kubeconfig_environment_variable, cleanup_after_initialize
+) -> None:
     """
     Tests that `dss remove` successfully removes a notebook as expected.
     Must be run after `dss initialize`
     """
-    # FIXME: remove the `--kubeconfig`` option
-    # after fixing https://github.com/canonical/data-science-stack/issues/37
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    kubeconfig = lightkube.KubeConfig.from_file(set_dss_kubeconfig_environment_variable)
     lightkube_client = lightkube.Client(kubeconfig)
 
     result = subprocess.run(
@@ -263,8 +273,6 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
             DSS_NAMESPACE,
             "remove",
             NOTEBOOK_NAME,
-            "--kubeconfig",
-            KUBECONFIG,
         ]
     )
     assert result.returncode == 0
@@ -280,7 +288,7 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     assert err.value.response.status_code == 404
 
 
-def test_purge(cleanup_after_initialize) -> None:
+def test_purge(set_dss_kubeconfig_environment_variable, cleanup_after_initialize) -> None:
     """
     Tests that `purge` command removes all notebooks and DSS components.
     """
@@ -290,8 +298,6 @@ def test_purge(cleanup_after_initialize) -> None:
         [
             "dss",
             "purge",
-            "--kubeconfig",
-            KUBECONFIG,
         ],
         capture_output=True,
         text=True,
@@ -305,7 +311,7 @@ def test_purge(cleanup_after_initialize) -> None:
     )
 
     # Check that namespace has been deleted
-    kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
+    kubeconfig = lightkube.KubeConfig.from_file(set_dss_kubeconfig_environment_variable)
     lightkube_client = lightkube.Client(kubeconfig)
     with pytest.raises(ApiError) as err:
         lightkube_client.get(Namespace, name=DSS_NAMESPACE)

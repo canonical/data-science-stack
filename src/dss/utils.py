@@ -1,7 +1,9 @@
 import os
 import time
-from typing import Optional
+from pathlib import Path
+from typing import Union
 
+import lightkube
 from lightkube import ApiError, Client, KubeConfig
 from lightkube.resources.apps_v1 import Deployment
 from lightkube.resources.core_v1 import Namespace, Node, PersistentVolumeClaim, Pod, Service
@@ -17,7 +19,7 @@ NOTEBOOK_RESOURCES = (Service, Deployment)
 
 # Name for the environment variable storing kubeconfig
 KUBECONFIG_ENV_VAR = "DSS_KUBECONFIG"
-KUBECONFIG_DEFAULT = "./kubeconfig"
+KUBECONFIG_DEFAULT = Path.home() / ".dss/config"
 
 
 class ImagePullBackOffError(Exception):
@@ -87,30 +89,54 @@ def wait_for_deployment_ready(
             )
 
 
-def get_default_kubeconfig(kubeconfig: Optional[str] = None) -> str:
+def get_kubeconfig(
+    env_var: str = KUBECONFIG_ENV_VAR,
+    default_kubeconfig_location: Union[Path, str] = KUBECONFIG_DEFAULT,
+) -> lightkube.KubeConfig:
     """
-    Get the kubeconfig file path, from input, environment variable, or default.
+    Returns the kubeconfig used by DSS as a lightkube.KubeConfig object, or fails if it not found.
+
+    This will return:
+    * the kubeconfig file at the path specified by the given environment variable, if set
+    * otherwise, the kubeconfig file at the default path given
 
     Args:
-        kubeconfig (str): Path to a kubeconfig file. Defaults to None.
+        env_var (str): The name of the environment variable to check for the kubeconfig path.
+        default_kubeconfig_location (Path or str): The default path to the kubeconfig file if not
+                                                   specified by the environment variable.
 
     Returns:
-        str: the value of kubeconfig if it is not None, else:
-             the value of the DSS_KUBECONFIG environment variable if it is set, else:
-             the default value of "./kubeconfig"
-
+        lightkube.KubeConfig: the value of kubeconfig
     """
-    if kubeconfig:
-        return kubeconfig
-    elif os.environ.get(KUBECONFIG_ENV_VAR, ""):
-        return os.environ.get(KUBECONFIG_ENV_VAR, "")
-    else:
-        return KUBECONFIG_DEFAULT
+    kubeconfig_path = Path(os.environ.get(env_var, default_kubeconfig_location))
+    return KubeConfig.from_file(kubeconfig_path)
 
 
-def get_lightkube_client(kubeconfig: Optional[str] = None):
-    # Compute the default kubeconfig, if not specified
-    kubeconfig = KubeConfig.from_file(kubeconfig)
+def save_kubeconfig(kubeconfig: str, save_location: Union[str, Path] = KUBECONFIG_DEFAULT) -> None:
+    """
+    Save the kubeconfig file to the specified location.
+
+    This will create the parent directory if it does not exist.
+
+    Args:
+        kubeconfig (str): The kubeconfig file contents.
+        save_location (str or Path): The location to save the kubeconfig file.
+
+    Returns:
+        None
+    """
+    logger.info(f"Storing provided kubeconfig to {save_location}")
+    save_location = Path(save_location)
+
+    # Create the parent directory, if it does not exist
+    save_location.parent.mkdir(exist_ok=True)
+
+    with open(save_location, "w") as f:
+        f.write(kubeconfig)
+
+
+def get_lightkube_client():
+    kubeconfig = get_kubeconfig()
     lightkube_client = Client(config=kubeconfig)
     return lightkube_client
 
