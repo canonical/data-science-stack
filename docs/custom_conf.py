@@ -129,7 +129,8 @@ redirects = {}
 # Links to ignore when checking links
 linkcheck_ignore = [
     'http://127.0.0.1:8000',
-    'https://matrix.to/#/#dss:ubuntu.com'
+    'https://matrix.to/#/#dss:ubuntu.com',
+    'https://microk8s.io/docs/addon-gpu#use-host-nvidia-drivers-5'
 ]
 
 # Pages on which to ignore anchors

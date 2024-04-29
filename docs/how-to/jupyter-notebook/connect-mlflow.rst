@@ -1,3 +1,5 @@
+.. _notebook-mlflow:
+
 Connect from Notebook to MLflow
 ===============================
 

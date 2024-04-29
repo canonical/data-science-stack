@@ -1,3 +1,5 @@
+.. _jupyter-notebooks:
+
 Manage Jupyter Notebooks
 ========================
 

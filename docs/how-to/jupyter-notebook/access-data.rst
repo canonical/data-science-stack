@@ -1,3 +1,5 @@
+.. _access-data:
+
 Access your data from DSS
 =========================
 
@@ -5,7 +7,7 @@ This guide provides instructions on how to access the stored data from your Note
 
 Overview
 --------
-Accessing your data is useful when you want to browse or modify the files stored from your Notebooks. 
+Accessing your data is useful when you want to browse or modify the files stored from your Notebooks.
 
 Prerequisites
 -------------
@@ -29,7 +31,7 @@ This directory is shared by all DSS Notebooks.
 
         ls /var/snap/microk8s/common/default-storage/
 
-    
+
     Expected output:
 
     .. code-block:: bash
@@ -39,7 +41,7 @@ This directory is shared by all DSS Notebooks.
     The storage directory is the one prefixed with `dss-notebooks-pvc` as shown in the output.
 
     .. note::
-        
+
         The characters that follow the `dss-notebooks-pvc-` will not be the same for all DSS environments.
 
 2. **Access your Notebooks data**
