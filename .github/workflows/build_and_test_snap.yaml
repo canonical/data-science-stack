@@ -69,4 +69,4 @@ jobs:
 
     - name: Test dss snap
       run: |
-        tox -e dss-cli -- --kubeconfig ${{ env.KUBECONFIG }}
+        tox -e dss-cli
