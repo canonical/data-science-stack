@@ -59,11 +59,6 @@ jobs:
         python3.10 -m pip install tox
         rm get-pip.py
     
-    - uses: balchua/microk8s-actions@v0.3.2
-      with:
-        channel: '1.28/stable'
-        addons: '["hostpath-storage", "gpu"]'
-    
     - name: Install library
       run: sg microk8s -c "tox -e integration-gpu -- -vv -s"
 
