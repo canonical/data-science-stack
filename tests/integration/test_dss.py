@@ -30,10 +30,10 @@ def test_status_before_initialize(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the output indicates MLflow deployment is not ready
-    assert "MLflow deployment: Not ready" in result.stderr
+    assert "MLflow deployment: Not ready" in result.stdout
 
     # Check if the output indicates GPU acceleration is disabled
-    assert "GPU acceleration: Disabled" in result.stderr
+    assert "GPU acceleration: Disabled" in result.stdout
 
 
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
@@ -129,7 +129,7 @@ def test_list_after_create(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the notebook name is presented in the output
-    assert NOTEBOOK_NAME in result.stderr
+    assert NOTEBOOK_NAME in result.stdout
 
 
 def test_status_after_initialize(cleanup_after_initialize) -> None:
@@ -145,10 +145,10 @@ def test_status_after_initialize(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the output indicates MLflow deployment is ready
-    assert "MLflow deployment: Ready" in result.stderr
+    assert "MLflow deployment: Ready" in result.stdout
 
     # Check if the output indicates GPU acceleration is enabled
-    assert "GPU acceleration: Disabled" in result.stderr
+    assert "GPU acceleration: Disabled" in result.stdout
 
 
 def test_log_command(cleanup_after_initialize) -> None:
@@ -172,7 +172,7 @@ def test_log_command(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the expected logs are present in the output
-    assert "Jupyter Server" in result.stderr
+    assert "Jupyter Server" in result.stdout
 
     # Run the logs command for MLflow with the kubeconfig file
     result = subprocess.run(
@@ -185,7 +185,7 @@ def test_log_command(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the expected logs are present in the output
-    assert "Starting gunicorn" in result.stderr
+    assert "Starting gunicorn" in result.stdout
 
 
 def test_stop_notebook(cleanup_after_initialize) -> None:
@@ -301,7 +301,7 @@ def test_purge(cleanup_after_initialize) -> None:
     assert result.returncode == 0
     assert (
         "Success: All DSS components and notebooks purged successfully from the Kubernetes cluster."
-        in result.stderr
+        in result.stdout
     )
 
     # Check that namespace has been deleted
