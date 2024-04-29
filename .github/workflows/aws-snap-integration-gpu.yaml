@@ -60,7 +60,7 @@ jobs:
         rm get-pip.py
     
     - name: Install library
-      run: export DSS_KUBECONFIG=/home/ubuntu/.kube/config && tox -e integration-gpu -- -vv -s
+      run: /bin/su -c "cd $(pwd) && tox -e integration-gpu -- -vv -s" - ubuntu 
 
   stop-runner:
     name: Stop self-hosted EC2 runner
