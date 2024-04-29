@@ -10,3 +10,7 @@ jobs:
   tests:
     name: Run Tests
     uses: ./.github/workflows/tests.yaml
+
+  test-snap:
+    name: Build and test Snap
+    uses: ./.github/workflows/build_and_test_snap.yaml
