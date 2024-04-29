@@ -37,13 +37,31 @@ jobs:
     needs: [start-runner]
     runs-on: ${{ needs.start-runner.outputs.label }} 
     steps:
-    - name: Check out repo
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-    - name: Test
-      # The runner will run the code as root. There is problem when using juju under root so here is small workaround to exec as ubuntu user
+    # Remove once https://github.com/canonical/bundle-kubeflow/issues/761
+    # is resolved and applied to all ROCKs repositories
+    - name: Install python version from input
       run: |
-        ls -la
+        # TODO: remove when fixed: https://github.com/microsoft/linux-package-repositories/issues/130#issuecomment-2074645171
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt update -y
+        VERSION=3.10
+        sudo apt install python3.10 python3.10-distutils python3.10-venv -y
+        wget https://bootstrap.pypa.io/get-pip.py
+        python3.10 get-pip.py
+        python3.10 -m pip install tox
+        rm get-pip.py
+    
+    - uses: balchua/microk8s-actions@v0.3.2
+      with:
+        channel: '1.28/stable'
+        addons: '["hostpath-storage", "gpu"]'
+    
+    - name: Install library
+      run: sg microk8s -c "tox -e integration-gpu -- -vv -s"
 
   stop-runner:
     name: Stop self-hosted EC2 runner
