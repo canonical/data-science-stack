@@ -3,7 +3,7 @@ import pytest
 
 def pytest_addoption(parser):
     """
-    Add a command-line option to pytest for specifying the notebook image.
+    Add a command-line option to pytest for specifying the notebook image and kubeconfig.
     """
     parser.addoption(
         "--notebook-image",

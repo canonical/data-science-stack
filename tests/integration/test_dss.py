@@ -10,7 +10,7 @@ from lightkube.resources.core_v1 import Namespace, PersistentVolumeClaim, Pod, S
 from dss.config import DSS_CLI_MANAGER_LABELS, DSS_NAMESPACE, FIELD_MANAGER, NOTEBOOK_LABEL
 
 # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
-KUBECONFIG = "~/.kube/config"
+KUBECONFIG = "/home/ubuntu/.kube/config"
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
 
