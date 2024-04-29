@@ -23,8 +23,14 @@ def setup_logger(
     if not logger.handlers:
         logger.setLevel(file_log_level)
 
-        # Create log formatter
-        formatter = logging.Formatter(
+        # Create console formatter
+        console_formatter = logging.Formatter(
+            "[%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+
+        # Create file formatter
+        file_formatter = logging.Formatter(
             "%(asctime)s [%(levelname)s] [%(module)s] [%(funcName)s]: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -36,12 +42,12 @@ def setup_logger(
         # Create file handler
         file_handler = RotatingFileHandler(log_file_path, maxBytes=5 * 1024 * 1024, backupCount=5)
         file_handler.setLevel(file_log_level)
-        file_handler.setFormatter(formatter)
+        file_handler.setFormatter(file_formatter)
 
         # Create console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(console_log_level)
-        console_handler.setFormatter(formatter)
+        console_handler.setFormatter(console_formatter)
 
         # Add handlers to the logger
         logger.addHandler(file_handler)
