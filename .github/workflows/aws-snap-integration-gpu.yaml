@@ -59,6 +59,9 @@ jobs:
         python3.10 -m pip install tox
         rm get-pip.py
     
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+    
     - name: Install library
       run: tox -e integration-gpu -- -vv -s
 
