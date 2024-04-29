@@ -39,6 +39,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    
+    - name: Setup operator environment
+      run: |
+        chmod 777 .
+        /bin/su -c "$(pwd)/.github/workflows/setup_environment.sh" - ubuntu
+    - name: Setup microk8s
+      run: /bin/su -c "$(pwd)/.github/workflows/setup_microk8s.sh" - ubuntu
 
     # Remove once https://github.com/canonical/bundle-kubeflow/issues/761
     # is resolved and applied to all ROCKs repositories
