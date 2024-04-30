@@ -65,7 +65,7 @@ Further Information
 
 For more detailed information on using MLFlow, including advanced configurations and features, refer to the official MLFlow documentation:
 
-* `MLflow Docs`_
+* `MLFlow Docs`_
 
 Conclusion
 ----------
