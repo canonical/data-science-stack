@@ -41,19 +41,19 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Setup operator environment
-      run: sudo -u ubuntu -i /bin/bash "$(pwd)/.github/workflows/setup_environment.sh"
+      run: sudo bash .github/workflows/setup_environment.sh
 
     - name: Setup microk8s
-      run: sudo -u ubuntu -i /bin/bash "$(pwd)/.github/workflows/setup_microk8s.sh"
+      run: sudo bash .github/workflows/setup_microk8s.sh
 
-    
-    - name: Run tests
+    - name: Run tests as root
       run: |
-        sudo -u ubuntu -i /bin/bash -c "\
-          ls -la /home/ubuntu/.kube; \
-          cat /home/ubuntu/.kube/config; \
-          cd $(pwd); \
-          tox -e integration-gpu -- -vv -s"
+        echo 'Running tests as user: $(whoami)';  # This should output 'root'
+        ls -la /home/ubuntu/.kube
+        cat /home/ubuntu/.kube/config
+        cd $(pwd)
+        ls -la
+        tox -e integration-gpu -- -vv -s
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
