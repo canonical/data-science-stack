@@ -60,7 +60,6 @@ Data Science Stack is an open-source project that values its community. We warml
 * `Contribute`_
 * `Join our online chat`_
 * `Discourse Forum`_
-* `MLflow Docs`_
 
 .. toctree::
    :hidden:
