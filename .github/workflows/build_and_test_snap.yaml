@@ -67,6 +67,9 @@ jobs:
         mkdir -p ~/.dss
         cp ~/.kube/config ${{ env.KUBECONFIG }}
 
+    - name: DEBUG with tmate
+      uses: mxschmitt/action-tmate@v3
+
     - name: Test dss snap
       run: |
         tox -e dss-cli
