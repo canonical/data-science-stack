@@ -7,3 +7,4 @@ microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system
 # Install + setup kubectl
 sudo snap install kubectl --classic
 microk8s config > /home/ubuntu/.kube/config
+chmod 777 /home/ubuntu/.kube/config

@@ -48,7 +48,14 @@ jobs:
       run: /bin/su -c "$(pwd)/.github/workflows/setup_microk8s.sh" - ubuntu
     
     - name: Install library
-      run: /bin/su -c "cd $(pwd) && tox -e integration-gpu -- -vv -s" - ubuntu 
+      run: |
+        ls -la /home/ubuntu/.kube
+        cat /home/ubuntu/.kube/config
+        tox -e integration-gpu -- -vv -s
+    
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: failure()
 
   stop-runner:
     name: Stop self-hosted EC2 runner
