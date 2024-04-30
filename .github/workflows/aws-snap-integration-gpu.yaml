@@ -45,6 +45,9 @@ jobs:
 
     - name: Setup microk8s
       run: sudo bash .github/workflows/setup_microk8s.sh
+    
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: Run tests as root
       run: |
