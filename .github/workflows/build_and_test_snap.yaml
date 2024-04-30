@@ -50,7 +50,6 @@ jobs:
       run: |
         # use --dangerous so we trust the snap even though it doesn't have signatures
         sudo snap install ${{ env.SNAP_FILE }} --dangerous
-        sudo snap connect data-science-stack:dot-dss-config
         sudo snap alias data-science-stack.dss dss
 
     - name: Set up Microk8s
