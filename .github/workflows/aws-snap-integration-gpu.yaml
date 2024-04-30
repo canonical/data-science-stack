@@ -1,10 +1,9 @@
-name: GPU snap integration CI
+name: GPU integration CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'  # This will trigger the workflow at 00:00 every Sunday
+  workflow_dispatch:
   
 
 jobs:
