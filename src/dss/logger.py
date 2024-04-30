@@ -1,15 +1,19 @@
 import logging
 import os
+import sys
 from logging.handlers import RotatingFileHandler
 
 
-def setup_logger(log_file_path: str, log_level: int = logging.DEBUG) -> logging.Logger:
+def setup_logger(
+    log_file_path: str, file_log_level: int = logging.DEBUG, console_log_level: int = logging.INFO
+) -> logging.Logger:
     """
     Set up a logger with a file handler and console handler.
 
     Args:
         log_file_path (str): Path to the log file.
-        log_level (int, optional): Logging level. Defaults to logging.DEBUG.
+        file_log_level (int, optional): Logging level for file logs. Defaults to logging.DEBUG.
+        console_log_level (int, optional): Logging level for console logs. Defaults to logging.INFO.
 
     Returns:
         logging.Logger: Configured logger object.
@@ -18,10 +22,16 @@ def setup_logger(log_file_path: str, log_level: int = logging.DEBUG) -> logging.
 
     # Check if the logger already has handlers to avoid duplication
     if not logger.handlers:
-        logger.setLevel(log_level)
+        logger.setLevel(file_log_level)
 
-        # Create log formatter
-        formatter = logging.Formatter(
+        # Create console formatter
+        console_formatter = logging.Formatter(
+            "[%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+
+        # Create file formatter
+        file_formatter = logging.Formatter(
             "%(asctime)s [%(levelname)s] [%(module)s] [%(funcName)s]: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
@@ -32,13 +42,13 @@ def setup_logger(log_file_path: str, log_level: int = logging.DEBUG) -> logging.
 
         # Create file handler
         file_handler = RotatingFileHandler(log_file_path, maxBytes=5 * 1024 * 1024, backupCount=5)
-        file_handler.setLevel(log_level)
-        file_handler.setFormatter(formatter)
+        file_handler.setLevel(file_log_level)
+        file_handler.setFormatter(file_formatter)
 
         # Create console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(log_level)
-        console_handler.setFormatter(formatter)
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(console_log_level)
+        console_handler.setFormatter(console_formatter)
 
         # Add handlers to the logger
         logger.addHandler(file_handler)
