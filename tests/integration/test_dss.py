@@ -56,12 +56,12 @@ def test_status_before_initialize_gpu(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the output indicates MLflow deployment is not ready
-    assert "MLflow deployment: Not ready" in result.stderr
+    assert "MLflow deployment: Not ready" in result.stdout
 
     # Check if the output indicates GPU acceleration is enabled and captures a GPU model
-    assert "GPU acceleration: Enabled" in result.stderr
+    assert "GPU acceleration: Enabled" in result.stdout
     assert (
-        "NVIDIA" in result.stderr
+        "NVIDIA" in result.stdout
     )  # This checks for the presence of NVIDIA in the log, assuming only NVIDIA GPUs are used.
 
 
@@ -234,15 +234,15 @@ def test_status_after_initialize_gpu(cleanup_after_initialize) -> None:
     assert result.returncode == 0
 
     # Check if the output indicates MLflow deployment is ready
-    assert "MLflow deployment: Ready" in result.stderr
+    assert "MLflow deployment: Ready" in result.stdout
 
     # Check for MLflow URL presence in the output
-    assert "MLflow URL: http://" in result.stderr
+    assert "MLflow URL: http://" in result.stdout
 
     # Check if the output indicates GPU acceleration is enabled and captures any GPU model
-    assert "GPU acceleration: Enabled" in result.stderr
+    assert "GPU acceleration: Enabled" in result.stdout
     assert (
-        "NVIDIA" in result.stderr
+        "NVIDIA" in result.stdout
     )  # This checks for the presence of NVIDIA, assuming NVIDIA GPUs are used.
 
 
