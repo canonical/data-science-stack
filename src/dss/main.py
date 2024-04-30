@@ -35,7 +35,7 @@ def initialize_command(kubeconfig: str) -> None:
 
     try:
         if kubeconfig:
-            save_kubeconfig(kubeconfig=kubeconfig, save_location=KUBECONFIG_DEFAULT)
+            save_kubeconfig(kubeconfig=kubeconfig)
     except Exception as e:
         logger.debug(f"Failed to save kubeconfig: {e}.", exc_info=True)
         logger.error(f"Failed to save kubeconfig: {str(e)}.")

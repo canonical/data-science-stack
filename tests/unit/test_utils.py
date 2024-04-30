@@ -1,6 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 from lightkube import ApiError
@@ -16,6 +16,7 @@ from dss.utils import (
     does_notebook_exist,
     get_deployment_state,
     get_kubeconfig,
+    get_kubeconfig_path,
     get_labels_for_node,
     get_lightkube_client,
     get_mlflow_tracking_uri,
@@ -112,6 +113,22 @@ class FakeApiError(ApiError):
         super().__init__(response=_FakeResponse(code))
 
 
+@patch("dss.utils.get_kubeconfig_path")
+def test_get_kubeconfig(
+    mock_get_kubeconfig_path,
+    mock_kubeconfig,
+    monkeypatch,
+):
+    # Arrange
+    mock_get_kubeconfig_path.return_value = Path("kubeconfig-path")
+
+    # Act
+    _ = get_kubeconfig()
+
+    # Assert
+    mock_kubeconfig.from_file.assert_called_once_with(mock_get_kubeconfig_path.return_value)
+
+
 @pytest.mark.parametrize(
     "env_var_content, kubeconfig_default, expected_kubeconfig_path_used",
     [
@@ -119,11 +136,10 @@ class FakeApiError(ApiError):
         (None, "default_path", Path("default_path")),
     ],
 )
-def test_get_kubeconfig(
+def test_get_kubeconfig_path(
     env_var_content,
     kubeconfig_default,
     expected_kubeconfig_path_used,
-    mock_kubeconfig,
     monkeypatch,
 ):
     # Arrange
@@ -136,24 +152,31 @@ def test_get_kubeconfig(
             mp.setenv(env_var, env_var_content)
 
         # Act
-        _ = get_kubeconfig(env_var=env_var, default_kubeconfig_location=kubeconfig_default)
+        actual = get_kubeconfig_path(
+            env_var=env_var, default_kubeconfig_location=kubeconfig_default
+        )
 
     # Assert
-    mock_kubeconfig.from_file.assert_called_once_with(expected_kubeconfig_path_used)
+    assert actual == expected_kubeconfig_path_used
 
 
-def test_save_kubeconfig(tmp_path):
+@patch("dss.utils.get_kubeconfig_path")
+def test_save_kubeconfig(
+    mock_get_kubeconfig_path,
+    monkeypatch,
+):
     # Arrange
     kubeconfig = "kubeconfig-text"
-    kubeconfig_path = tmp_path / "kubeconfig"
-    assert not kubeconfig_path.exists()
 
     # Act
-    save_kubeconfig(kubeconfig, kubeconfig_path)
+    mocked_open = mock_open()
+    with patch("dss.utils.open", mocked_open):
+        save_kubeconfig(kubeconfig)
 
     # Assert
-    assert kubeconfig_path.exists()
-    assert kubeconfig_path.read_text() == kubeconfig
+    mock_get_kubeconfig_path.return_value.parent.mkdir.assert_called_once()
+    mocked_open.assert_called_once_with(mock_get_kubeconfig_path.return_value, "w")
+    mocked_open().write.assert_called_once_with(kubeconfig)
 
 
 def test_get_lightkube_client_successful(

@@ -89,12 +89,34 @@ def wait_for_deployment_ready(
             )
 
 
+def get_kubeconfig_path(
+    env_var: str = KUBECONFIG_ENV_VAR,
+    default_kubeconfig_location: Union[Path, str] = KUBECONFIG_DEFAULT,
+) -> Path:
+    """
+    Returns the path to the kubeconfig used by DSS
+
+    This will return:
+    * the kubeconfig file at the path specified by the given environment variable, if set
+    * otherwise, the kubeconfig file at the default path given
+
+    Args:
+        env_var (str): The name of the environment variable to check for the kubeconfig path.
+        default_kubeconfig_location (Path or str): The default path to the kubeconfig file if not
+                                                   specified by the environment variable.
+
+    Returns:
+        Path: the path to the kubeconfig file
+    """
+    # use expanduser() to handle '~' in the path
+    return Path(os.environ.get(env_var, default_kubeconfig_location)).expanduser()
+
+
 def get_kubeconfig(
     env_var: str = KUBECONFIG_ENV_VAR,
     default_kubeconfig_location: Union[Path, str] = KUBECONFIG_DEFAULT,
 ) -> lightkube.KubeConfig:
-    """
-    Returns the kubeconfig used by DSS as a lightkube.KubeConfig object, or fails if it not found.
+    """Returns the kubeconfig used by DSS as a lightkube.KubeConfig object or fails if it not found.
 
     This will return:
     * the kubeconfig file at the path specified by the given environment variable, if set
@@ -108,11 +130,15 @@ def get_kubeconfig(
     Returns:
         lightkube.KubeConfig: the value of kubeconfig
     """
-    kubeconfig_path = Path(os.environ.get(env_var, default_kubeconfig_location))
+    kubeconfig_path = get_kubeconfig_path(env_var, default_kubeconfig_location)
     return KubeConfig.from_file(kubeconfig_path)
 
 
-def save_kubeconfig(kubeconfig: str, save_location: Union[str, Path] = KUBECONFIG_DEFAULT) -> None:
+def save_kubeconfig(
+    kubeconfig: str,
+    env_var: str = KUBECONFIG_ENV_VAR,
+    default_kubeconfig_location: Union[Path, str] = KUBECONFIG_DEFAULT,
+) -> None:
     """
     Save the kubeconfig file to the specified location.
 
@@ -120,13 +146,15 @@ def save_kubeconfig(kubeconfig: str, save_location: Union[str, Path] = KUBECONFI
 
     Args:
         kubeconfig (str): The kubeconfig file contents.
-        save_location (str or Path): The location to save the kubeconfig file.
+        env_var (str): The name of the environment variable to check for the kubeconfig path.
+        default_kubeconfig_location (str): The default path to the kubeconfig file if not
+                                           specified by the environment variable.
 
     Returns:
         None
     """
+    save_location = get_kubeconfig_path(env_var, default_kubeconfig_location)
     logger.info(f"Storing provided kubeconfig to {save_location}")
-    save_location = Path(save_location)
 
     # Create the parent directory, if it does not exist
     save_location.parent.mkdir(exist_ok=True)

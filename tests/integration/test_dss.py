@@ -56,6 +56,8 @@ def test_initialize_creates_dss(
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
     the 'mlflow' deployment is active in the 'dss' namespace.
+
+    Note that this test uses an existing kubeconfig file - it does not test `--kubeconfig` input.
     """
     result = subprocess.run(
         ["dss", "initialize"],
