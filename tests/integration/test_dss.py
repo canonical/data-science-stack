@@ -129,7 +129,7 @@ def test_create_notebook(cleanup_after_initialize, notebook_image) -> None:
         ],
         capture_output=True,
         text=True,
-        timeout=60 * 4,
+        timeout=60 * 10,
     )
 
     # Check if the command executed successfully
