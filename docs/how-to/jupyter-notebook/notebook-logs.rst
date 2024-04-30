@@ -48,6 +48,7 @@ Retrieving Notebook Logs
        [INFO] 2024-04-30T10:09:13.034Z [jupyter] [W 2024-04-30 10:09:13.033 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
        [INFO] 2024-04-30T10:09:13.036Z [jupyter] [I 2024-04-30 10:09:13.036 ServerApp] jupyter_server_fileid | extension was successfully linked.
        [INFO] 2024-04-30T10:09:13.038Z [jupyter] [I 2024-04-30 10:09:13.038 ServerApp] jupyter_server_mathjax | extension was successfully linked.
+
 Conclusion
 ----------
 
