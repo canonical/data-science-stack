@@ -9,7 +9,8 @@ on:
 env:
   SNAP_ARTIFACT_NAME: dss-snap
   SNAP_FILE: dss.snap
-  KUBECONFIG: ~/.dss/config
+  # Path to the home dir of the strictly confined data-science-stack snap
+  DSS_KUBECONFIG_PATH: ~/snap/data-science-stack/x1/.dss/config
 
 jobs:
   build-snap:
@@ -63,8 +64,8 @@ jobs:
 
     - name: Export kubeconfig where strict snap can access it
       run: |
-        mkdir -p ~/.dss
-        cp ~/.kube/config ${{ env.KUBECONFIG }}
+        mkdir -p $(dirname ${{ env.DSS_KUBECONFIG_PATH }})
+        cp ~/.kube/config ${{ env.DSS_KUBECONFIG_PATH }}
 
     - name: Test dss snap
       run: |
