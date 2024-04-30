@@ -50,10 +50,6 @@ jobs:
       run: |
         sudo snap alias microk8s.kubectl kubectl
         tox -e integration-gpu -- -vv -s
-    
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: failure()
 
   stop-runner:
     name: Stop self-hosted EC2 runner
