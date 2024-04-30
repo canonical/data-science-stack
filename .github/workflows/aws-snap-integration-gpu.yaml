@@ -41,17 +41,19 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Setup operator environment
-      run: |
-        chmod 777 .
-        /bin/su -c "$(pwd)/.github/workflows/setup_environment.sh" - ubuntu
+      run: sudo -u ubuntu -i /bin/bash "$(pwd)/.github/workflows/setup_environment.sh"
+
     - name: Setup microk8s
-      run: /bin/su -c "$(pwd)/.github/workflows/setup_microk8s.sh" - ubuntu
+      run: sudo -u ubuntu -i /bin/bash "$(pwd)/.github/workflows/setup_microk8s.sh"
+
     
-    - name: Install library
+    - name: Run tests
       run: |
-        ls -la /home/ubuntu/.kube
-        cat /home/ubuntu/.kube/config
-        tox -e integration-gpu -- -vv -s
+        sudo -u ubuntu -i /bin/bash -c "\
+          ls -la /home/ubuntu/.kube; \
+          cat /home/ubuntu/.kube/config; \
+          cd $(pwd); \
+          tox -e integration-gpu -- -vv -s"
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
