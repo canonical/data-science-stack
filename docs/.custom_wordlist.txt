@@ -4,3 +4,4 @@ MLFlow
 GPUs
 runtime
 MicroK
+OCI
