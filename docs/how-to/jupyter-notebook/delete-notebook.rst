@@ -8,6 +8,10 @@ Overview
 
 Deleting a Jupyter Notebook is useful when you no longer need the notebook and want to clear up resources or declutter your workspace. This process is handled through the DSS command line interface (CLI), and it is non-blocking, meaning you can continue other work while the deletion completes.
 
+.. note::
+
+   When you delete a notebook, any data stored under `~/shared` within the notebook will be preserved and remain accessible to other notebooks. This shared storage is designed to ensure that valuable data is not lost even when individual notebooks are removed from the environment.
+
 Prerequisites
 -------------
 
@@ -62,4 +66,3 @@ Conclusion
 ----------
 
 Deleting a notebook effectively frees up resources and helps maintain an organised environment. This guide has outlined how to safely remove a notebook from your DSS setup, ensuring you can manage your workspace efficiently.
-

@@ -13,7 +13,7 @@ Prerequisites
 
 Before you begin, ensure the following:
 
-- You have a Jupyter Notebook running in the DSS environment.
+- You have an active Jupyter Notebook in the DSS environment.
 - You understand basic operations within a Jupyter Notebook.
 
 Installing MLFlow
@@ -65,7 +65,7 @@ Further Information
 
 For more detailed information on using MLFlow, including advanced configurations and features, refer to the official MLFlow documentation:
 
-- [MLFlow Documentation](https://mlflow.org/docs/latest/index.html)
+* `MLflow Docs`_
 
 Conclusion
 ----------

@@ -17,7 +17,14 @@ To view the list and status of all notebooks, run the following command in your 
 
     dss list
 
-This will display each notebook along with its current state and URL if applicable.
+This command displays each notebook along with its current state and URL if applicable. Here is an example of what you might see:
+
+.. code-block:: none
+
+    Name          Image                                               URL                      
+    my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80  (Active)
+    data-prep     kubeflownotebookswg/jupyter-minimal:v1.5.0          (Downloading)
+    test-env      kubeflownotebookswg/jupyter-scipy-notebook:v1.9.0   (Stopping)
 
 Notebook States
 ---------------
@@ -32,24 +39,11 @@ Each notebook can be in one of the following states:
 
 - **Starting**: The notebook is starting up. This state indicates that the notebook is initialising and will soon be active.
 
-- **Downloading**: The notebook is downloading necessary data or software. This is usually a transient state before it becomes "Active".
+- **Downloading**: The notebook is downloading the specified OCI Image.. This is usually a transient state before it becomes "Active".
 
 - **Removing**: The command to remove the notebook has been issued (`dss remove`), but the notebook has not been completely removed yet. This state will eventually clear once the notebook is fully removed.
-
-Example Output
---------------
-
-Here is an example of what you might see when running the `dss list` command:
-
-.. code-block:: none
-
-    Name          Image                                               URL                      
-    my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80  (Active)
-    data-prep     kubeflownotebookswg/jupyter-minimal:v1.5.0          (Downloading)
-    test-env      kubeflownotebookswg/jupyter-scipy-notebook:v1.9.0   (Stopping)
 
 Conclusion
 ----------
 
 Understanding and utilising the `dss list` command is crucial for effective notebook management in the DSS environment. This command helps monitor and manage the state of your notebooks, ensuring you can access, start, or stop them as needed.
-
