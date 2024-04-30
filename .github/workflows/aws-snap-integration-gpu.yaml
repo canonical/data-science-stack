@@ -48,11 +48,7 @@ jobs:
 
     - name: Run tests as root
       run: |
-        echo 'Running tests as user: $(whoami)';  # This should output 'root'
-        ls -la /home/ubuntu/.kube
-        cat /home/ubuntu/.kube/config
-        cd $(pwd)
-        ls -la
+        sudo snap alias microk8s.kubectl kubectl
         tox -e integration-gpu -- -vv -s
     
     - name: Setup tmate session

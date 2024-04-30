@@ -4,8 +4,7 @@
 microk8s enable storage dns rbac gpu
 microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system
 
-# Install + setup kubectl
-snap install kubectl --classic
+# Setup config
 microk8s config > ~/.kube/config
 chown ubuntu:ubuntu ~/.kube/config
 chmod 600 ~/.kube/config
