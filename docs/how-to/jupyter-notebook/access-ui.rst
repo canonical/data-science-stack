@@ -1,3 +1,5 @@
+.. _access_ui:
+
 Access the Jupyter Notebooks UI
 ===============================
 
