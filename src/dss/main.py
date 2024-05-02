@@ -25,7 +25,7 @@ def main():
 @main.command(name="initialize")
 @click.option(
     "--kubeconfig",
-    help=f'Content of a Kubernetes config file defining the cluster to use.  The kubeconfig will be saved to {KUBECONFIG_DEFAULT} and overwrite any previously kubeconfig stored there.  Future `dss` commands will reuse this kubeconfig by default.  Ensure you properly quote this command, for example `dss initialize --kubeconfig="$(microk8s kubeconfig)"`.',  # noqa E501
+    help=f"Content of a Kubernetes config file defining the cluster to use.  The kubeconfig will be saved to {KUBECONFIG_DEFAULT} and overwrite any kubeconfig previously stored there.  Future `dss` commands will reuse this kubeconfig by default.",  # noqa E501
 )
 def initialize_command(kubeconfig: str) -> None:
     """
@@ -50,6 +50,16 @@ def initialize_command(kubeconfig: str) -> None:
         logger.debug(f"Failed to initialize dss: {e}.", exc_info=True)
         logger.error(f"Failed to initialize dss: {str(e)}.")
         click.get_current_context().exit(1)
+
+
+initialize_command.help += """
+
+\b
+Examples
+  # To initialize DSS with microk8s's kubeconfig
+  dss initialize --kubeconfig "$(microk8s config)"
+
+"""
 
 
 IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
