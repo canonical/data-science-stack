@@ -45,12 +45,12 @@ jobs:
     
     # Issue: https://github.com/canonical/data-science-stack/issues/116
     - name: Setup operator environment
-      run: sudo bash .github/workflows/setup_environment.sh
+      run: sudo -E bash .github/workflows/setup_environment.sh
       env:
         MICROK8S_CHANNEL: 1.28/stable
 
     - name: Setup microk8s
-      run: sudo bash .github/workflows/configure_microk8s.sh
+      run: sudo -E bash .github/workflows/configure_microk8s.sh
       env:
         MICROK8S_ADDONS: "storage dns rbac gpu"
 

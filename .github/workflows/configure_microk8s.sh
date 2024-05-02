@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This needs to be a separate file as newgrp will not have effect from setup_environment.sh
+echo "Using addons: $MICROK8S_ADDONS"
 microk8s enable storage $MICROK8S_ADDONS
 microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system
 
