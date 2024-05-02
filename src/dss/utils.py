@@ -163,13 +163,15 @@ def save_kubeconfig(
         f.write(kubeconfig)
 
 
-def get_lightkube_client():
+def get_lightkube_client() -> lightkube.Client:
+    """Returns a lightkube client configured with the kubeconfig used by DSS."""
     kubeconfig = get_kubeconfig()
     lightkube_client = Client(config=kubeconfig)
     return lightkube_client
 
 
 def get_mlflow_tracking_uri() -> str:
+    """Returns the MLflow tracking URI for the DSS deployment."""
     return f"http://{MLFLOW_DEPLOYMENT_NAME}.{DSS_NAMESPACE}.svc.cluster.local:5000"
 
 

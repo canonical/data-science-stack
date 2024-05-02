@@ -119,6 +119,7 @@ def test_get_kubeconfig(
     mock_kubeconfig,
     monkeypatch,
 ):
+    """Tests that get_kubeconfig succeeds as expected."""
     # Arrange
     mock_get_kubeconfig_path.return_value = Path("kubeconfig-path")
 
@@ -137,11 +138,12 @@ def test_get_kubeconfig(
     ],
 )
 def test_get_kubeconfig_path(
-    env_var_content,
-    kubeconfig_default,
-    expected_kubeconfig_path_used,
+    env_var_content: str,
+    kubeconfig_default: str,
+    expected_kubeconfig_path_used: Path,
     monkeypatch,
 ):
+    """Test that get_kubeconfig_path correctly returns the default path and one from an env var."""
     # Arrange
     env_var = "test-env-var"
 
@@ -162,9 +164,10 @@ def test_get_kubeconfig_path(
 
 @patch("dss.utils.get_kubeconfig_path")
 def test_save_kubeconfig(
-    mock_get_kubeconfig_path,
+    mock_get_kubeconfig_path: MagicMock,
     monkeypatch,
 ):
+    """Test that save_kubeconfig succeeds as expected."""
     # Arrange
     kubeconfig = "kubeconfig-text"
 
