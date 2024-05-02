@@ -6,6 +6,7 @@ JupyterLab
 MLflow
 MicroK
 OCI
+analyze
 config
 initialize
 initialized
@@ -21,3 +22,4 @@ runtime
 scipy
 snapcraft
 toolkits
+visualize
