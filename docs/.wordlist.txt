@@ -5,6 +5,8 @@ balancer
 Charmhub
 CLI
 Diátaxis
+declutter
+dss
 dropdown
 EBS
 EKS
@@ -14,10 +16,13 @@ Furo
 Git
 GitHub
 Grafana
+html
+https
 IAM
 installable
 JSON
 Juju
+Jupyter
 Kubeflow
 Kubernetes
 Launchpad
@@ -25,6 +30,7 @@ LTS
 Makefile
 Matrix
 Mattermost
+mlflow
 MyST
 namespace
 namespaces
@@ -44,6 +50,7 @@ subfolders
 subtree
 Ubuntu
 UI
+URI
 UUID
 VM
 YAML
