@@ -16,7 +16,11 @@ Before accessing your data, ensure you have the following:
 
 Accessing your data
 -------------------
-By default, your Notebooks data will be stored in a directory under `/var/snap/microk8s/common/default-storage`.  This directory is shared by all DSS Notebooks.
+By default, your Notebooks data will be stored in a directory under `/var/snap/microk8s/common/default-storage`:
+
+* `Microk8s hostpath docs`_
+
+This directory is shared by all DSS Notebooks.
 
 1. **Find the directory of your stored data**
     To find the directory containing your Notebooks data, list the directories under `/var/snap/microk8s/common/default-storage`:

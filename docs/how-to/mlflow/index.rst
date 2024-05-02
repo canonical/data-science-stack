@@ -1,7 +1,7 @@
-Manage MLflow
+Manage MLFlow
 =============
 
-Use these guides for detailed steps on managing MLflow with DSS.
+Use these guides for detailed steps on managing MLFlow with DSS.
 
 .. toctree::
    :maxdepth: 1
