@@ -25,9 +25,9 @@ Creating a Notebook
 
     .. code-block:: bash
 
-        dss list-images
+        dss create --help
 
-    For this guide, we will use the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
+    The help text includes a list of recommended images and aliases so you don't need to type the full image name.  For this guide, we will use the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
 
 2. **Create the notebook**:
 
@@ -50,3 +50,8 @@ Creating a Notebook
 3. **Access the notebook**:
 
     To :doc:`access the Notebook </how-to/jupyter-notebook/access-ui>`, use the URL provided in the output.
+
+Conclusion
+----------
+
+Notebooks are a powerful tool for data scientists and analysts to explore, visualize, and analyze data.  By creating a notebook in the DSS environment, you can leverage the power of the Data Science Stack to run your analyses.

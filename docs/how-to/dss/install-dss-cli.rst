@@ -1,12 +1,19 @@
-Install DSS
-===========
+Install DSS CLI
+===============
 
 This guide explains how to install the Data Science Stack (DSS) Command Line Interface (CLI).
 
 Overview
 --------
 
-The DSS CLI is distributed as a snap accessible from the [snap store](https://snapcraft.io/data-science-stack).
+The DSS CLI is distributed as a snap accessible from the `snap store <dss snap store_>`_.
+
+Prerequisites
+-------------
+
+Before proceeding, ensure that you have the following:
+
+- A system with `snap`_ installed.
 
 Installing the DSS Snap
 -----------------------

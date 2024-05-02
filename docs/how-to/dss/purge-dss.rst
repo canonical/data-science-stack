@@ -10,7 +10,7 @@ The `dss purge` command provides a way to remove everything deployed by DSS from
 
 .. note::
 
-    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your MicroK8s cluster.  To remove those, remove their snaps.
+    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your MicroK8s cluster.  To remove those, `remove their snaps <https://snapcraft.io/docs/quickstart-tour>`_.
 
 Prerequisites
 -------------
@@ -29,6 +29,7 @@ To purge all DSS components from your machine, do:
     dss purge
 
 This will remove:
+
 * all Jupyter Notebooks
 * the MLflow server
 * any data stored within the DSS environment
