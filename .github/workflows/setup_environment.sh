@@ -12,6 +12,6 @@ apt-get install -yqq python3-pip
 pip3 install tox
 
 # Microk8s setup
-snap install microk8s --channel=1.28/stable --classic
+snap install microk8s --channel=$MICROK8S_CHANNEL --classic
 usermod -a -G microk8s ubuntu
 newgrp microk8s

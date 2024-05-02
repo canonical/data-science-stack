@@ -1,9 +1,13 @@
 name: GPU integration CI
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'  # This will trigger the workflow at 00:00 every Sunday
-  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 0 * * 0'  # This will trigger the workflow at 00:00 every Sunday
+  # workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
   
 
 jobs:
@@ -39,11 +43,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
+    # Issue: https://github.com/canonical/data-science-stack/issues/116
     - name: Setup operator environment
       run: sudo bash .github/workflows/setup_environment.sh
+      env:
+        MICROK8S_CHANNEL: 1.28/stable
 
     - name: Setup microk8s
-      run: sudo bash .github/workflows/setup_microk8s.sh
+      run: sudo bash .github/workflows/configure_microk8s.sh
+      env:
+        MICROK8S_ADDONS: "storage dns rbac gpu"
 
     - name: Run tests as root
       run: |

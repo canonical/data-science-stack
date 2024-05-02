@@ -1,14 +1,16 @@
 import pytest
 
+from dss.config import DEFAULT_NOTEBOOK_IMAGE
+
 
 def pytest_addoption(parser):
     """
-    Add a command-line option to pytest for specifying the notebook image and kubeconfig.
+    Add a command-line option to pytest for specifying the notebook image.
     """
     parser.addoption(
         "--notebook-image",
         action="store",
-        default="kubeflownotebookswg/jupyter-scipy:v1.8.0",
+        default=DEFAULT_NOTEBOOK_IMAGE,
         help="Docker image to use for the notebook tests",
     )
 

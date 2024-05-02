@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This needs to be a separate file as newgrp will not have effect from setup_environment.sh
-microk8s enable storage dns rbac gpu
+microk8s enable storage $MICROK8S_ADDONS
 microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system
 
 # Wait for gpu operator components to be ready

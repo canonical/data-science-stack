@@ -15,13 +15,14 @@ NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
 
 
-def get_pod_name_from_deployment(client, deployment_name, namespace):
-    pods = list(client.list(Pod, namespace=namespace, labels={NOTEBOOK_LABEL: deployment_name}))
-    return pods[0].metadata.name if pods else None
-
-
-@pytest.mark.cpu_run
-def test_status_before_initialize(cleanup_after_initialize) -> None:
+@pytest.mark.parametrize(
+    "is_cpu_or_gpu",
+    [
+        pytest.param("cpu", marks=pytest.mark.cpu),
+        pytest.param("gpu", marks=pytest.mark.gpu),
+    ],
+)
+def test_status_before_initialize(is_cpu_or_gpu, cleanup_after_initialize) -> None:
     """
     Integration test to verify 'dss status' command before initialization.
     """
@@ -37,36 +38,21 @@ def test_status_before_initialize(cleanup_after_initialize) -> None:
     # Check if the output indicates MLflow deployment is not ready
     assert "MLflow deployment: Not ready" in result.stdout
 
-    # Check if the output indicates GPU acceleration is disabled
-    assert "GPU acceleration: Disabled" in result.stdout
+    if is_cpu_or_gpu == "cpu":
+        # Check if the output indicates GPU acceleration is disabled
+        assert "GPU acceleration: Disabled" in result.stdout
+    elif is_cpu_or_gpu == "gpu":
+        # Check if the output indicates GPU acceleration is enabled and captures a GPU model
+        assert "GPU acceleration: Enabled" in result.stdout
+        assert (
+            "NVIDIA" in result.stdout
+        )  # This checks for the presence of NVIDIA in the log, assuming only NVIDIA GPUs are used.
+    else:
+        raise ValueError(f"Invalid value for is_cpu_or_gpu: {is_cpu_or_gpu}")
 
 
-@pytest.mark.gpu_run
-def test_status_before_initialize_gpu(cleanup_after_initialize) -> None:
-    """
-    Integration test to verify 'dss status' command before initialization on a GPU-enabled system.
-    """
-
-    # Run the status command
-    result = subprocess.run(
-        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
-    )
-
-    # Check if the command executed successfully
-    assert result.returncode == 0
-
-    # Check if the output indicates MLflow deployment is not ready
-    assert "MLflow deployment: Not ready" in result.stdout
-
-    # Check if the output indicates GPU acceleration is enabled and captures a GPU model
-    assert "GPU acceleration: Enabled" in result.stdout
-    assert (
-        "NVIDIA" in result.stdout
-    )  # This checks for the presence of NVIDIA in the log, assuming only NVIDIA GPUs are used.
-
-
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     """
     Integration test to verify if the initialize command creates the 'dss' namespace and
@@ -106,8 +92,8 @@ def test_initialize_creates_dss(cleanup_after_initialize) -> None:
     assert "notebooks" in kubectl_result.stdout
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_create_notebook(cleanup_after_initialize, notebook_image) -> None:
     """
     Tests that `dss create` successfully creates a notebook as expected.
@@ -141,14 +127,10 @@ def test_create_notebook(cleanup_after_initialize, notebook_image) -> None:
     assert deployment.status.availableReplicas == deployment.spec.replicas
 
 
-@pytest.mark.gpu_run
-def test_notebook_gpu_availability(notebook_image, cleanup_after_initialize):
+@pytest.mark.gpu
+def test_notebook_gpu_availability(cleanup_after_initialize):
     """
     Test to ensure that the GPU is available in the deployed Jupyter notebook.
-
-    Args:
-        kubeconfig (str): Path to the Kubernetes configuration file.
-        notebook_image (str): Docker image used for the notebook deployment.
     """
     kubeconfig = lightkube.KubeConfig.from_file(KUBECONFIG)
     lightkube_client = lightkube.Client(kubeconfig)
@@ -174,8 +156,8 @@ def test_notebook_gpu_availability(notebook_image, cleanup_after_initialize):
     assert "CUDA Available: True" in gpu_result.stdout, "GPU is not available in the notebook pod"
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_list_after_create(cleanup_after_initialize) -> None:
     """
     Tests that `dss list` lists notebooks as expected.
@@ -200,31 +182,18 @@ def test_list_after_create(cleanup_after_initialize) -> None:
     assert NOTEBOOK_NAME in result.stdout
 
 
-@pytest.mark.cpu_run
-def test_status_after_initialize(cleanup_after_initialize) -> None:
+@pytest.mark.parametrize(
+    "is_cpu_or_gpu",
+    [
+        pytest.param("cpu", marks=pytest.mark.cpu),
+        pytest.param("gpu", marks=pytest.mark.gpu),
+    ],
+)
+def test_status_after_initialize(is_cpu_or_gpu, cleanup_after_initialize) -> None:
     """
-    Integration test to verify 'dss status' command before initialization.
+    Integration test to verify 'dss status' command after initialization.
     """
-    # Run the status command
-    result = subprocess.run(
-        ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
-    )
 
-    # Check if the command executed successfully
-    assert result.returncode == 0
-
-    # Check if the output indicates MLflow deployment is ready
-    assert "MLflow deployment: Ready" in result.stdout
-
-    # Check if the output indicates GPU acceleration is enabled
-    assert "GPU acceleration: Disabled" in result.stdout
-
-
-@pytest.mark.gpu_run
-def test_status_after_initialize_gpu(cleanup_after_initialize) -> None:
-    """
-    Integration test to verify 'dss status' command after initialization on a GPU-enabled system.
-    """
     # Run the status command
     result = subprocess.run(
         ["dss", "status", "--kubeconfig", KUBECONFIG], capture_output=True, text=True
@@ -239,15 +208,19 @@ def test_status_after_initialize_gpu(cleanup_after_initialize) -> None:
     # Check for MLflow URL presence in the output
     assert "MLflow URL: http://" in result.stdout
 
-    # Check if the output indicates GPU acceleration is enabled and captures any GPU model
-    assert "GPU acceleration: Enabled" in result.stdout
-    assert (
-        "NVIDIA" in result.stdout
-    )  # This checks for the presence of NVIDIA, assuming NVIDIA GPUs are used.
+    if is_cpu_or_gpu == "cpu":
+        # Check if the output indicates GPU acceleration is disabled
+        assert "GPU acceleration: Disabled" in result.stdout
+    elif is_cpu_or_gpu == "gpu":
+        # Check if the output indicates GPU acceleration is enabled and captures a GPU model
+        assert "GPU acceleration: Enabled" in result.stdout
+        assert (
+            "NVIDIA" in result.stdout
+        )  # This checks for the presence of NVIDIA, assuming NVIDIA GPUs are used.
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_log_command(cleanup_after_initialize) -> None:
     """
     Integration test for the 'logs' command.
@@ -285,8 +258,8 @@ def test_log_command(cleanup_after_initialize) -> None:
     assert "Starting gunicorn" in result.stdout
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_stop_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss stop` successfully stops a notebook as expected.
@@ -317,8 +290,8 @@ def test_stop_notebook(cleanup_after_initialize) -> None:
     assert deployment.spec.replicas == 0
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_start_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss start` successfully starts a notebook as expected.
@@ -349,8 +322,8 @@ def test_start_notebook(cleanup_after_initialize) -> None:
     assert deployment.spec.replicas == 1
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_remove_notebook(cleanup_after_initialize) -> None:
     """
     Tests that `dss remove` successfully removes a notebook as expected.
@@ -383,8 +356,8 @@ def test_remove_notebook(cleanup_after_initialize) -> None:
     assert err.value.response.status_code == 404
 
 
-@pytest.mark.gpu_run
-@pytest.mark.cpu_run
+@pytest.mark.gpu
+@pytest.mark.cpu
 def test_purge(cleanup_after_initialize) -> None:
     """
     Tests that `purge` command removes all notebooks and DSS components.
@@ -440,3 +413,8 @@ def cleanup_after_initialize():
     # Note that .delete() does not wait on the objects to be successfully deleted, so repeating
     # the tests quickly can still cause an issue
     k8s_resource_handler.delete()
+
+
+def get_pod_name_from_deployment(client, deployment_name, namespace):
+    pods = list(client.list(Pod, namespace=namespace, labels={NOTEBOOK_LABEL: deployment_name}))
+    return pods[0].metadata.name if pods else None

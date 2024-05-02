@@ -17,8 +17,8 @@ show_missing = true
 minversion = "6.0"
 log_cli_level = "INFO"
 markers = [
-    "cpu_run: mark a test that runs specifically on CPU environments.",
-    "gpu_run: mark a test that runs specifically on GPU environments."
+    "cpu: mark a test that runs specifically on CPU environments.",
+    "gpu: mark a test that runs specifically on GPU environments."
 ]
 
 # Formatting tools configuration
