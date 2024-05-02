@@ -6,7 +6,6 @@ JupyterLab
 MLflow
 MicroK
 OCI
-analyze
 config
 initialize
 initialized
@@ -17,9 +16,8 @@ kubeconfig
 kubeflownotebookswg
 microk
 microk8s.io
-reinitialize
+reinitialise
 runtime
 scipy
 snapcraft
 toolkits
-visualize

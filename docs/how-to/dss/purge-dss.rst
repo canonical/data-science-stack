@@ -48,4 +48,4 @@ The expected output from the above command is:
 Conclusion
 ----------
 
-All elements of the DSS environment have been purged from your MicroK8s cluster. You can now reinitialize DSS on your system if you wish to continue using it.
+All elements of the DSS environment have been purged from your MicroK8s cluster. You can now reinitialise DSS on your system if you wish to continue using it.

@@ -54,4 +54,4 @@ Creating a Notebook
 Conclusion
 ----------
 
-Notebooks are a powerful tool for data scientists and analysts to explore, visualize, and analyze data.  By creating a notebook in the DSS environment, you can leverage the power of the Data Science Stack to run your analyses.
+Notebooks are a powerful tool for data scientists and analysts to explore, visualise, and analyse data.  By creating a notebook in the DSS environment, you can leverage the power of the Data Science Stack to run your analyses.
