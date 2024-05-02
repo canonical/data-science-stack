@@ -14,3 +14,4 @@ Use these guides for detailed steps on managing Jupyter Notebooks with DSS.
    access-ui
    notebook-logs
    connect-mlflow
+   access-data
