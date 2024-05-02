@@ -15,6 +15,7 @@ jobs:
     name: Test the Python package with GPU
     if: github.event_name == 'push'
     uses: ./.github/workflows/aws-integration-gpu.yaml
+    secrets: inherit  
 
   test-snap:
     name: Build and test the Snap
