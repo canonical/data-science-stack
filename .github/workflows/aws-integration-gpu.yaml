@@ -1,0 +1,79 @@
+name: GPU integration CI
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # This will trigger the workflow at 00:00 every Sunday
+  workflow_dispatch:
+  workflow_call:
+  
+
+jobs:
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-22.04
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2.2.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2.3.3
+        with:
+          mode: start
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          ec2-image-id: ${{ vars.AWS_EC2_IMAGE_ID }}
+          ec2-instance-type: ${{ vars.AWS_EC2_INSTANCE_TYPE }}
+          subnet-id: ${{ vars.AWS_DEFAULT_SUBNET_ID }}
+          security-group-id: ${{ vars.AWS_SECURITY_GROUP_ID }}
+  
+  integration-tests:
+    name: Run integration tests
+    needs: [start-runner]
+    runs-on: ${{ needs.start-runner.outputs.label }} 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Issue: https://github.com/canonical/data-science-stack/issues/116
+    - name: Setup operator environment
+      run: sudo -E bash .github/workflows/setup_environment.sh
+      env:
+        MICROK8S_CHANNEL: 1.28/stable
+
+    - name: Setup microk8s
+      run: sudo -E bash .github/workflows/configure_microk8s.sh
+      env:
+        MICROK8S_ADDONS: "storage dns rbac gpu"
+
+    - name: Run tests as root
+      run: |
+        sudo snap alias microk8s.kubectl kubectl
+        tox -e integration-gpu -- -vv -s
+
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    needs:
+      - start-runner 
+      - integration-tests
+    runs-on: ubuntu-22.04
+    if: ${{ always() }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2.2.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2.3.3
+        with:
+          mode: stop
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}

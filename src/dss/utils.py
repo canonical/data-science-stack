@@ -36,7 +36,7 @@ def wait_for_deployment_ready(
     client: Client,
     namespace: str,
     deployment_name: str,
-    timeout_seconds: int = 180,
+    timeout_seconds: int = 600,
     interval_seconds: int = 10,
 ) -> None:
     """
