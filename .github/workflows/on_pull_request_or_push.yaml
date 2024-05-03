@@ -1,4 +1,4 @@
-name: On Pull Request
+name: On Push/Pull Request
 
 on:
   push:
@@ -7,10 +7,16 @@ on:
   pull_request:
 
 jobs:
-  tests:
-    name: Run Tests
+  test-package:
+    name: Test the Python package
     uses: ./.github/workflows/tests.yaml
 
+  test-package-gpu:
+    name: Test the Python package with GPU
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/aws-integration-gpu.yaml
+    secrets: inherit  
+
   test-snap:
-    name: Build and test Snap
+    name: Build and test the Snap
     uses: ./.github/workflows/build_and_test_snap.yaml
