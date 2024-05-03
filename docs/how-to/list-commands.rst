@@ -35,7 +35,7 @@ Listing available DSS commands
         --help  Show this message and exit.
 
         Commands:
-        create      Create a Jupyter notebook in DSS and connect it to MLFlow.
+        create      Create a Jupyter notebook in DSS and connect it to MLflow.
         initialize  Initialize DSS on the given Kubernetes cluster.
         list        Lists all created notebooks in the DSS environment.
         logs        Prints the logs for the specified notebook or DSS component.
