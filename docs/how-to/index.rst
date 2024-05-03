@@ -8,3 +8,5 @@ managing and interacting with containerised ML Environments via the DSS.
    :maxdepth: 2
 
    jupyter-notebook/index
+   mlflow/index
+   list-commands
