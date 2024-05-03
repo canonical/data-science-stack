@@ -35,7 +35,7 @@ spec:
           volumeMounts:
           - mountPath: /dev/shm
             name: dshm
-          - mountPath: /home/jovyan
+          - mountPath: /home/jovyan/shared
             name: home-volume
           workingDir: /home/jovyan
       terminationGracePeriodSeconds: 30
