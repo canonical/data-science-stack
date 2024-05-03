@@ -5,3 +5,7 @@ GPUs
 runtime
 MicroK
 OCI
+Nvidia
+ipynb
+ons
+Snapcraft
