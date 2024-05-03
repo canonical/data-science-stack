@@ -4,4 +4,7 @@ MLFlow
 GPUs
 runtime
 MicroK
+microk
 OCI
+pvc
+hostpath
