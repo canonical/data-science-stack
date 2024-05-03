@@ -4,6 +4,7 @@ MLFlow
 GPUs
 runtime
 MicroK
+microk
 OCI
 Nvidia
 ipynb
@@ -11,3 +12,5 @@ ons
 Snapcraft
 GeForce
 RTX
+pvc
+hostpath

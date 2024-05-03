@@ -39,15 +39,27 @@ Retrieving Notebook Logs
 
    .. code-block:: none
 
-       [INFO] Logs for my-notebook-6d47c6f9f7-5bjqd:
-       [INFO] 2024-04-30T10:09:11.497Z [pebble] Started daemon.
-       [INFO] 2024-04-30T10:09:11.528Z [pebble] POST /v1/services 15.363608ms 202
-       [INFO] 2024-04-30T10:09:11.528Z [pebble] Started default services with change 1.
-       [INFO] 2024-04-30T10:09:11.543Z [pebble] Service "jupyter" starting: ./jupyter lab --notebook-dir="/home/jovyan" --ip=0.0.0.0 --no-browser --port=8888 --ServerApp.token="" --ServerApp.password="" --ServerApp.allow_origin="*" --ServerApp.base_url="/" --ServerApp.authenticate_prometheus="False"
-       [INFO] 2024-04-30T10:09:12.932Z [jupyter] [W 2024-04-30 10:09:12.932 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
-       [INFO] 2024-04-30T10:09:13.034Z [jupyter] [W 2024-04-30 10:09:13.033 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
-       [INFO] 2024-04-30T10:09:13.036Z [jupyter] [I 2024-04-30 10:09:13.036 ServerApp] jupyter_server_fileid | extension was successfully linked.
-       [INFO] 2024-04-30T10:09:13.038Z [jupyter] [I 2024-04-30 10:09:13.038 ServerApp] jupyter_server_mathjax | extension was successfully linked.
+        [INFO] Logs for my-notebook2-8cf4d9bc-jm9zm:
+        [INFO] s6-rc: info: service s6rc-oneshot-runner: starting
+        [INFO] s6-rc: info: service s6rc-oneshot-runner successfully started
+        [INFO] s6-rc: info: service fix-attrs: starting
+        [INFO] s6-rc: info: service fix-attrs successfully started
+        [INFO] s6-rc: info: service legacy-cont-init: starting
+        [INFO] cont-init: info: running /etc/cont-init.d/01-copy-tmp-home
+        [INFO] cont-init: info: /etc/cont-init.d/01-copy-tmp-home exited 0
+        [INFO] s6-rc: info: service legacy-cont-init successfully started
+        [INFO] s6-rc: info: service legacy-services: starting
+        [INFO] services-up: info: copying legacy longrun jupyterlab (no readiness notification)
+        [INFO] s6-rc: info: service legacy-services successfully started
+        [INFO] [W 2024-04-30 13:44:20.991 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
+        [INFO] [I 2024-04-30 13:44:20.996 ServerApp] Package jupyterlab took 0.0000s to import
+        [INFO] [I 2024-04-30 13:44:20.997 ServerApp] Package jupyter_server_fileid took 0.0013s to import
+        [INFO] [I 2024-04-30 13:44:20.998 ServerApp] Package jupyter_server_mathjax took 0.0007s to import
+        [INFO] [I 2024-04-30 13:44:21.001 ServerApp] Package jupyter_server_terminals took 0.0024s to import
+        [INFO] [I 2024-04-30 13:44:21.012 ServerApp] Package jupyter_server_ydoc took 0.0105s to import
+        [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package jupyterlab_git took 0.0104s to import
+        [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package nbclassic took 0.0000s to import
+
 
 Conclusion
 ----------
