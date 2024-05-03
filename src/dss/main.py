@@ -11,7 +11,7 @@ from dss.remove_notebook import remove_notebook
 from dss.start import start_notebook
 from dss.status import get_status
 from dss.stop import stop_notebook
-from dss.utils import KUBECONFIG_DEFAULT, get_default_kubeconfig, get_lightkube_client
+from dss.utils import KUBECONFIG_DEFAULT, get_lightkube_client, save_kubeconfig
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -25,7 +25,7 @@ def main():
 @main.command(name="initialize")
 @click.option(
     "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
+    help=f"Content of a Kubernetes config file defining the cluster to use.  The kubeconfig will be saved to {KUBECONFIG_DEFAULT} and overwrite any kubeconfig previously stored there.  Future `dss` commands will reuse this kubeconfig by default.",  # noqa E501
 )
 def initialize_command(kubeconfig: str) -> None:
     """
@@ -34,9 +34,15 @@ def initialize_command(kubeconfig: str) -> None:
     logger.info("Executing initialize command")
 
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        if kubeconfig:
+            save_kubeconfig(kubeconfig=kubeconfig)
+    except Exception as e:
+        logger.debug(f"Failed to save kubeconfig: {e}.", exc_info=True)
+        logger.error(f"Failed to save kubeconfig: {str(e)}.")
+        click.get_current_context().exit(1)
 
+    try:
+        lightkube_client = get_lightkube_client()
         initialize(lightkube_client=lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)
@@ -44,6 +50,16 @@ def initialize_command(kubeconfig: str) -> None:
         logger.debug(f"Failed to initialize dss: {e}.", exc_info=True)
         logger.error(f"Failed to initialize dss: {str(e)}.")
         click.get_current_context().exit(1)
+
+
+initialize_command.help += """
+
+\b
+Examples
+  # To initialize DSS with microk8s's kubeconfig
+  dss initialize --kubeconfig "$(microk8s config)"
+
+"""
 
 
 IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
@@ -59,13 +75,7 @@ IMAGE_OPTION_HELP = "\b\nThe image used for the notebook server.\n"
     default=DEFAULT_NOTEBOOK_IMAGE,
     help=IMAGE_OPTION_HELP,
 )
-# FIXME: Remove the kubeconfig param from the create command (and any tests) after
-#  https://github.com/canonical/data-science-stack/issues/37
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
-def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
+def create_notebook_command(name: str, image: str) -> None:
     """Create a Jupyter notebook in DSS and connect it to MLflow. This command also
     outputs the URL to access the notebook on success.
 
@@ -79,8 +89,7 @@ def create_notebook_command(name: str, image: str, kubeconfig: str) -> None:
         )
 
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
 
         create_notebook(name=name, image=image, lightkube_client=lightkube_client)
     except RuntimeError:
@@ -101,16 +110,12 @@ Examples
 
 
 @main.command(name="logs")
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
 @click.argument("notebook_name", required=False)
 @click.option(
     "--all", "print_all", is_flag=True, help="Print the logs for all notebooks and MLflow."
 )
 @click.option("--mlflow", is_flag=True, help="Print the logs for the MLflow deployment.")
-def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: bool) -> None:
+def logs_command(notebook_name: str, print_all: bool, mlflow: bool) -> None:
     """Prints the logs for the specified notebook or DSS component.
 
     \b
@@ -126,8 +131,7 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
         return
 
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
 
         if print_all:
             get_logs("all", None, lightkube_client)
@@ -144,15 +148,10 @@ def logs_command(kubeconfig: str, notebook_name: str, print_all: bool, mlflow: b
 
 
 @main.command(name="status")
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
-def status_command(kubeconfig: str) -> None:
+def status_command() -> None:
     """Checks the status of key components within the DSS environment. Verifies if the MLflow deployment is ready and checks if GPU acceleration is enabled on the Kubernetes cluster by examining the labels of Kubernetes nodes for NVIDIA or Intel GPU devices."""  # noqa E501
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
 
         get_status(lightkube_client)
     except RuntimeError:
@@ -170,19 +169,14 @@ def status_command(kubeconfig: str) -> None:
     is_flag=True,
     help="Display full information without truncation.",
 )
-@click.option(
-    "--kubeconfig",
-    help="Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to './kubeconfig'.",  # noqa E501
-)
-def list_command(kubeconfig: str, wide: bool):
+def list_command(wide: bool):
     """
     Lists all created notebooks in the DSS environment.
 
     The output is truncated to 80 characters. Use the --wide flag to display full information.
     """
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
         list_notebooks(lightkube_client, wide)
     except RuntimeError:
         click.get_current_context().exit(1)
@@ -193,12 +187,8 @@ def list_command(kubeconfig: str, wide: bool):
 
 
 @main.command(name="stop")
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
 @click.argument("notebook_name", required=True)
-def stop_notebook_command(kubeconfig: str, notebook_name: str):
+def stop_notebook_command(notebook_name: str):
     """
     Stops a running notebook in the DSS environment.
     \b
@@ -206,8 +196,7 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
         dss stop my-notebook
     """
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
         stop_notebook(name=notebook_name, lightkube_client=lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)
@@ -217,18 +206,12 @@ def stop_notebook_command(kubeconfig: str, notebook_name: str):
         click.get_current_context().exit(1)
 
 
-# FIXME: remove the `--kubeconfig`` option
-# after fixing https://github.com/canonical/data-science-stack/issues/37
 @main.command(name="start")
 @click.argument(
     "name",
     required=True,
 )
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
-def start_notebook_command(name: str, kubeconfig: str):
+def start_notebook_command(name: str):
     """
     Starts a stopped notebook in the DSS environment.
     \b
@@ -238,8 +221,7 @@ def start_notebook_command(name: str, kubeconfig: str):
     logger.info("Executing start command")
 
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
         start_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)
@@ -250,26 +232,19 @@ def start_notebook_command(name: str, kubeconfig: str):
         click.get_current_context().exit(1)
 
 
-# FIXME: remove the `--kubeconfig`` option
-# after fixing https://github.com/canonical/data-science-stack/issues/37
 @main.command(name="remove")
 @click.argument(
     "name",
     required=True,
 )
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
-def remove_notebook_command(name: str, kubeconfig: str):
+def remove_notebook_command(name: str):
     """
     Remove a Jupter Notebook in DSS with the name NAME.
     """
     logger.info("Executing remove command")
 
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
 
         remove_notebook(name=name, lightkube_client=lightkube_client)
     except RuntimeError:
@@ -281,19 +256,12 @@ def remove_notebook_command(name: str, kubeconfig: str):
 
 
 @main.command(name="purge")
-@click.option(
-    "--kubeconfig",
-    help=f"Path to a Kubernetes config file. Defaults to the value of the KUBECONFIG environment variable, else to '{KUBECONFIG_DEFAULT}'.",  # noqa E501
-)
-# FIXME: Remove the kubeconfig param from the create command (and any tests) after
-#  https://github.com/canonical/data-science-stack/issues/37
-def purge_command(kubeconfig: str) -> None:
+def purge_command() -> None:
     """
     Removes all notebooks and DSS components.
     """
     try:
-        kubeconfig = get_default_kubeconfig(kubeconfig)
-        lightkube_client = get_lightkube_client(kubeconfig)
+        lightkube_client = get_lightkube_client()
         purge(lightkube_client=lightkube_client)
     except RuntimeError:
         click.get_current_context().exit(1)

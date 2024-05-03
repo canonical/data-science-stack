@@ -10,11 +10,6 @@ confinement: strict
 architectures:
   - build-on: amd64
 
-plugs:
-  dot-dss-config:
-    interface: personal-files
-    read:
-      - $HOME/.dss/config
 apps:
   dss:
     command: bin/dss

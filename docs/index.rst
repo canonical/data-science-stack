@@ -6,7 +6,7 @@ Data Science Stack
 
 Data science stack (DSS) is a ready-to-run environment for machine learning
 and data science.  It’s built on open-source tooling (including MicroK8s,
-JupyterLab and MLFlow) and usable on any Ubuntu/Snap-enabled workstation.
+JupyterLab and MLflow) and usable on any Ubuntu/Snap-enabled workstation.
 
 DSS provides a CLI for managing containerised ML environments images such as
 PyTorch or TensorFlow, on top of MicroK8s.

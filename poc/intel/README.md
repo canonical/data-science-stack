@@ -1,7 +1,7 @@
 # Intel xGPU PoC
 
 Launch Jupyter notebooks with Intel xGPU support enabled for Tensorflow
-PyTorch, and OpenVINO. Note that MLFlow is also deployed along side Jupyter.
+PyTorch, and OpenVINO. Note that MLflow is also deployed along side Jupyter.
 
 ## Verify Intel xGPU Availability
 

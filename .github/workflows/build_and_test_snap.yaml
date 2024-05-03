@@ -9,7 +9,8 @@ on:
 env:
   SNAP_ARTIFACT_NAME: dss-snap
   SNAP_FILE: dss.snap
-  KUBECONFIG: ~/.dss/config
+  # Path to the home dir of the strictly confined data-science-stack snap
+  DSS_KUBECONFIG_PATH: ~/snap/data-science-stack/x1/.dss/config
 
 jobs:
   build-snap:
@@ -50,7 +51,6 @@ jobs:
       run: |
         # use --dangerous so we trust the snap even though it doesn't have signatures
         sudo snap install ${{ env.SNAP_FILE }} --dangerous
-        sudo snap connect data-science-stack:dot-dss-config
         sudo snap alias data-science-stack.dss dss
 
     - name: Set up Microk8s
@@ -64,9 +64,9 @@ jobs:
 
     - name: Export kubeconfig where strict snap can access it
       run: |
-        mkdir -p ~/.dss
-        cp ~/.kube/config ${{ env.KUBECONFIG }}
+        mkdir -p $(dirname ${{ env.DSS_KUBECONFIG_PATH }})
+        cp ~/.kube/config ${{ env.DSS_KUBECONFIG_PATH }}
 
     - name: Test dss snap
       run: |
-        tox -e dss-cli -- --kubeconfig ${{ env.KUBECONFIG }}
+        tox -e dss-cli

@@ -1,5 +1,6 @@
 from contextlib import nullcontext as does_not_raise
-from unittest.mock import MagicMock, patch
+from pathlib import Path
+from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 from lightkube import ApiError
@@ -9,17 +10,18 @@ from lightkube.resources.core_v1 import Node, Pod
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME, DeploymentState
 from dss.utils import (
-    KUBECONFIG_DEFAULT,
     ImagePullBackOffError,
     does_dss_pvc_exist,
     does_namespace_exist,
     does_notebook_exist,
-    get_default_kubeconfig,
     get_deployment_state,
+    get_kubeconfig,
+    get_kubeconfig_path,
     get_labels_for_node,
     get_lightkube_client,
     get_mlflow_tracking_uri,
     get_service_url,
+    save_kubeconfig,
     wait_for_deployment_ready,
     wait_for_namespace_to_be_deleted,
 )
@@ -56,6 +58,15 @@ def mock_kubeconfig() -> MagicMock:
     """
     with patch("dss.utils.KubeConfig") as mock_kubeconfig:
         yield mock_kubeconfig
+
+
+@pytest.fixture
+def mock_get_kubeconfig() -> MagicMock:
+    """
+    Fixture to mock the KubeConfig.from_dict function.
+    """
+    with patch("dss.utils.get_kubeconfig") as mock_get_kubeconfig:
+        yield mock_get_kubeconfig
 
 
 @pytest.fixture
@@ -102,49 +113,83 @@ class FakeApiError(ApiError):
         super().__init__(response=_FakeResponse(code))
 
 
+@patch("dss.utils.get_kubeconfig_path")
+def test_get_kubeconfig(
+    mock_get_kubeconfig_path,
+    mock_kubeconfig,
+    monkeypatch,
+):
+    """Tests that get_kubeconfig succeeds as expected."""
+    # Arrange
+    mock_get_kubeconfig_path.return_value = Path("kubeconfig-path")
+
+    # Act
+    _ = get_kubeconfig()
+
+    # Assert
+    mock_kubeconfig.from_file.assert_called_once_with(mock_get_kubeconfig_path.return_value)
+
+
 @pytest.mark.parametrize(
-    "kubeconfig, kubeconfig_env_var, expected",
+    "env_var_content, kubeconfig_default, expected_kubeconfig_path_used",
     [
-        ("some_file", "", "some_file"),
-        (None, "some_file", "some_file"),
-        (None, "", KUBECONFIG_DEFAULT),
+        ("env_var_path", "default_path", Path("env_var_path")),
+        (None, "default_path", Path("default_path")),
     ],
 )
-def test_get_default_kubeconfig_successful(
-    kubeconfig: str,
-    kubeconfig_env_var: str,
-    expected: str,
-    mock_environ_get: MagicMock,
-) -> None:
-    """
-    Test case to verify missing kubeconfig environment variable.
+def test_get_kubeconfig_path(
+    env_var_content: str,
+    kubeconfig_default: str,
+    expected_kubeconfig_path_used: Path,
+    monkeypatch,
+):
+    """Test that get_kubeconfig_path correctly returns the default path and one from an env var."""
+    # Arrange
+    env_var = "test-env-var"
 
-    Args:
-        kubeconfig: path to a kubeconfig file, passed to get_lightkube_client by arg
-        kubeconfig_env_var: environment variable for kubeconfig
-        expected: expected returned value for kubeconfig
-    """
-    mock_environ_get.return_value = kubeconfig_env_var
+    with pytest.MonkeyPatch.context() as mp:
+        if env_var_content is None:
+            mp.delenv(env_var, raising=False)
+        else:
+            mp.setenv(env_var, env_var_content)
 
-    returned = get_default_kubeconfig(kubeconfig)
-    assert returned == expected
+        # Act
+        actual = get_kubeconfig_path(
+            env_var=env_var, default_kubeconfig_location=kubeconfig_default
+        )
+
+    # Assert
+    assert actual == expected_kubeconfig_path_used
+
+
+@patch("dss.utils.get_kubeconfig_path")
+def test_save_kubeconfig(
+    mock_get_kubeconfig_path: MagicMock,
+    monkeypatch,
+):
+    """Test that save_kubeconfig succeeds as expected."""
+    # Arrange
+    kubeconfig = "kubeconfig-text"
+
+    # Act
+    mocked_open = mock_open()
+    with patch("dss.utils.open", mocked_open):
+        save_kubeconfig(kubeconfig)
+
+    # Assert
+    mock_get_kubeconfig_path.return_value.parent.mkdir.assert_called_once()
+    mocked_open.assert_called_once_with(mock_get_kubeconfig_path.return_value, "w")
+    mocked_open().write.assert_called_once_with(kubeconfig)
 
 
 def test_get_lightkube_client_successful(
-    mock_kubeconfig: MagicMock,
+    mock_get_kubeconfig: MagicMock,
     mock_client: MagicMock,
 ) -> None:
     """
     Tests that we successfully try to create a lightkube client, given a kubeconfig.
     """
-    kubeconfig = "some_file"
-    mock_kubeconfig_instance = "kubeconfig-returned"
-    mock_kubeconfig.from_file.return_value = mock_kubeconfig_instance
-
-    returned_client = get_lightkube_client(kubeconfig)
-
-    mock_kubeconfig.from_file.assert_called_with(kubeconfig)
-    mock_client.assert_called_with(config=mock_kubeconfig_instance)
+    returned_client = get_lightkube_client()
     assert returned_client is not None
 
 

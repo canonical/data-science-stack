@@ -15,3 +15,5 @@
 .. _MLFlow Runs: https://mlflow.org/docs/latest/tracking.html#runs
 .. _MLFlow Experiments: https://mlflow.org/docs/latest/tracking.html#experiments
 .. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
+.. _dss snap store: https://snapcraft.io/data-science-stack
+.. _snap: https://snapcraft.io/

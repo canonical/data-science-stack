@@ -28,7 +28,7 @@ GPU and drivers, so the containerized environments can only focus on user-space 
 - Seamless GPU utilization
 - Out-of-the box ML Environments with JupyterLab
 - Easy data passing between local machine and containerized ML Environments
-- [MLFlow](https://github.com/mlflow/mlflow) for lineage tracking
+- [MLflow](https://github.com/mlflow/mlflow) for lineage tracking
 
 ## Requirements
 
