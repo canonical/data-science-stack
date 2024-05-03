@@ -36,7 +36,11 @@ This directory is shared by all DSS Notebooks.
 
         dss-notebooks-pvc-00037e23-e2e2-4ab4-9088-45099154da30
 
-    The storage directory is the one prefixed with `dss-notebooks-pvc` as shown in the output. Note that the characters that follow will not be the same for all DSS environments.
+    The storage directory is the one prefixed with `dss-notebooks-pvc` as shown in the output.
+
+    .. note::
+        
+        The characters that follow the `dss-notebooks-pvc-` will not be the same for all DSS environments.
 
 2. **Access your Notebooks data**
     From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. Use the directory name you got from the previous step.

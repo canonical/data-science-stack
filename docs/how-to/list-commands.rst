@@ -44,3 +44,35 @@ Listing available DSS commands
         start       Starts a stopped notebook in the DSS environment.
         status      Checks the status of key components within the DSS...
         stop        Stops a running notebook in the DSS environment.
+
+    
+**Get details about a specific command**:
+
+    To see the usage and options of a DSS command, run `dss <command>`` with the `--help` option:
+
+    For Example:
+
+    .. code-block:: bash
+
+        dss logs --help
+
+    Expected output:
+
+    .. code-block:: none
+
+        Usage: dss logs [OPTIONS] [NOTEBOOK_NAME]
+
+        Prints the logs for the specified notebook or DSS component.
+
+        Examples:
+            dss logs my-notebook
+            dss logs --mlflow
+            dss logs --all
+
+        Options:
+        --kubeconfig TEXT  Path to a Kubernetes config file. Defaults to the value
+                            of the KUBECONFIG environment variable, else to
+                            './kubeconfig'.
+        --all              Print the logs for all notebooks and MLflow.
+        --mlflow           Print the logs for the MLflow deployment.
+        --help             Show this message and exit.

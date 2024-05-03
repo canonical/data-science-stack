@@ -35,7 +35,6 @@ Finding the MLFlow URL
 
         [INFO] MLFlow deployment: Ready
         [INFO] MLFlow URL: http://10.152.183.205:5000
-        [INFO] GPU acceleration: Disabled
 
 2. **Access the MLFlow UI**:
 

@@ -30,6 +30,7 @@ Retrieving MLFlow Logs
    Expected output:
 
    .. code-block:: none
+    
         [INFO] Logs for mlflow-6bbfc5db5-xlfvj:
         [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Starting gunicorn 20.1.0
         [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Listening at: http://0.0.0.0:5000 (22)
