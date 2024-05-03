@@ -11,3 +11,4 @@
 .. _MicroK8s requirements: https://microk8s.io/docs/getting-started
 .. _Install Microk8s: https://microk8s.io/docs/getting-started
 .. _MicroK8s GPU add-on: https://microk8s.io/docs/addon-gpu
+.. _MLFlow Models: https://mlflow.org/docs/latest/models.html

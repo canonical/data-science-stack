@@ -23,10 +23,42 @@ Before installing DSS:
           sleep 5
         done
 
-4. Install DSS snap and initialise.
+4. Run `dss status` before initialising to check that GPU acceleration is enabled.
+
+    .. code-block:: bash
+
+        dss status
+
+    Expected output:
+    
+    .. code-block:: bash
+
+        [INFO] MLflow deployment: Not ready
+        [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+
+    .. note::
+        
+        the GPU model `NVIDIA-GeForce-RTX-3070-Ti` will be different depending on your device.
+
+5. Install DSS snap and initialise.
 
     .. code-block:: bash
  
         microk8s config > ~/.dss/config
         sudo snap install data-science-stack
         dss initialize
+
+6. Run `dss status` after initialising to check that GPU acceleration is enabled and MLFlow is ready.
+    
+    .. code-block:: bash
+
+        dss status
+
+    Expected output:
+    
+    .. code-block:: bash
+
+        [INFO] MLflow deployment: Ready
+        [INFO] MLflow URL: http://10.152.183.105:5000
+        [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+    

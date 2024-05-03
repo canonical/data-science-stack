@@ -9,3 +9,5 @@ Nvidia
 ipynb
 ons
 Snapcraft
+GeForce
+RTX
