@@ -1,5 +1,5 @@
 Initialize DSS
-===========
+==============
 
 This guide explains how to initialize the DSS environment through the Data Science Stack (DSS) Command Line Interface (CLI).
 
@@ -21,7 +21,7 @@ Before initializing DSS, ensure you have the following:
 - `MicroK8s`_ installed on your workstation.
 
 Initializing the DSS Environment
------------------------
+--------------------------------
 
 Initialize DSS through the `dss initialize` command, for example:
 
@@ -50,9 +50,9 @@ The expected output of the above command is:
       dss create my-notebook --image=pytorch
       dss create my-notebook --image=kubeflownotebookswg/jupyter-scipy:v1.8.0
 
-From this point, DSS is ready for you to :doc:`create your first notebook </create_notebook>`.
+From this point, DSS is ready for you to :doc:`create your first notebook </how-to/jupyter-notebook/create-notebook>`.
 
 Conclusion
 ----------
 
-This guide explained how to initialize the DSS environment through the DSS CLI. You can now proceed to create your first notebook.
+This guide explained how to initialize the DSS environment through the DSS CLI. You can now proceed to :doc:`create your first notebook </how-to/jupyter-notebook/create-notebook>`.

@@ -1,5 +1,5 @@
-Install DSS
-===========
+Get Status of DSS
+=================
 
 This guide explains how to check the status of your DSS environment.
 
@@ -13,13 +13,13 @@ Installing the DSS Snap
 
 To see the status of DSS, run the following command:
 
-.. code-block: bash
+.. code-block:: bash
 
     dss status
 
 If you have a DSS environment running and no GPU available, the expected output is:
 
-.. code-block: none
+.. code-block:: none
 
     [INFO] MLflow deployment: Ready
     [INFO] MLflow URL: http://10.152.183.68:5000
