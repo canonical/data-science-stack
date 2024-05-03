@@ -1,13 +1,13 @@
 Enable Nvidia GPUs
 ==================
 
-To be able to run workloads on GPU with DSS, you need to have NVIDIA drivers installed on your machine. This can be done using `Microk8s GPU add-on`_.
+To be able to run workloads on GPU with DSS, you need to have NVIDIA drivers installed on your machine. This can be done using `MicroK8s GPU add-on`_.
 
 Before installing DSS:
 
-1. Follow the Microk8s documentation to `Install Microk8s`_.
+1. Follow the MicroK8s documentation to `Install MicroK8s`_.
 
-2. Enable Microk8s add-ons
+2. Enable MicroK8s add-ons, including GPU.
 
     .. code-block:: bash
 
@@ -23,7 +23,7 @@ Before installing DSS:
           sleep 5
         done
 
-4. Install DSS snap and initialise
+4. Install DSS snap and initialise.
 
     .. code-block:: bash
  

@@ -5,4 +5,4 @@ Before getting started with DSS, make sure your system meets the following requi
 
 * Ubuntu 22.04
 * Snapcraft installed
-* `Microk8s requirements`_
+* `MicroK8s requirements`_
