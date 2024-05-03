@@ -9,3 +9,5 @@
 .. _MicroK8s: https://microk8s.io/
 .. _MLflow Docs: https://mlflow.org/docs/latest/index.html
 .. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
+.. _dss snap store: https://snapcraft.io/data-science-stack
+.. _snap: https://snapcraft.io/

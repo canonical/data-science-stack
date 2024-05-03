@@ -1,12 +1,12 @@
-Get MLFlow Logs
+Get MLflow Logs
 =================
 
-This guide provides instructions on how to retrieve logs for MLFlow in the Data Science Stack (DSS) environment.
+This guide provides instructions on how to retrieve logs for MLflow in the Data Science Stack (DSS) environment.
 
 Overview
 --------
 
-Retrieving logs for MLFlow can help you troubleshoot issues. This process uses the DSS command line interface (CLI).
+Retrieving logs for MLflow can help you troubleshoot issues. This process uses the DSS command line interface (CLI).
 
 Prerequisites
 -------------
@@ -14,14 +14,14 @@ Prerequisites
 Before accessing the logs, ensure you have the following:
 
 - DSS CLI installed on your workstation.
-- MLFlow deployment is `Ready`.
+- MLflow deployment is `Ready`.
 
-Retrieving MLFlow Logs
+Retrieving MLflow Logs
 ------------------------
 
 **Retrieve the logs**:
 
-   To get the logs for MLFlow, use the `dss logs` command followed by the `--mlflow` option:
+   To get the logs for MLflow, use the `dss logs` command followed by the `--mlflow` option:
 
    .. code-block:: bash
 
@@ -44,5 +44,5 @@ Retrieving MLFlow Logs
 Conclusion
 ----------
 
-Retrieving logs is a critical task for maintaining and troubleshooting MLFlow in the DSS environment. This guide has shown you how to access logs quickly to help ensure your MLFlow deployment is running smoothly and efficiently.
+Retrieving logs is a critical task for maintaining and troubleshooting MLflow in the DSS environment. This guide has shown you how to access logs quickly to help ensure your MLflow deployment is running smoothly and efficiently.
 
