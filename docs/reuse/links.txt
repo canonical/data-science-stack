@@ -12,4 +12,6 @@
 .. _Install Microk8s: https://microk8s.io/docs/getting-started
 .. _MicroK8s GPU add-on: https://microk8s.io/docs/addon-gpu
 .. _MLFlow Models: https://mlflow.org/docs/latest/models.html
+.. _MLFlow Runs: https://mlflow.org/docs/latest/tracking.html#runs
+.. _MLFlow Experiments: https://mlflow.org/docs/latest/tracking.html#experiments
 .. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
