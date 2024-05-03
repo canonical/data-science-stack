@@ -9,3 +9,5 @@ managing and interacting with containerised ML Environments via the DSS.
 
    dss/index
    jupyter-notebook/index
+   mlflow/index
+   list-commands

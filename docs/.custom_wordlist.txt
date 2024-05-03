@@ -5,8 +5,10 @@ Jupyter
 JupyterLab
 MLflow
 MicroK
+microk
 OCI
 config
+hostpath
 initialize
 initialized
 initializing
@@ -16,6 +18,7 @@ kubeconfig
 kubeflownotebookswg
 microk
 microk8s.io
+pvc
 reinitialise
 runtime
 scipy
