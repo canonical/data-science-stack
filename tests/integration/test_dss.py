@@ -15,7 +15,6 @@ from dss.utils import KUBECONFIG_DEFAULT, KUBECONFIG_ENV_VAR
 # TODO: is there a better way to initialize this?  Maybe an optional argument to the test?
 NOTEBOOK_RESOURCES_FILE = "./tests/integration/notebook-resources.yaml"
 NOTEBOOK_NAME = "test-nb"
-NOTEBOOK_IMAGE = "kubeflownotebookswg/jupyter-scipy:v1.8.0"
 # Path to the kubeconfig for the host's kubernetes cluster used for testing
 KUBECONFIG_PATH_FOR_TEST = Path("~/.kube/config").expanduser()
 
@@ -135,7 +134,7 @@ def test_create_notebook(cleanup_after_initialize, notebook_image) -> None:
             "create",
             NOTEBOOK_NAME,
             "--image",
-            NOTEBOOK_IMAGE,
+            notebook_image,
         ],
         capture_output=True,
         text=True,
