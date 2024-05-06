@@ -9,11 +9,10 @@ MANIFEST_TEMPLATES_LOCATION = "./manifest_templates"
 MLFLOW_DEPLOYMENT_NAME = "mlflow"
 NOTEBOOK_PVC_NAME = "notebooks"
 NOTEBOOK_IMAGES_ALIASES = {
-    "pytorch": "charmedkubeflow/jupyter-pytorch-full:1.8.0-3058193",
-    # TODO: add the rest of the rocks once updated in https://github.com/canonical/kubeflow-rocks
-    # "pytorch-cuda": "charmedkubeflow/jupyter-pytorch-cuda-full:1.8.0-xxxxx",
-    # "tensorflow-cuda": "charmedkubeflow/jupyter-tensorflow-cuda-full:1.8.0-xxxx",
-    # "tensorflow": "charmedkubeflow/jupyter-tensorflow-full:1.8.0-xxxx"
+    "pytorch": "kubeflownotebookswg/jupyter-pytorch-full:v1.8.0",
+    "pytorch-cuda": "kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0",
+    "tensorflow-cuda": "kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0",
+    "tensorflow": "kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0"
 }
 NOTEBOOK_LABEL = "canonical.com/dss-notebook"
 
