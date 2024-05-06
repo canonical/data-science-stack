@@ -12,7 +12,7 @@ NOTEBOOK_IMAGES_ALIASES = {
     "pytorch": "kubeflownotebookswg/jupyter-pytorch-full:v1.8.0",
     "pytorch-cuda": "kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0",
     "tensorflow-cuda": "kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0",
-    "tensorflow": "kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0"
+    "tensorflow": "kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0",
 }
 NOTEBOOK_LABEL = "canonical.com/dss-notebook"
 
