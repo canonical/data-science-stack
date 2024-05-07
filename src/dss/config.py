@@ -37,3 +37,4 @@ class DeploymentState(Enum):
     STOPPED = "Stopped"
     STOPPING = "Stopping"
     UNKNOWN = "Unknown"
+    ERRIMAGE = "Image Pull Error"
