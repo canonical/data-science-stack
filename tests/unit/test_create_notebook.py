@@ -76,7 +76,10 @@ def test_create_notebook_success(
         # Assertions
         mock_resource_handler_instance.apply.assert_called_once()
         mock_wait_for_deployment_ready.assert_called_once_with(
-            mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
+            mock_client_instance,
+            namespace=DSS_NAMESPACE,
+            deployment_name=notebook_name,
+            timeout_seconds=None,
         )
         mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")
 
@@ -187,7 +190,9 @@ def test_create_notebook_failure_notebook_exists(
 
 
 def test_create_notebook_failure_api(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
+    mock_logger: MagicMock,
+    mock_wait_for_deployment_ready: MagicMock,
+    mock_resource_handler: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ApiError is raised.
@@ -197,6 +202,10 @@ def test_create_notebook_failure_api(
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
+
+    # Mock the behavior of KubernetesResourceHandler
+    mock_resource_handler_instance = MagicMock()
+    mock_resource_handler.return_value = mock_resource_handler_instance
 
     # Mock the behavior of wait_for_deployment_ready
     error_code = 400
@@ -219,46 +228,13 @@ def test_create_notebook_failure_api(
             f"Failed to create Notebook with error code {error_code}."
         )
         mock_logger.info.assert_called_with(" Check the debug logs for more details.")
-
-
-def test_create_notebook_failure_time_out(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
-) -> None:
-    """
-    Test case to verify behavior when a TimeoutError is raised.
-    """
-    notebook_name = "test-notebook"
-    notebook_image = "test-image"
-    exception_message = "test-exception-message"
-
-    # Mock the behavior of Client
-    mock_client_instance = MagicMock()
-
-    # Mock the behavior of wait_for_deployment_ready
-    mock_wait_for_deployment_ready.side_effect = TimeoutError(exception_message)
-
-    with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
-        "dss.create_notebook.does_notebook_exist", return_value=False
-    ):
-        with pytest.raises(RuntimeError):
-            # Call the function to test
-            create_notebook(
-                name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
-            )
-
-        # Assertions
-        mock_logger.debug.assert_called_with(
-            f"Failed to create Notebook {notebook_name}: {exception_message}", exc_info=True
-        )
-        mock_logger.error.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}."
-        )
-        mock_logger.warn.assert_called_with(" Some resources might be left in the cluster.")
-        mock_logger.info.assert_called_with(" Check the status with `dss list`.")
+        mock_resource_handler_instance.delete.assert_called_once()
 
 
 def test_create_notebook_failure_image_pull(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
+    mock_logger: MagicMock,
+    mock_wait_for_deployment_ready: MagicMock,
+    mock_resource_handler: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ImagePullBackOffError is raised.
@@ -269,6 +245,10 @@ def test_create_notebook_failure_image_pull(
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
+
+    # Mock the behavior of KubernetesResourceHandler
+    mock_resource_handler_instance = MagicMock()
+    mock_resource_handler.return_value = mock_resource_handler_instance
 
     # Mock the behavior of wait_for_deployment_ready
     mock_wait_for_deployment_ready.side_effect = ImagePullBackOffError(exception_message)
@@ -297,6 +277,8 @@ def test_create_notebook_failure_image_pull(
             "Note: You might want to use some of these recommended images:\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
+
+        mock_resource_handler_instance.delete.assert_called_once()
 
 
 def test_get_notebook_config() -> None:
