@@ -101,8 +101,8 @@ def wait_for_deployment_ready(
             )
         else:
             time.sleep(interval_seconds)
-            logger.debug(
-                f"Still waiting for deployment {deployment_name} in namespace {namespace} to be ready..."  # noqa E501
+            logger.info(
+                f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."  # noqa E501
             )
 
 
