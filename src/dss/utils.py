@@ -334,11 +334,14 @@ def get_deployment_state(deployment: Deployment, lightkube_client: Client) -> De
         for container_status in container_statuses:
             if container_status.state.waiting:
                 if container_status.state.waiting.reason in [
-                    "ImagePullBackOff",
-                    "ErrImagePull",
                     "ContainerCreating",
                 ]:
                     return DeploymentState.DOWNLOADING
+                elif container_status.state.waiting.reason in [
+                    "ImagePullBackOff",
+                    "ErrImagePull",
+                ]:
+                    return DeploymentState.ERRIMAGE
 
     # Determine the state based on replica counts
     if desired_replicas == 0:

@@ -107,6 +107,7 @@ def test_no_notebooks_found(mock_client: MagicMock, mock_logger: MagicMock) -> N
         (DeploymentState.STOPPED, "(Stopped)"),
         (DeploymentState.REMOVING, "(Removing)"),
         (DeploymentState.UNKNOWN, "(Unknown)"),
+        (DeploymentState.ERRIMAGE, "(Image Pull Error)"),
     ],
 )
 def test_non_active_deployment_url_representation(
