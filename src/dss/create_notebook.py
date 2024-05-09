@@ -12,11 +12,11 @@ from dss.config import (
     FIELD_MANAGER,
     MANIFEST_TEMPLATES_LOCATION,
     NOTEBOOK_IMAGES_ALIASES,
-    NOTEBOOK_LABEL,
     NOTEBOOK_PVC_NAME,
     RECOMMENDED_IMAGES_MESSAGE,
 )
 from dss.logger import setup_logger
+from dss.remove_notebook import remove_notebook
 from dss.utils import (
     ImagePullBackOffError,
     does_dss_pvc_exist,
@@ -67,13 +67,12 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         Path(__file__).parent, MANIFEST_TEMPLATES_LOCATION, "notebook_deployment.yaml.j2"
     )
 
-    notebook_label = {NOTEBOOK_LABEL: name}
     image_full_name = _get_notebook_image_name(image)
     config = _get_notebook_config(image_full_name, name)
 
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
-        labels={**DSS_CLI_MANAGER_LABELS, **notebook_label},
+        labels=DSS_CLI_MANAGER_LABELS,
         template_files=[manifests_file],
         context=config,
         resource_types={Deployment, Service},
@@ -92,17 +91,17 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         logger.debug(f"Failed to create Notebook {name}: {err}.", exc_info=True)
         logger.error(f"Failed to create Notebook with error code {err.status.code}.")
         logger.info(" Check the debug logs for more details.")
-        k8s_resource_handler.delete()
+        remove_notebook(name, lightkube_client)
         raise RuntimeError()
     except ImagePullBackOffError as err:
-        logger.debug(f"Timed out while trying to create Notebook {name}: {err}.", exc_info=True)
-        logger.error(f"Timed out while trying to create Notebook {name}.")
+        logger.debug(f"Failed to create notebook {name}: {err}.", exc_info=True)
+        logger.error(f"Failed to create notebook {name}.")
         logger.error(f"Image {image_full_name} does not exist or is not accessible.")
         logger.info(
-            "Note: You might want to use some of these recommended images:\n"
+            "Note: You might want to use some of these recommended images:\n\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
-        k8s_resource_handler.delete()
+        remove_notebook(name, lightkube_client)
         raise RuntimeError()
     # Assumes that the notebook server is exposed by a service of the same name.
     url = get_service_url(name, DSS_NAMESPACE, lightkube_client)

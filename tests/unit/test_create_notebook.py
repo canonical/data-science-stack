@@ -27,6 +27,12 @@ def mock_resource_handler() -> MagicMock:
 
 
 @pytest.fixture
+def mock_remove_notebook():
+    with patch("dss.create_notebook.remove_notebook") as mock:
+        yield mock
+
+
+@pytest.fixture
 def mock_wait_for_deployment_ready() -> MagicMock:
     """
     Fixture to mock the KubernetesResourceHandler class.
@@ -192,7 +198,7 @@ def test_create_notebook_failure_notebook_exists(
 def test_create_notebook_failure_api(
     mock_logger: MagicMock,
     mock_wait_for_deployment_ready: MagicMock,
-    mock_resource_handler: MagicMock,
+    mock_remove_notebook: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ApiError is raised.
@@ -202,10 +208,6 @@ def test_create_notebook_failure_api(
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
-
-    # Mock the behavior of KubernetesResourceHandler
-    mock_resource_handler_instance = MagicMock()
-    mock_resource_handler.return_value = mock_resource_handler_instance
 
     # Mock the behavior of wait_for_deployment_ready
     error_code = 400
@@ -228,13 +230,13 @@ def test_create_notebook_failure_api(
             f"Failed to create Notebook with error code {error_code}."
         )
         mock_logger.info.assert_called_with(" Check the debug logs for more details.")
-        mock_resource_handler_instance.delete.assert_called_once()
+        mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
 def test_create_notebook_failure_image_pull(
     mock_logger: MagicMock,
     mock_wait_for_deployment_ready: MagicMock,
-    mock_resource_handler: MagicMock,
+    mock_remove_notebook: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ImagePullBackOffError is raised.
@@ -245,10 +247,6 @@ def test_create_notebook_failure_image_pull(
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
-
-    # Mock the behavior of KubernetesResourceHandler
-    mock_resource_handler_instance = MagicMock()
-    mock_resource_handler.return_value = mock_resource_handler_instance
 
     # Mock the behavior of wait_for_deployment_ready
     mock_wait_for_deployment_ready.side_effect = ImagePullBackOffError(exception_message)
@@ -264,21 +262,19 @@ def test_create_notebook_failure_image_pull(
 
         # Assertions
         mock_logger.debug.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}: {exception_message}.",
+            f"Failed to create notebook {notebook_name}: {exception_message}.",
             exc_info=True,
         )
-        mock_logger.error.assert_any_call(
-            f"Timed out while trying to create Notebook {notebook_name}."
-        )
+        mock_logger.error.assert_any_call(f"Failed to create notebook {notebook_name}.")
         mock_logger.error.assert_called_with(
             f"Image {notebook_image} does not exist or is not accessible."
         )
         mock_logger.info.assert_called_with(
-            "Note: You might want to use some of these recommended images:\n"
+            "Note: You might want to use some of these recommended images:\n\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
 
-        mock_resource_handler_instance.delete.assert_called_once()
+        mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
 def test_get_notebook_config() -> None:
