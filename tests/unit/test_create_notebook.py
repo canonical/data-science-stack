@@ -27,6 +27,12 @@ def mock_resource_handler() -> MagicMock:
 
 
 @pytest.fixture
+def mock_remove_notebook():
+    with patch("dss.create_notebook.remove_notebook") as mock:
+        yield mock
+
+
+@pytest.fixture
 def mock_wait_for_deployment_ready() -> MagicMock:
     """
     Fixture to mock the KubernetesResourceHandler class.
@@ -76,7 +82,10 @@ def test_create_notebook_success(
         # Assertions
         mock_resource_handler_instance.apply.assert_called_once()
         mock_wait_for_deployment_ready.assert_called_once_with(
-            mock_client_instance, namespace=DSS_NAMESPACE, deployment_name=notebook_name
+            mock_client_instance,
+            namespace=DSS_NAMESPACE,
+            deployment_name=notebook_name,
+            timeout_seconds=None,
         )
         mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")
 
@@ -187,7 +196,9 @@ def test_create_notebook_failure_notebook_exists(
 
 
 def test_create_notebook_failure_api(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
+    mock_logger: MagicMock,
+    mock_wait_for_deployment_ready: MagicMock,
+    mock_remove_notebook: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ApiError is raised.
@@ -219,46 +230,13 @@ def test_create_notebook_failure_api(
             f"Failed to create Notebook with error code {error_code}."
         )
         mock_logger.info.assert_called_with(" Check the debug logs for more details.")
-
-
-def test_create_notebook_failure_time_out(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
-) -> None:
-    """
-    Test case to verify behavior when a TimeoutError is raised.
-    """
-    notebook_name = "test-notebook"
-    notebook_image = "test-image"
-    exception_message = "test-exception-message"
-
-    # Mock the behavior of Client
-    mock_client_instance = MagicMock()
-
-    # Mock the behavior of wait_for_deployment_ready
-    mock_wait_for_deployment_ready.side_effect = TimeoutError(exception_message)
-
-    with patch("dss.create_notebook.does_dss_pvc_exist", return_value=True), patch(
-        "dss.create_notebook.does_notebook_exist", return_value=False
-    ):
-        with pytest.raises(RuntimeError):
-            # Call the function to test
-            create_notebook(
-                name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
-            )
-
-        # Assertions
-        mock_logger.debug.assert_called_with(
-            f"Failed to create Notebook {notebook_name}: {exception_message}", exc_info=True
-        )
-        mock_logger.error.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}."
-        )
-        mock_logger.warn.assert_called_with(" Some resources might be left in the cluster.")
-        mock_logger.info.assert_called_with(" Check the status with `dss list`.")
+        mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
 def test_create_notebook_failure_image_pull(
-    mock_logger: MagicMock, mock_wait_for_deployment_ready: MagicMock
+    mock_logger: MagicMock,
+    mock_wait_for_deployment_ready: MagicMock,
+    mock_remove_notebook: MagicMock,
 ) -> None:
     """
     Test case to verify behavior when an ImagePullBackOffError is raised.
@@ -284,19 +262,19 @@ def test_create_notebook_failure_image_pull(
 
         # Assertions
         mock_logger.debug.assert_called_with(
-            f"Timed out while trying to create Notebook {notebook_name}: {exception_message}.",
+            f"Failed to create notebook {notebook_name}: {exception_message}.",
             exc_info=True,
         )
-        mock_logger.error.assert_any_call(
-            f"Timed out while trying to create Notebook {notebook_name}."
-        )
+        mock_logger.error.assert_any_call(f"Failed to create notebook {notebook_name}.")
         mock_logger.error.assert_called_with(
             f"Image {notebook_image} does not exist or is not accessible."
         )
         mock_logger.info.assert_called_with(
-            "Note: You might want to use some of these recommended images:\n"
+            "Note: You might want to use some of these recommended images:\n\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
+
+        mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
 def test_get_notebook_config() -> None:

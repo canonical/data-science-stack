@@ -16,6 +16,7 @@ from dss.config import (
     RECOMMENDED_IMAGES_MESSAGE,
 )
 from dss.logger import setup_logger
+from dss.remove_notebook import remove_notebook
 from dss.utils import (
     ImagePullBackOffError,
     does_dss_pvc_exist,
@@ -32,12 +33,15 @@ logger = setup_logger("logs/dss.log")
 
 def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     """
-    Creates a Notebook server on the Kubernetes cluster.
+    Creates a Notebook server on the Kubernetes cluster with optional GPU support.
 
     Args:
         name (str): The name of the notebook server.
-        image (str): The image used for the notebook server.
-        lightkube_client (Client): The Kubernetes client.
+        image (str): The OCI image used for the notebook server.
+        lightkube_client (Client): The Kubernetes client used for server creation.
+
+    Raises:
+        RuntimeError: If there is a failure in notebook creation or GPU label checking.
     """
     if not does_dss_pvc_exist(lightkube_client) or not does_mlflow_deployment_exist(
         lightkube_client
@@ -66,7 +70,6 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     image_full_name = _get_notebook_image_name(image)
     config = _get_notebook_config(image_full_name, name)
 
-    # Initialize KubernetesResourceHandler
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
         labels=DSS_CLI_MANAGER_LABELS,
@@ -79,28 +82,26 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     try:
         k8s_resource_handler.apply()
 
-        wait_for_deployment_ready(lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name)
+        wait_for_deployment_ready(
+            lightkube_client, namespace=DSS_NAMESPACE, deployment_name=name, timeout_seconds=None
+        )
 
         logger.info(f"Success: Notebook {name} created successfully.")
     except ApiError as err:
         logger.debug(f"Failed to create Notebook {name}: {err}.", exc_info=True)
         logger.error(f"Failed to create Notebook with error code {err.status.code}.")
         logger.info(" Check the debug logs for more details.")
-        raise RuntimeError()
-    except TimeoutError as err:
-        logger.debug(f"Failed to create Notebook {name}: {err}", exc_info=True)
-        logger.error(f"Timed out while trying to create Notebook {name}.")
-        logger.warn(" Some resources might be left in the cluster.")
-        logger.info(" Check the status with `dss list`.")
+        remove_notebook(name, lightkube_client)
         raise RuntimeError()
     except ImagePullBackOffError as err:
-        logger.debug(f"Timed out while trying to create Notebook {name}: {err}.", exc_info=True)
-        logger.error(f"Timed out while trying to create Notebook {name}.")
+        logger.debug(f"Failed to create notebook {name}: {err}.", exc_info=True)
+        logger.error(f"Failed to create notebook {name}.")
         logger.error(f"Image {image_full_name} does not exist or is not accessible.")
         logger.info(
-            "Note: You might want to use some of these recommended images:\n"
+            "Note: You might want to use some of these recommended images:\n\n"
             f"{RECOMMENDED_IMAGES_MESSAGE}"
         )
+        remove_notebook(name, lightkube_client)
         raise RuntimeError()
     # Assumes that the notebook server is exposed by a service of the same name.
     url = get_service_url(name, DSS_NAMESPACE, lightkube_client)
