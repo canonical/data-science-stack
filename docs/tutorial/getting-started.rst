@@ -90,7 +90,7 @@ You can initialise the DSS with the following commands:
 
 .. code-block:: bash
 
-   dss initialize --kubeconfig="$(microk8s kubeconfig)"
+   dss initialize --kubeconfig="$(microk8s config)"
 
 Launch a Notebook
 ^^^^^^^^^^^^^^^^^
