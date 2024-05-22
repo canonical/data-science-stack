@@ -1,46 +1,153 @@
-Enable Nvidia GPUs
+.. _nvidia-gpu:
+
+Enable NVIDIA GPUs
 ==================
 
-To be able to run workloads on GPU with DSS, you need to have:
+The following section describes how to configure the DSS to utilize the host's
+NVIDIA GPU. This is achieved by configuring the underlying MicroK8s, that the
+DSS is relying for running the containerised workloads.
 
-* NVIDIA drivers installed on your machine.
-* The MicroK8s runtime configured to be able to use the Nvidia drivers.
+Prerequisites
+^^^^^^^^^^^^^
 
-The `MicroK8s GPU add-on`_ is installing the NVIDIA Operator. The NVIDIA operator can either install or detect the NVIDIA drivers if they are already present on the host machine.
+* Have run the :ref:`tutorial` tutorial
 
-Before installing DSS:
+Install the NVIDIA Operator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Follow the MicroK8s documentation to `Install MicroK8s`_.
+To ensure the DSS can utilise the NVIDIA GPUs:
 
-2. Enable MicroK8s GPU add-on.
+1. The host will need to have the NVIDIA drivers installed
+2. MicroK8s will need to be setup to utilise those drivers
 
-   .. code-block:: bash
+MicroK8s is leveraging the `NVIDIA Operator`_ to for setting up and
+configuring the NVIDIA runtime. The NVIDIA Operator will also install
+the NVIDIA drivers, if they are not present already on the host machine.
 
-     sudo microk8s enable gpu
+To enable the NVIDIA runtimes on MicroK8s, run the following command:
 
-3. Wait for GPU operator components to be ready. This can take around 5 minutes.
+.. code-block:: bash
 
-   .. code-block:: bash
+   sudo microk8s enable gpu
 
-     while ! sudo microk8s.kubectl logs -n gpu-operator-resources -l app=nvidia-operator-validator | grep "all validations are successful"
-     do
-       echo "waiting for validations"
-       sleep 5
-     done
+.. note::
+   The NVIDIA Operator will detect if the NVIDIA drivers are not present at all
+   and will install them in this case. But the NVIDIA Operator can also detect
+   if you have drivers already installed. In this case the NVIDIA Operator will
+   use the host's drivers.
 
-4. Run `dss status` to check that GPU acceleration is enabled.
+Verify the NVIDIA Operator is up
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. code-block:: bash
+Before spinning up workloads that you need to ensure the GPU Operator has
+been successfully initialized. This can take around 5 minutes.
 
-     dss status
+Ensure DaemonSet is Ready
+"""""""""""""""""""""""""
 
-   Expected output:
+First we need to ensure that the DaemonSet for the Operator Validator is
+created:
 
-   .. code-block:: bash
 
-     [INFO] MLflow deployment: Not ready
-     [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+.. code-block:: bash
 
-   .. note::
+  while ! sudo microk8s.kubectl get ds -n gpu-operator-resources nvidia-operator-validator
+  do
+    sleep 5
+  done
 
-     the GPU model `NVIDIA-GeForce-RTX-3070-Ti` will be different depending on your device.
+.. note::
+   It will take some seconds for the DaemonSet to get created. The above command will
+   return a message like the following at the beginning:
+   ``Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found``
+
+The expected output should be:
+
+.. code-block:: text
+
+   Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found
+   ...
+   Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found
+   NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                   AGE
+   nvidia-operator-validator   1         1         0       1            0           nvidia.com/gpu.deploy.operator-validator=true   17s
+
+Ensure the Validator succeeded
+""""""""""""""""""""""""""""""
+
+Next we'll need to wait for the Validator Pod to succeed:
+
+.. code-block:: bash
+
+  echo "Waiting for the NVIDIA Operator validations to complete..."
+  while ! sudo microk8s.kubectl logs -n gpu-operator-resources -l app=nvidia-operator-validator -c nvidia-operator-validator | grep "all validations are successful"
+  do
+    sleep 5
+  done
+
+.. note::
+   It will take some seconds for the Pod to get initialized . The above command will
+   return a message like the following at the beginning:
+   ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing``
+
+The expected output should be:
+
+.. code-block:: text
+
+   Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
+   ...
+   Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
+   all validations are successful
+
+Verify the DSS detects the GPU
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+  dss status
+
+Expected output:
+
+.. code-block:: bash
+
+  [INFO] MLflow deployment: Ready
+  [INFO] MLflow URL: http://10.152.183.74:5000
+  [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+
+.. note::
+
+  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` will be different depending on your device.
+
+Launch GPU-enabled Notebook
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+At this point the DSS is fully configured to utilise the host's GPU. The next step will
+be to deploy a notebook that also contains CUDA runtimes, alongside with ML frameworks
+that can utilise the GPU.
+
+You can find a list of proposed images that include CUDA with the following command:
+
+.. code-block:: bash
+
+   dss create --help | grep cuda
+
+You should see an output similar to this one:
+
+.. code-block:: bash
+
+        - pytorch-cuda = kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0
+        - tensorflow-cuda = kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0
+
+Pick one of the two images and create a notebooks with:
+
+.. code-block:: bash
+
+   dss create my-notebook --image=tensorflow-cuda
+
+
+To confirm the GPU is detected and usable you can run the following python code snippet
+
+.. code-block:: python
+
+   import tensorflow as tf
+
+   tf.config.list_physical_devices('GPU')
