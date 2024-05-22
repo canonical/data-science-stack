@@ -27,7 +27,7 @@ Initialize DSS through the `dss initialize` command, for example:
 
 .. code-block:: shell
 
-    dss initialize --kubeconfig "$(microk8s config)"
+    dss initialize --kubeconfig "$(sudo microk8s config)"
 
 where we provide the content of our MicroK8s cluster's kubeconfig using the `--kubeconfig` option.
 
