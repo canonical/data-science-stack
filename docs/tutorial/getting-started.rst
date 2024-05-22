@@ -31,7 +31,7 @@ You can install MicroK8s with the following commands:
 .. code-block:: bash
 
    sudo snap install microk8s --channel 1.28/stable --classic
-   microk8s enable storage dns rbac
+   sudo microk8s enable storage dns rbac
 
 For further information on how to get started with MicroK8s, you can
 follow `MicroK8s' Getting Started`_ page.
@@ -54,7 +54,7 @@ command:
 
 .. code-block:: bash
 
-   microk8s enable gpu
+   sudo microk8s enable gpu
 
 
 .. note::
@@ -90,7 +90,7 @@ You can initialise the DSS with the following commands:
 
 .. code-block:: bash
 
-   dss initialize --kubeconfig="$(microk8s config)"
+   dss initialize --kubeconfig="$(sudo microk8s config)"
 
 Launch a Notebook
 ^^^^^^^^^^^^^^^^^

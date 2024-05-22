@@ -16,7 +16,7 @@ Before installing DSS:
 
    .. code-block:: bash
 
-     microk8s enable gpu
+     sudo microk8s enable gpu
 
 3. Wait for GPU operator components to be ready. This can take around 5 minutes.
 
@@ -35,12 +35,12 @@ Before installing DSS:
      dss status
 
    Expected output:
-    
+
    .. code-block:: bash
 
      [INFO] MLflow deployment: Not ready
      [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
 
    .. note::
-        
+
      the GPU model `NVIDIA-GeForce-RTX-3070-Ti` will be different depending on your device.
