@@ -12,7 +12,7 @@ Prerequisites
 
 * Ubuntu 22.04
 * An internet connection
-* DSS relies on MicroK8s, that requires as little as 540MB of memory.
+* DSS relies on `MicroK8s`_, that requires as little as 540MB of memory.
   But to accommodate workloads, we recommend a system with at least 20G
   of disk space and 4G of memory.
 
@@ -32,9 +32,6 @@ You can install MicroK8s with the following commands:
 
    sudo snap install microk8s --channel 1.28/stable --classic
    sudo microk8s enable storage dns rbac
-
-For further information on how to get started with MicroK8s, you can
-follow `MicroK8s' Getting Started`_ page.
 
 (Optional) Setup NVIDIA drivers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
