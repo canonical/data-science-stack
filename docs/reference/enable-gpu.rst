@@ -5,7 +5,6 @@ Enable NVIDIA GPUs
 
 The following section describes how to configure the DSS to utilize the host's
 NVIDIA GPU. This is achieved by configuring the underlying MicroK8s, that the
-DSS is relying for running the containerised workloads.
 
 Prerequisites
 ^^^^^^^^^^^^^
