@@ -17,7 +17,7 @@ Install the NVIDIA Operator
 To ensure DSS can utilise NVIDIA GPUs:
 
 1. The NVIDIA drivers must be installed.
-2. MicroK8s will need to be setup to utilise those drivers
+2. MicroK8s must be set up to utilise NVIDIA drivers.
 
 MicroK8s is leveraging the `NVIDIA Operator`_ to for setting up and
 configuring the NVIDIA runtime. The NVIDIA Operator will also install
