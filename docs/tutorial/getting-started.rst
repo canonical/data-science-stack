@@ -67,7 +67,7 @@ Install the DSS CLI
 At this point we've installed MicroK8s and configured it to use the host's
 NVIDIA GPU. The next step now is to install the DSS CLI snap.
 
-You can install the CLI with the following commands:
+You can install the CLI with the following command:
 
 .. code-block:: bash
 
@@ -77,18 +77,17 @@ Initialise the DSS
 ^^^^^^^^^^^^^^^^^^
 
 Now that you have the DSS CLI installed the next step is to initialise
-the DSS on top of MicroK8s.
+the DSS on top of MicroK8s and prepare MLFlow.
 
-Under the hood this will create a K8s namespace and prepare the namespace
-accordingly, by installing MLflow and setting up the shared storage for the
-Notebooks that will be launched in the future.
-
-You can initialise the DSS with the following commands:
+You can initialise the DSS with the following command:
 
 .. code-block:: bash
 
    dss initialize --kubeconfig="$(sudo microk8s config)"
 
+.. note::
+   The `dss initialize` command might take a few minutes to complete.
+   
 Launch a Notebook
 ^^^^^^^^^^^^^^^^^
 
