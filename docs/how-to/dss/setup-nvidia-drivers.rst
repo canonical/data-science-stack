@@ -1,7 +1,7 @@
 .. _setup-nvidia-drivers:
 
 Setup NVIDIA Drivers
-==============
+====================
 
 This guide explains how to setup the NVIDIA drivers in your DSS environment.
 
@@ -17,7 +17,7 @@ configuring the NVIDIA runtime. The NVIDIA Operator will also install
 the NVIDIA drivers, if they are not present already on the host machine.
 
 Enable the NVIDIA runtimes on MicroK8s
-----------------------------------
+--------------------------------------
 To enable the NVIDIA runtimes on MicroK8s run the following
 command:
 
