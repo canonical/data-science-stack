@@ -33,34 +33,6 @@ You can install MicroK8s with the following commands:
    sudo snap install microk8s --channel 1.28/stable --classic
    sudo microk8s enable storage dns rbac
 
-(Optional) Setup NVIDIA drivers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The following are optional for machines that contain NVIDIA GPUs. To ensure
-the DSS can utilise the NVIDIA GPUs:
-
-1. The host will need to have the NVIDIA drivers installed
-2. MicroK8s will need to be setup to utilise those drivers
-
-MicroK8s is leveraging the `NVIDIA Operator`_ to for setting up and
-configuring the NVIDIA runtime. The NVIDIA Operator will also install
-the NVIDIA drivers, if they are not present already on the host machine.
-
-To enable the NVIDIA runtimes on MicroK8s you need to run the following
-command:
-
-.. code-block:: bash
-
-   sudo microk8s enable gpu
-
-
-.. note::
-   The NVIDIA Operator will detect if the NVIDIA drivers are not present at all
-   and will install them in this case. But the NVIDIA Operator can also detect
-   if you have drivers already installed. In this case the NVIDIA Operator will
-   use the host's drivers.
-
-
 Install the DSS CLI
 ^^^^^^^^^^^^^^^^^^^
 
@@ -115,7 +87,7 @@ For example you should see output like this:
 
 Next Steps
 ^^^^^^^^^^
-
+* Want to utilize the NVIDIA GPUs in your machine? See :ref:`setup-nvidia-drivers`
 * Want to learn how to interact with your Notebooks? Try :ref:`jupyter-notebooks`
 * Want to learn more about handling data? See :ref:`access-data`
 * Want to connect to MLflow? See :ref:`notebook-mlflow`
