@@ -7,6 +7,10 @@ This guide will walk you through how you can get started with the Data
 Science Stack. From setting up MicroK8s in your host environment and
 configuring GPU drivers, all the way to running your first notebook.
 
+Overview
+^^^^^^^^
+The Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU enabled containerized Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilizing the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
+
 Prerequisites
 ^^^^^^^^^^^^^
 

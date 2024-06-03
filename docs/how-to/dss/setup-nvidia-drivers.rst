@@ -16,7 +16,7 @@ MicroK8s is leveraging the `NVIDIA Operator`_ to for setting up and
 configuring the NVIDIA runtime. The NVIDIA Operator will also install
 the NVIDIA drivers, if they are not present already on the host machine.
 
-Enable NVIDIA runtime on MicroK8s
+Enable the NVIDIA runtimes on MicroK8s
 ----------------------------------
 To enable the NVIDIA runtimes on MicroK8s run the following
 command:
