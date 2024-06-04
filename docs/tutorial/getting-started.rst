@@ -9,7 +9,7 @@ configuring GPU drivers, all the way to running your first notebook.
 
 Overview
 ^^^^^^^^
-The Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU enabled containerized Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilizing the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
+The Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU enabled containerized Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilising the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
 Prerequisites
 ^^^^^^^^^^^^^
@@ -53,7 +53,7 @@ Initialise the DSS
 ^^^^^^^^^^^^^^^^^^
 
 Now that you have the DSS CLI installed the next step is to initialise
-the DSS on top of MicroK8s and prepare MLFlow.
+the DSS on top of MicroK8s and prepare MLflow.
 
 You can initialise the DSS with the following command:
 
@@ -91,7 +91,7 @@ For example you should see output like this:
 
 Next Steps
 ^^^^^^^^^^
-* Want to utilize the NVIDIA GPUs in your machine? See :ref:`setup-nvidia-drivers`
+* Want to utilise the NVIDIA GPUs in your machine? See :ref:`setup-nvidia-drivers`
 * Want to learn how to interact with your Notebooks? Try :ref:`jupyter-notebooks`
 * Want to learn more about handling data? See :ref:`access-data`
 * Want to connect to MLflow? See :ref:`notebook-mlflow`

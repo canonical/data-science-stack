@@ -7,7 +7,7 @@ This guide explains how to setup the NVIDIA drivers in your DSS environment.
 
 Overview
 --------
-To ensure the DSS can utilize the NVIDIA GPUs in a machine:
+To ensure the DSS can utilise the NVIDIA GPUs in a machine:
 
 1. The host will need to have the NVIDIA drivers installed
 2. MicroK8s will need to be setup to utilise those drivers
