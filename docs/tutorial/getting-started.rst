@@ -91,7 +91,6 @@ For example you should see output like this:
 
 Next Steps
 ^^^^^^^^^^
-* Want to utilise the NVIDIA GPUs in your machine? See :ref:`setup-nvidia-drivers`
 * Want to learn how to interact with your Notebooks? Try :ref:`jupyter-notebooks`
 * Want to learn more about handling data? See :ref:`access-data`
 * Want to connect to MLflow? See :ref:`notebook-mlflow`

@@ -8,6 +8,5 @@ Use these guides for detailed steps on installing and managing the Data Science 
 
    install-dss-cli
    initialize-dss
-   setup-nvidia-drivers
    dss-status
    purge-dss
