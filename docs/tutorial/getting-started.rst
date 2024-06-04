@@ -55,7 +55,7 @@ Initialise the DSS
 Now that you have the DSS CLI installed the next step is to initialise
 DSS on top of MicroK8s and prepare MLflow.
 
-You can initialise the DSS with the following command:
+You can initialise DSS with the following command:
 
 .. code-block:: bash
 
