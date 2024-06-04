@@ -25,7 +25,7 @@ DSS relies on a container orchestration system, capable of exposing the host GPU
 In this tutorial, MicroK8s is used as the orchestration system.
 All the workloads and state managed by DSS will be running on top of MicroK8s.
 
-You can install MicroK8s as follows:
+You can install MicroK8s using `snap`_ as follows:
 
 .. code-block:: bash
 
