@@ -9,7 +9,7 @@ configuring GPU drivers, all the way to running your first notebook.
 
 Overview
 ^^^^^^^^
-The Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU enabled containerised Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilising the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
+Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilising the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
 Prerequisites
 ^^^^^^^^^^^^^
