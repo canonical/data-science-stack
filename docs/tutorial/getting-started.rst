@@ -3,19 +3,17 @@
 Getting Started
 ===============
 
-This guide will walk you through how you can get started with the Data
-Science Stack. From setting up MicroK8s in your host environment and
-configuring GPU drivers, all the way to running your first notebook.
+This guide describes how you can get started with Data Science Stack (DSS). 
+From setting up MicroK8s in your host environment and configuring GPU drivers, all the way to running your first notebook.
 
-Overview
-^^^^^^^^
-Data Science Stack (DSS) is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. It provides easy access to a solution for developing and optimising ML models, utilising the machine's GPUs and allowing users to utilise different ML environment images based on their needs.
+Data Science Stack is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. 
+It provides easy access to a solution for developing and optimising ML models, utilising your machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
 Prerequisites
 ^^^^^^^^^^^^^
 
 * Ubuntu 22.04
-* An internet connection
+* An Internet connection
 * DSS relies on `MicroK8s`_, that requires as little as 540MB of memory.
   But to accommodate workloads, we recommend a system with at least 20G
   of disk space and 4G of memory.
@@ -23,14 +21,11 @@ Prerequisites
 Setting up MicroK8s
 ^^^^^^^^^^^^^^^^^^^
 
-The DSS relies on a container orchestration system, that can also take
-care of exposing the host GPUs to the workloads. In this case we will use
-MicroK8s snap, which gets installed on the host machine.
+DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
+In this tutorial, MicroK8s is used as the orchestration system.
+All the workloads and state managed by DSS will be running on top of MicroK8s.
 
-All the workloads and state managed by DSS will be running on top of
-MicroK8s.
-
-You can install MicroK8s with the following commands:
+You can install MicroK8s as follows:
 
 .. code-block:: bash
 
@@ -40,10 +35,7 @@ You can install MicroK8s with the following commands:
 Install the DSS CLI
 ^^^^^^^^^^^^^^^^^^^
 
-At this point we've installed MicroK8s and configured it to use the host's
-NVIDIA GPU. The next step now is to install the DSS CLI snap.
-
-You can install the CLI with the following command:
+Now, you need to install the DSS CLI using the following command:
 
 .. code-block:: bash
 
@@ -52,10 +44,7 @@ You can install the CLI with the following command:
 Initialise the DSS
 ^^^^^^^^^^^^^^^^^^
 
-Now that you have the DSS CLI installed the next step is to initialise
-DSS on top of MicroK8s and prepare MLflow.
-
-You can initialise DSS with the following command:
+Next, you have to initialise DSS on top of MicroK8s and prepare MLflow:
 
 .. code-block:: bash
 
@@ -67,9 +56,8 @@ You can initialise DSS with the following command:
 Launch a Notebook
 ^^^^^^^^^^^^^^^^^
 
-At this point the DSS is setup on the host and you are ready to start
-managing containerised Notebook environments. You can use the DSS CLI
-now to launch containerised Notebook environments and access JupyterLab.
+At this point, DSS is set up and you are ready to start managing containerised Notebook environments. 
+You can use the DSS CLI now to launch containerised Notebook environments and access JupyterLab.
 
 You can start your first Notebook with the following command:
 
@@ -77,9 +65,8 @@ You can start your first Notebook with the following command:
 
    dss create my-tensorflow-notebook --image=kubeflownotebookswg/jupyter-tensorflow-cuda:v1.8.0
 
-Once the command succeeds it will also return a URL that can be used
-to connect to the JupyterLab UI of that Notebook.
-For example you should see output like this:
+Once the command succeeds, it returns a URL that can be used to connect to the JupyterLab UI of that Notebook.
+For example, you should expect an output like this:
 
 .. code-block:: none
 
