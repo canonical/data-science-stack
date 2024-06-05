@@ -35,7 +35,7 @@ You can install MicroK8s using `snap`_ as follows:
 Install the DSS CLI
 ^^^^^^^^^^^^^^^^^^^
 
-Now, you need to install the DSS CLI using the following command:
+Now, install the DSS CLI using the following command:
 
 .. code-block:: bash
 
@@ -44,7 +44,7 @@ Now, you need to install the DSS CLI using the following command:
 Initialise the DSS
 ^^^^^^^^^^^^^^^^^^
 
-Next, you have to initialise DSS on top of MicroK8s and prepare MLflow:
+Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
 
 .. code-block:: bash
 
@@ -59,7 +59,7 @@ Launch a Notebook
 At this point, DSS is set up and you are ready to start managing containerised Notebook environments. 
 You can use the DSS CLI now to launch containerised Notebook environments and access JupyterLab.
 
-You can start your first Notebook with the following command:
+Start your first Notebook with the following command:
 
 .. code-block:: bash
 
