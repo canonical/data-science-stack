@@ -18,6 +18,5 @@
 .. _dss snap store: https://snapcraft.io/data-science-stack
 .. _snap: https://snapcraft.io/
 .. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
-.. _MicroK8s' Getting Started: https://microk8s.io/docs/getting-started
 .. _MicroK8s use the host drivers: https://microk8s.io/docs/addon-gpu#use-host-nvidia-drivers-5
 .. _NVIDIA Operator: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
