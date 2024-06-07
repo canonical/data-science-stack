@@ -9,5 +9,5 @@ Specifically, they demonstrate how to perform common tasks for managing and inte
 
    dss
    jupyter-notebook/index
-   mlflow/index
+   mlflow
    list-commands

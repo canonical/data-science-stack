@@ -8,7 +8,7 @@ When you create a `.ipynb` from the Notebook server, it gets stored in the DSS s
 
 MLflow
 ------
-MLflow artefacts can be downloaded from the MLflow UI. To access the UI, follow the :doc:`../how-to/mlflow/access-ui` guide.
+MLflow artefacts can be downloaded from the MLflow UI. To access the UI, follow the :doc:`../how-to/mlflow` guide.
 
 * **Models**
   
