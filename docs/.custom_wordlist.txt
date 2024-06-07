@@ -32,3 +32,5 @@ snapcraft
 Snapcraft
 toolkits
 hostpath
+nvidia
+gpu
