@@ -8,6 +8,6 @@ Specifically, they demonstrate how to perform common tasks for managing and inte
    :maxdepth: 1
 
    dss
-   jupyter-notebook/index
+   jupyter-notebook
    mlflow
    list-commands
