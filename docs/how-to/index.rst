@@ -1,13 +1,13 @@
 How-to guides
 =============
 
-These guides provide practical instructions for how to do common tasks for
-managing and interacting with containerised ML Environments via the DSS.
+The following how-to guides cover key operations and processes in Data Science Stack (DSS).
+Specifically, they demonstrate how to perform common tasks for managing and interacting with the DSS components.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   dss/index
+   dss
    jupyter-notebook/index
    mlflow/index
    list-commands
