@@ -54,7 +54,7 @@ First, ensure that the DaemonSet for the Operator Validator is created:
   done
 
 .. note::
-   It will take some seconds for the DaemonSet to get created. The above command will
+   It takes some seconds for the DaemonSet to get created. The above command will
    return a message like the following at the beginning:
    ``Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found``
 
