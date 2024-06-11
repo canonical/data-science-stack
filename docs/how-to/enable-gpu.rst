@@ -3,8 +3,7 @@
 Enable NVIDIA GPUs
 ==================
 
-The following section describes how to configure the DSS to utilize the host's
-NVIDIA GPU. This is achieved by configuring the underlying MicroK8s, that the
+This guide describes how to configure DSS to utilise your NVIDIA GPUs.
 
 Prerequisites
 ^^^^^^^^^^^^^
