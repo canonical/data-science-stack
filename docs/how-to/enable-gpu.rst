@@ -105,7 +105,7 @@ The next step is to ensure the CLI can also detect the GPU in MicroK8s.
 
   dss status
 
-Expected output:
+You should expect this output:
 
 .. code-block:: bash
 
@@ -115,36 +115,35 @@ Expected output:
 
 .. note::
 
-  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` will be different depending on your device.
+  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ frmo your setup.
 
 Launch GPU-enabled Notebook
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-At this point the DSS is fully configured to utilise the host's GPU. The next step will
-be to deploy a notebook that also contains CUDA runtimes, alongside with ML frameworks
-that can utilise the GPU.
+Once DSS is fully configured to utilise your GPU, you can deploy a notebook containing
+CUDA runtimes and ML frameworks.
 
-You can find a list of proposed images that include CUDA with the following command:
+To see the list of available CUDA images, run:
 
 .. code-block:: bash
 
    dss create --help | grep cuda
 
-You should see an output similar to this one:
+You should see an output similar to this:
 
 .. code-block:: bash
 
         - pytorch-cuda = kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0
         - tensorflow-cuda = kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0
 
-Pick one of the two images and create a notebooks with:
+Select one of them and create a notebook with:
 
 .. code-block:: bash
 
    dss create my-notebook --image=tensorflow-cuda
 
 
-To confirm the GPU is detected and usable you can run the following python code snippet
+Confirm the GPU is detected and usable by running:
 
 .. code-block:: python
 
