@@ -37,7 +37,8 @@ Verify the NVIDIA Operator is up
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before spinning up workloads, you need to ensure the GPU Operator has
-been successfully initialized. This can take around 5 minutes.
+been successfully initialized. This process involved ensuring DaemonSet is ready
+and the Validator Pod has succeeded. This can take around 5 minutes.
 
 Ensure DaemonSet is Ready
 """""""""""""""""""""""""
