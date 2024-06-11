@@ -54,11 +54,11 @@ First, ensure that the DaemonSet for the Operator Validator is created:
   done
 
 .. note::
-   It takes some seconds for the DaemonSet to get created. The above command will
-   return a message like the following at the beginning:
+   It takes some seconds for the DaemonSet to get created. The above command
+   returns a message like the following at the beginning of the process:
    ``Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found``
 
-The expected output should be:
+Once completed, you should expect this output:
 
 .. code-block:: text
 
@@ -82,11 +82,11 @@ Next we'll need to wait for the Validator Pod to succeed:
   done
 
 .. note::
-   It will take some seconds for the Pod to get initialized . The above command will
-   return a message like the following at the beginning:
+   It takes some seconds for the Pod to get initialised . The above command
+   returns a message like the following at the beginning:
    ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing``
 
-The expected output should be:
+Once completed, you should expect this output:
 
 .. code-block:: text
 
@@ -95,8 +95,11 @@ The expected output should be:
    Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
    all validations are successful
 
-Verify the DSS detects the GPU
+Verify DSS detects the GPU
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+At this point the underlying MicroK8s cluster has been configured for handling the NVIDIA GPu.
+The next step is to ensure the CLI can also detect the GPU in MicroK8s.
 
 .. code-block:: bash
 
