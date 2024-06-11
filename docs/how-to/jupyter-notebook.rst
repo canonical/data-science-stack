@@ -332,34 +332,25 @@ For more detailed information on using MLflow, including advanced configurations
 Access your data from DSS
 -------------------------
 
-This guide provides instructions on how to access the stored data from your Notebooks in the Data Science Stack (DSS) environment.
+You can access the stored data from your notebooks using DSS CLI.
+Accessing your data is useful when you want to browse or modify the files stored from your notebooks.
 
-Accessing your data is useful when you want to browse or modify the files stored from your Notebooks.
+.. note::
+    By default, your notebooks data are stored in a directory under `/var/snap/microk8s/common/default-storage`. 
+    See `Microk8s hostpath docs`_ for more information.
 
-Prerequisites
-~~~~~~~~~~~~~
-Before accessing your data, ensure you have the following:
-
-- DSS CLI installed on your workstation.
-- At least one notebook was created in the DSS environment.
-
-Accessing your data
-~~~~~~~~~~~~~~~~~~~
-By default, your Notebooks data will be stored in a directory under `/var/snap/microk8s/common/default-storage`:
-
-* `Microk8s hostpath docs`_
-
-This directory is shared by all DSS Notebooks.
+This directory is shared by all your DSS notebooks.
 
 1. **Find the directory of your stored data**
-    To find the directory containing your Notebooks data, list the directories under `/var/snap/microk8s/common/default-storage`:
+    
+    To find the directory containing your notebooks data, list the directories under `/var/snap/microk8s/common/default-storage`:
 
     .. code-block:: bash
 
         ls /var/snap/microk8s/common/default-storage/
 
 
-    Expected output:
+    You should see an output like this:
 
     .. code-block:: bash
 
@@ -369,12 +360,18 @@ This directory is shared by all DSS Notebooks.
 
     .. note::
 
-        The characters that follow the `dss-notebooks-pvc-` will not be the same for all DSS environments.
+        The characters that follow `dss-notebooks-pvc-` may not be the same for all DSS environments.
 
 2. **Access your Notebooks data**
-    From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. Use the directory name you got from the previous step.
 
-    Now, you can view and manage all your stored Notebooks data.
+    From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. 
+    Use the directory name you got from the previous step.
 
+    Now, you can view and manage all your stored notebooks data.
 
+See also
+--------
+
+To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
+If you are interested in managing MLflow within your DSS environment, see :ref:`manage_MLflow`.
 

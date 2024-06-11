@@ -10,8 +10,8 @@ DSS is a Command Line Interface (CLI)-based environment and distributed as a `sn
 Install DSS
 -----------
 
-.. important::
-   To install DSS, ensure that you have previously installed `Snap`_ and `MicroK8s`_.
+.. note::
+   To install DSS, ensure you have previously installed `Snap`_ and `MicroK8s`_.
 
 You can install DSS using ``snap`` as follows:
 
