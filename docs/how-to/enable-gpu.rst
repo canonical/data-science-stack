@@ -40,7 +40,7 @@ Before spinning up workloads, you need to ensure the GPU Operator has
 been successfully initialized. This process involved ensuring DaemonSet is ready
 and the Validator Pod has succeeded. This can take around 5 minutes.
 
-Ensure DaemonSet is Ready
+Ensure DaemonSet is ready
 """""""""""""""""""""""""
 
 First, ensure that the DaemonSet for the Operator Validator is created:
@@ -48,7 +48,9 @@ First, ensure that the DaemonSet for the Operator Validator is created:
 
 .. code-block:: bash
 
-  while ! sudo microk8s.kubectl get ds -n gpu-operator-resources nvidia-operator-validator
+  while ! sudo microk8s.kubectl get ds \
+      -n gpu-operator-resources \
+      nvidia-operator-validator
   do
     sleep 5
   done
@@ -75,11 +77,15 @@ Next we'll need to wait for the Validator Pod to succeed:
 
 .. code-block:: bash
 
-  echo "Waiting for the NVIDIA Operator validations to complete..."
-  while ! sudo microk8s.kubectl logs -n gpu-operator-resources -l app=nvidia-operator-validator -c nvidia-operator-validator | grep "all validations are successful"
-  do
-    sleep 5
-  done
+   echo "Waiting for the NVIDIA Operator validations to complete..."
+
+   while ! sudo microk8s.kubectl logs \
+       -n gpu-operator-resources \
+       -l app=nvidia-operator-validator \
+       -c nvidia-operator-validator | grep "all validations are successful"
+   do
+       sleep 5
+   done
 
 .. note::
    It takes some seconds for the Pod to get initialised . The above command
@@ -117,7 +123,7 @@ You should expect this output:
 
   The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ frmo your setup.
 
-Launch GPU-enabled Notebook
+Launch GPU-enabled notebook
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Once DSS is fully configured to utilise your GPU, you can deploy a notebook containing
