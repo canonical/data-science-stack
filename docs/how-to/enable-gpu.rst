@@ -31,9 +31,7 @@ To enable the NVIDIA runtimes on MicroK8s, run the following command:
 
 .. note::
    The NVIDIA Operator will detect if the NVIDIA drivers are not present at all
-   and will install them in this case. But the NVIDIA Operator can also detect
-   if you have drivers already installed. In this case the NVIDIA Operator will
-   use the host's drivers.
+   and installs them in this case. Otherwise, it uses the installed drivers.
 
 Verify the NVIDIA Operator is up
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
