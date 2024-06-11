@@ -6,8 +6,8 @@ Manage Jupyter Notebooks
 This guide describes how to manage Jupyter Notebooks within your Data Science Stack (DSS) environment.
 All actions can be performed using the DSS Command Line Interface (CLI). 
 
-Create Notebook
----------------
+Create a notebook
+-----------------
 
 You can create a Jupyter Notebook using the DSS Command Line Interface (CLI).  
 This notebook includes different packages and toolkits depending on the image used to create it.
@@ -43,7 +43,7 @@ This notebook includes different packages and toolkits depending on the image us
         [INFO] Success: Notebook test-notebook created successfully.
         [INFO] Access the notebook at http://10.152.183.42:80.
 
-List Created Notebooks
+List created notebooks
 ----------------------
 
 You can check the current state of all notebooks within your Data Science Stack (DSS) environment.
@@ -65,7 +65,7 @@ For example:
 
 .. _notebook_states:
 
-Notebook States
+Notebook states
 ~~~~~~~~~~~~~~~
 
 Each notebook can be in one of the following states:
@@ -80,9 +80,9 @@ Each notebook can be in one of the following states:
 
 - **Downloading**: The notebook is downloading the specified OCI Image. This is a transient state before it becomes *Active*.
 
-- **Removing**: The notebook is in the process of beign removed. This is a transient state before it is fully removed.
+- **Removing**: The notebook is in the process of being removed. This is a transient state before it is fully removed.
 
-Remove a Notebook
+Remove a notebook
 -----------------
 
 You can remove a Jupyter Notebook using the DSS CLI.
@@ -118,7 +118,7 @@ It is a non-blocking process, meaning you can continue other work while the dele
    If the notebook has been successfully removed, it will no longer appear in the list. 
    If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
 
-Start a Notebook
+Start a notebook
 ----------------
 
 You can start a notebook using the DSS CLI.
@@ -155,9 +155,9 @@ This allows you to resume your work without needing to configure a new notebook.
        Name          Image                                               URL                      
        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
-   You can use this URL to access the notebook.
+   You can use this URL to :ref:`access the notebook <access_notebook>`.
 
-Stop a Notebook
+Stop a notebook
 ---------------
 
 You can stop a notebook using the DSS CLI.
@@ -195,20 +195,13 @@ Stopping a notebook frees up resources and ensures data safety when not actively
 
 .. _access_notebook:
 
-Access the Jupyter Notebooks UI
--------------------------------
+Access a notebook
+-----------------
 
 This guide explains how to access the user interface of a Jupyter Notebook running in the Data Science Stack (DSS) environment.
 
-Accessing the Jupyter Notebook UI allows you to interact directly with your notebooks, run code, and visualise data. This is done through a web browser by navigating to the URL associated with your active notebook.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Ensure the following before attempting to access the Notebook UI:
-
-- DSS CLI installed on your workstation.
-- At least one notebook is currently active in the DSS environment.
+Accessing the Jupyter Notebook UI allows you to interact directly with your notebooks, run code, and visualise data. 
+This is done through a web browser by navigating to the URL associated with your active notebook.
 
 Finding the Notebook URL
 ~~~~~~~~~~~~~~~~~~~~~~~~
