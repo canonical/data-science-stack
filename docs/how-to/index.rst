@@ -11,3 +11,4 @@ managing and interacting with containerised ML Environments via the DSS.
    jupyter-notebook/index
    mlflow/index
    list-commands
+   enable-gpu
