@@ -1,3 +1,5 @@
+.. _manage_MLflow:
+
 Manage MLflow
 =============
 

@@ -1,3 +1,5 @@
+.. _manage_DSS:
+
 Manage DSS
 ==========
 
@@ -109,4 +111,5 @@ If you already have a DSS environment running and no GPU available, the expected
 See also
 --------
 
-To learn how to manage your Jupyter Notebooks, check :doc:`jupyter-notebook`. If you are interested in managing MLflow within your DSS environment, see :doc:`mlflow`.
+To learn how to manage your Jupyter Notebooks, check :ref:`manage_notebooks`. 
+If you are interested in managing MLflow within your DSS environment, see :ref:`manage_MLflow`.

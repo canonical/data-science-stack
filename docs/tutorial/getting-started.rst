@@ -10,16 +10,16 @@ Data Science Stack is a ready-made environment that makes it seamless to run GPU
 It provides easy access to a solution for developing and optimising ML models, utilising your machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
 Prerequisites
-^^^^^^^^^^^^^
+-------------
 
-* Ubuntu 22.04
-* An Internet connection
+* Ubuntu 22.04.
+* An Internet connection.
 * DSS relies on `MicroK8s`_, that requires as little as 540MB of memory.
   But to accommodate workloads, we recommend a system with at least 20G
   of disk space and 4G of memory.
 
 Setting up MicroK8s
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
 In this tutorial, MicroK8s is used as the orchestration system.
@@ -33,7 +33,7 @@ You can install MicroK8s using `snap`_ as follows:
    sudo microk8s enable storage dns rbac
 
 Install the DSS CLI
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Now, install the DSS CLI using the following command:
 
@@ -41,8 +41,8 @@ Now, install the DSS CLI using the following command:
 
    sudo snap install data-science-stack --channel latest/stable
 
-Initialise the DSS
-^^^^^^^^^^^^^^^^^^
+Initialise DSS
+--------------
 
 Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
 
@@ -54,7 +54,7 @@ Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
    The `dss initialize` command might take a few minutes to complete.
    
 Launch a Notebook
-^^^^^^^^^^^^^^^^^
+-----------------
 
 At this point, DSS is set up and you are ready to start managing containerised Notebook environments. 
 You can use the DSS CLI now to launch containerised Notebook environments and access JupyterLab.
@@ -77,7 +77,7 @@ For example, you should expect an output like this:
    [INFO] Access the notebook at http://10.152.183.42:80.
 
 Next Steps
-^^^^^^^^^^
-* Want to learn how to interact with your Notebooks? Try :ref:`jupyter-notebooks`
-* Want to learn more about handling data? See :ref:`access-data`
-* Want to connect to MLflow? See :ref:`notebook-mlflow`
+----------
+* Want to learn how to interact with your Notebooks? Try :ref:`manage_DSS`.
+* Want to learn more about handling data? See :ref:`access-data`.
+* Want to connect to MLflow? See :ref:`notebook-mlflow`.
