@@ -36,7 +36,7 @@ To enable the NVIDIA runtimes on MicroK8s, run the following command:
 Verify the NVIDIA Operator is up
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before spinning up workloads that you need to ensure the GPU Operator has
+Before spinning up workloads, you need to ensure the GPU Operator has
 been successfully initialized. This can take around 5 minutes.
 
 Ensure DaemonSet is Ready
