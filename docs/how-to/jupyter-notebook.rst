@@ -70,7 +70,7 @@ Notebook states
 
 Each notebook can be in one of the following states:
 
-- **Active**: The notebook is running and accessible. The URL under the *URL* column is displayed, allowing you to access it.
+- **Active**: The notebook is running and accessible. You can use the URL under the *URL* column to access it.
 
 - **Stopped**: The notebook is not running. 
 
@@ -95,67 +95,69 @@ It is a non-blocking process, meaning you can continue other work while the dele
 
 1. **Remove the notebook**:
 
-   To delete the notebook, use the ``dss remove`` command followed by the name of the notebook, ``my-notebook`` in this example:
+    To delete the notebook, use the ``dss remove`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
        dss remove my-notebook
 
-   You should expect an output like this:
+    You should expect an output like this:
 
-   .. code-block:: none
+    .. code-block:: none
 
        Removing the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook has been removed**:
 
-   To confirm the notebook has been removed, you can check the list of notebooks again: 
+    To confirm the notebook has been removed, you can check the list of notebooks again: 
 
-   .. code-block:: bash
+    .. code-block:: bash
 
        dss list
 
-   If the notebook has been successfully removed, it will no longer appear in the list. 
-   If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
+    If the notebook has been successfully removed, it will no longer appear in the list. 
+    If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
+
+.. _start_notebook:
 
 Start a notebook
 ----------------
 
 You can start a notebook using the DSS CLI.
-This allows you to resume your work without needing to configure a new notebook.
+This enables you to resume your work without needing to configure a new notebook.
 
 1. **Start the notebook**:
 
-   To start the notebook, use the ``dss start`` command followed by the name of the notebook, ``my-notebook`` in this example:
+    To start the notebook, use the ``dss start`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
        dss start my-notebook
 
-   You should expect an output like this:
+    You should expect an output like this:
 
-   .. code-block:: none
+    .. code-block:: none
 
-       Executing start command
-       Starting the notebook my-notebook. Check `dss list` for the status of the notebook.
+        Executing start command
+        Starting the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook is running**:
 
-   After starting it, the notebook may go through :ref:`different states <notebook_states>`. 
-   To check its state, run:
+    After starting it, the notebook may go through :ref:`different states <notebook_states>`. 
+    To check its state, run:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       dss list
+        dss list
 
-   Once ready, you should expect an output like this:
+    Once ready, you should expect an output like this:
 
-   .. code-block:: none
+    .. code-block:: none
 
-       Name          Image                                               URL                      
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
+        Name          Image                                               URL                      
+        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
-   You can use this URL to :ref:`access the notebook <access_notebook>`.
+    You can use this URL to :ref:`access the notebook <access_notebook>`.
 
 Stop a notebook
 ---------------
@@ -165,169 +167,145 @@ Stopping a notebook frees up resources and ensures data safety when not actively
 
 1. **Stop the notebook**:
 
-   To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook, ``my-notebook`` in this example:
+    To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       dss stop my-notebook
+        dss stop my-notebook
 
-   You should see an output like this:
+    You should see an output like this:
 
-   .. code-block:: none
+    .. code-block:: none
 
-       Stopping the notebook my-notebook. Check `dss list` for the status of the notebook.
+        Stopping the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook has stopped**:
 
-   After stopping it, the notebook may go through :ref:`different states <notebook_states>`. 
-   To confirm it has stopped, check its state:
+    After stopping it, the notebook may go through :ref:`different states <notebook_states>`. 
+    To confirm it has stopped, check its state:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       dss list
+        dss list
 
-   You should expect an output like this: 
+    You should expect an output like this: 
 
-   .. code-block:: none
+    .. code-block:: none
 
-       Name          Image                                               URL       
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
+        Name          Image                                               URL       
+        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
 
 .. _access_notebook:
 
 Access a notebook
 -----------------
 
-This guide explains how to access the user interface of a Jupyter Notebook running in the Data Science Stack (DSS) environment.
-
-Accessing the Jupyter Notebook UI allows you to interact directly with your notebooks, run code, and visualise data. 
+You can access a notebook User Interface (UI) using the DSS CLI.
+Accessing the UI enables you to interact directly with your notebook, run code, and visualise data. 
 This is done through a web browser by navigating to the URL associated with your active notebook.
 
-Finding the Notebook URL
-~~~~~~~~~~~~~~~~~~~~~~~~
+.. note::
 
-1. **List active notebooks**:
+    Ensure your notebook is in *Active* :ref:`state <notebook_states>` to be able to access it.
+    Otherwise, you may need to :ref:`start <start_notebook>` it or check for any issues that are preventing it from being accessible.
 
-   To find the URL of your Jupyter Notebook, first ensure that it is active. Run the `dss list` command to see all the notebooks and their statuses:
+1. **Find the notebook URL**:
 
-   .. code-block:: bash
+    To find the URL of your notebook, first list all the notebooks:
 
-       dss list
+    .. code-block:: bash
 
-   Look for the notebook in the output, and specifically check the URL column. An active notebook will have a URL listed, which indicates it is ready for access.
+        dss list
 
-   Example output:
+    Look for your notebook in the output, and specifically check the URL column. 
+    An active notebook has associated a URL, which indicates it is ready for accessing.
 
-   .. code-block:: none
+    You should expect an output like this:
 
-       Name          Image                                               URL                      
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
+    .. code-block:: none
+
+        Name          Image                                               URL                      
+        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
 2. **Access the Notebook UI**:
 
-   Once you have the URL from the `dss list` command, open a web browser and enter the URL into the address bar. This will direct you to the Jupyter Notebook interface where you can start working with your notebook.
+    Once you know the URL, open a web browser and enter the URL into the address bar. 
+    This will direct you to the notebook UI where you can start working with your notebook.   
 
-   Ensure that the notebook is in an active state. If the notebook is not active, you may need to start it or check for any issues that are preventing it from being accessible.
-
-Get Notebook Logs
+Get notebook logs
 -----------------
 
-This guide provides instructions on how to retrieve logs for a Jupyter Notebook running in the Data Science Stack (DSS) environment.
+You can retrieve logs for a Jupyter Notebook using the DSS CLI.
+Retrieving logs can help you troubleshoot issues, monitor notebook activities, or verify actions taken in the notebook. 
 
-Retrieving logs for a Jupyter Notebook can help you troubleshoot issues, monitor notebook activities, or verify actions taken in the notebook. This process uses the DSS command line interface (CLI).
+To get the logs for a certain notebook, use the ``dss logs`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-Prerequisites
-~~~~~~~~~~~~~
+.. code-block:: bash
+    
+    dss logs my-notebook
 
-Before accessing the logs, ensure you have the following:
+You should expect an output like this:
 
-- DSS CLI installed on your workstation.
-- A notebook whose logs you wish to view.
+.. code-block:: none
 
-Retrieving Notebook Logs
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-1. **Identify the notebook**:
-
-   Determine the name of the notebook you want to retrieve logs for. You can list all available notebooks and their statuses using the `dss list` command if needed:
-
-   .. code-block:: bash
-
-       dss list
-
-2. **Retrieve the logs**:
-
-   To get the logs for the notebook, use the `dss logs` command followed by the name of the notebook:
-
-   .. code-block:: bash
-
-       dss logs my-notebook
-
-   Expected output:
-
-   .. code-block:: none
-
-        [INFO] Logs for my-notebook2-8cf4d9bc-jm9zm:
-        [INFO] s6-rc: info: service s6rc-oneshot-runner: starting
-        [INFO] s6-rc: info: service s6rc-oneshot-runner successfully started
-        [INFO] s6-rc: info: service fix-attrs: starting
-        [INFO] s6-rc: info: service fix-attrs successfully started
-        [INFO] s6-rc: info: service legacy-cont-init: starting
-        [INFO] cont-init: info: running /etc/cont-init.d/01-copy-tmp-home
-        [INFO] cont-init: info: /etc/cont-init.d/01-copy-tmp-home exited 0
-        [INFO] s6-rc: info: service legacy-cont-init successfully started
-        [INFO] s6-rc: info: service legacy-services: starting
-        [INFO] services-up: info: copying legacy longrun jupyterlab (no readiness notification)
-        [INFO] s6-rc: info: service legacy-services successfully started
-        [INFO] [W 2024-04-30 13:44:20.991 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
-        [INFO] [I 2024-04-30 13:44:20.996 ServerApp] Package jupyterlab took 0.0000s to import
-        [INFO] [I 2024-04-30 13:44:20.997 ServerApp] Package jupyter_server_fileid took 0.0013s to import
-        [INFO] [I 2024-04-30 13:44:20.998 ServerApp] Package jupyter_server_mathjax took 0.0007s to import
-        [INFO] [I 2024-04-30 13:44:21.001 ServerApp] Package jupyter_server_terminals took 0.0024s to import
-        [INFO] [I 2024-04-30 13:44:21.012 ServerApp] Package jupyter_server_ydoc took 0.0105s to import
-        [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package jupyterlab_git took 0.0104s to import
-        [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package nbclassic took 0.0000s to import
+    [INFO] Logs for my-notebook-8cf4d9bc-jm9zm:
+    [INFO] s6-rc: info: service s6rc-oneshot-runner: starting
+    [INFO] s6-rc: info: service s6rc-oneshot-runner successfully started
+    [INFO] s6-rc: info: service fix-attrs: starting
+    [INFO] s6-rc: info: service fix-attrs successfully started
+    [INFO] s6-rc: info: service legacy-cont-init: starting
+    [INFO] cont-init: info: running /etc/cont-init.d/01-copy-tmp-home
+    [INFO] cont-init: info: /etc/cont-init.d/01-copy-tmp-home exited 0
+    [INFO] s6-rc: info: service legacy-cont-init successfully started
+    [INFO] s6-rc: info: service legacy-services: starting
+    [INFO] services-up: info: copying legacy longrun jupyterlab (no readiness notification)
+    [INFO] s6-rc: info: service legacy-services successfully started
+    [INFO] [W 2024-04-30 13:44:20.991 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
+    [INFO] [I 2024-04-30 13:44:20.996 ServerApp] Package jupyterlab took 0.0000s to import
+    [INFO] [I 2024-04-30 13:44:20.997 ServerApp] Package jupyter_server_fileid took 0.0013s to import
+    [INFO] [I 2024-04-30 13:44:20.998 ServerApp] Package jupyter_server_mathjax took 0.0007s to import
+    [INFO] [I 2024-04-30 13:44:21.001 ServerApp] Package jupyter_server_terminals took 0.0024s to import
+    [INFO] [I 2024-04-30 13:44:21.012 ServerApp] Package jupyter_server_ydoc took 0.0105s to import
+    [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package jupyterlab_git took 0.0104s to import
+    [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package nbclassic took 0.0000s to import
 
 .. _notebook-mlflow:
 
-Connect from Notebook to MLflow
+Connect from notebook to MLflow
 -------------------------------
 
-This guide provides instructions on how to integrate MLflow with your Jupyter Notebook in the Data Science Stack (DSS) environment for tracking experiments.
+You can integrate `MLflow <Charmed MLflow_>`_ with your Jupyter Notebook for tracking experiments using DSS. 
 
-MLflow is a platform for managing the end-to-end machine learning life cycle. It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models. DSS environments are pre-configured to interact with an MLflow server through the `MLFLOW_TRACKING_URI` environment variable set in each notebook.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Before you begin, ensure the following:
-
-- You have an active Jupyter Notebook in the DSS environment.
-- You understand basic operations within a Jupyter Notebook.
+MLflow is a platform for managing the end-to-end machine learning life cycle. 
+It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models. 
+DSS environments are pre-configured to interact with an MLflow server through the `MLFLOW_TRACKING_URI` environment variable set in each notebook.
 
 Installing MLflow
 ~~~~~~~~~~~~~~~~~
 
-To interact with MLflow, the MLflow Python library needs to be installed within your notebook environment. There are two ways to install the MLflow library:
+To interact with MLflow, the MLflow Python library needs to be installed within your notebook environment. 
+There are two ways to install the MLflow library:
 
-1. **Within a Notebook Cell** (Recommended):
+1. **Within a notebook cell** (Recommended):
 
-   It's recommended to install MLflow directly within a notebook cell to ensure the library is available for all subsequent cells during your session.
+    It's recommended to install MLflow directly within a notebook cell to ensure the library is available for all subsequent cells during your session:
 
-   .. code-block:: none
+    .. code-block:: none
 
-       %%bash
-       pip install mlflow
+        %%bash
+        pip install mlflow
 
-2. **Using the Notebook's Terminal**:
+2. **Using the notebook terminal**:
 
-   Alternatively, you can install MLflow from the notebook's terminal with the same command. This method also installs MLflow for the current session:
+    Alternatively, you can install MLflow from the notebook terminal with the same command. 
+    This method also installs MLflow for the current session:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
-       pip install mlflow
+        pip install mlflow
 
-   Remember, any installations via the notebook or terminal will not persist after the notebook is restarted (e.g., stopped and started again with `dss start` and `dss stop`). Therefore, the first method is preferred to ensure consistency across sessions.
+    Note that any installations via the notebook or terminal will not persist after the notebook is restarted.
+    Therefore, the first method is preferred to ensure consistency across sessions.
 
 Connecting to MLflow library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -338,20 +316,16 @@ After installing MLflow, you can directly interact with the MLflow server config
 
     import mlflow
 
-    # Initialise the MLflow client
     c = mlflow.MlflowClient()
 
-    # The tracking URI should be set automatically from the environment variable
-    print(c.tracking_uri)  # Prints the MLflow tracking URI
+    print(c.tracking_uri)  
 
-    # Create a new experiment
     c.create_experiment("test-experiment")
 
-This example shows how to initialise the MLflow client, check the tracking URI, and create a new experiment. The `MLFLOW_TRACKING_URI` should already be set in your environment, allowing you to focus on your experiments without manual configuration.
+This example shows how to initialise the MLflow client, check the tracking URI, and create a new experiment. 
+The `MLFLOW_TRACKING_URI` should already be set in your environment, allowing you to focus on your experiments without manual configuration.
 
-For more detailed information on using MLflow, including advanced configurations and features, refer to the official MLflow documentation:
-
-* `MLflow Docs`_
+For more detailed information on using MLflow, including advanced configurations and features, refer to the official `MLflow Docs`_.
 
 .. _access-data:
 

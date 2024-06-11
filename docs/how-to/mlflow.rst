@@ -14,23 +14,23 @@ This UI allows you to interact directly with your MLflow experiments and models.
 
 1. **Get the MLflow URL**:
 
-   To find the URL of MLflow, run:
+    To find the URL of MLflow, run:
 
-   .. code-block:: bash
+    .. code-block:: bash
 
        dss status
 
-   Look for the MLflow URL in the output.
-   For example:
+    Look for the MLflow URL in the output.
+    For example:
 
-   .. code-block:: none
+    .. code-block:: none
 
         [INFO] MLflow deployment: Ready
         [INFO] MLflow URL: http://10.152.183.205:5000
 
 .. note::
 
-        To access the UI, your MLflow deployment should be `Ready`.        
+    To access the UI, your MLflow deployment should be `Ready`.        
 
 2. **Access the MLflow UI**:
 
@@ -43,17 +43,15 @@ Get MLflow logs
 You can retrieve logs for MLflow within your Data Science Stack (DSS) environment. 
 Retrieving logs is a critical task for maintaining and troubleshooting MLflow.
 
-**Retrieve the logs**:
+To get MLflow logs, use the ``dss logs`` command with the ``--mlflow`` option:
 
-   To get MLflow logs, use the ``dss logs`` command with the ``--mlflow`` option:
+    .. code-block:: bash
 
-   .. code-block:: bash
+        dss logs --mlflow
 
-       dss logs --mlflow
+You should expect an output like this:
 
-   You should expect an output like this:
-
-   .. code-block:: none
+    .. code-block:: none
     
         [INFO] Logs for mlflow-6bbfc5db5-xlfvj:
         [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Starting gunicorn 20.1.0
