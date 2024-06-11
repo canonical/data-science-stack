@@ -4,45 +4,36 @@ Manage Jupyter Notebooks
 ========================
 
 This guide describes how to manage Jupyter Notebooks within your Data Science Stack (DSS) environment.
+All actions can be performed using the DSS Command Line Interface (CLI). 
 
 Create Notebook
 ---------------
 
-This guide provides instructions on how to create a Jupyter Notebook in the Data Science Stack (DSS) environment.
-
-A Jupyter Notebook can be created using the DSS command line interface (CLI).  
-This notebook will include different packages and toolkits depending on the image used to create it.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Before creating a notebook, ensure you have the following:
-
-- DSS CLI installed on your workstation
-- DSS initialized
-
-Creating a Notebook
-~~~~~~~~~~~~~~~~~~~
+You can create a Jupyter Notebook using the DSS Command Line Interface (CLI).  
+This notebook includes different packages and toolkits depending on the image used to create it.
 
 1. **Select an image**:
 
-    Before creating a notebook, you need to select an image that includes the packages and toolkits you need.  To see a list of recommended images and their aliases, see:
+    Before creating a notebook, you need to select an image that includes the packages and toolkits you need.  
+    To see a list of recommended images and their aliases, do:
 
     .. code-block:: bash
 
         dss create --help
 
-    The help text includes a list of recommended images and aliases so you don't need to type the full image name.  For this guide, we will use the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
+    The output includes a list of recommended images and their aliases.
+    For example, this guide uses the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
 
 2. **Create the notebook**:
 
-    Create a new notebook using ``dss create``:
+    Create a new notebook as follows:
 
     .. code-block:: bash
 
         dss create my-notebook --image kubeflownotebookswg/jupyter-scipy:v1.8.0
 
-    This will pull the notebook image and start a Notebook server, printing the URL of the notebook once complete.  Expected output:
+    This command starts a notebook server with the selected image.
+    You should expect an output like this: 
 
     .. code-block:: none
 
@@ -52,27 +43,18 @@ Creating a Notebook
         [INFO] Success: Notebook test-notebook created successfully.
         [INFO] Access the notebook at http://10.152.183.42:80.
 
-3. **Access the notebook**:
-
-    To :doc:`access the Notebook </how-to/jupyter-notebook/access-ui>`, use the URL provided in the output.
-
 List Created Notebooks
 ----------------------
 
-This guide explains how to use the `dss list` command to view the current status of all notebooks within the Data Science Stack (DSS) environment.
-
-The `dss list` command provides a snapshot of all notebooks along with their current states. Understanding these states helps you manage and interact with your notebooks effectively.
-
-Using the `dss list` Command
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To view the list and status of all notebooks, run the following command in your DSS environment:
+You can check the current state of all notebooks within your Data Science Stack (DSS) environment.
+To view the full list, run:
 
 .. code-block:: bash
 
     dss list
 
-This command displays each notebook along with its current state and URL if applicable. Here is an example of what you might see:
+This command displays each notebook name along with its associated image, state and URL if applicable. 
+For example:
 
 .. code-block:: none
 
@@ -81,214 +63,137 @@ This command displays each notebook along with its current state and URL if appl
     data-prep     kubeflownotebookswg/jupyter-minimal:v1.5.0          (Downloading)
     test-env      kubeflownotebookswg/jupyter-scipy-notebook:v1.9.0   (Stopping)
 
+.. _notebook_states:
+
 Notebook States
 ~~~~~~~~~~~~~~~
 
 Each notebook can be in one of the following states:
 
-- **Active**: The notebook is running and accessible. The URL under the "URL" column will be displayed, allowing you to access the notebook directly.
+- **Active**: The notebook is running and accessible. The URL under the *URL* column is displayed, allowing you to access it.
 
-- **Stopped**: The notebook is not running. You can start it using the `dss start` command.
+- **Stopped**: The notebook is not running. 
 
-- **Stopping**: The notebook is in the process of stopping. It is advisable to wait until the process completes, transitioning to "Stopped".
+- **Stopping**: The notebook is in the process of stopping. It is advisable to wait until the process completes, transitioning to *Stopped*.
 
-- **Starting**: The notebook is starting up. This state indicates that the notebook is initialising and will soon be active.
+- **Starting**: The notebook is initialising and will soon be *Active*.
 
-- **Downloading**: The notebook is downloading the specified OCI Image.. This is usually a transient state before it becomes "Active".
+- **Downloading**: The notebook is downloading the specified OCI Image. This is a transient state before it becomes *Active*.
 
-- **Removing**: The command to remove the notebook has been issued (`dss remove`), but the notebook has not been completely removed yet. This state will eventually clear once the notebook is fully removed.
+- **Removing**: The notebook is in the process of beign removed. This is a transient state before it is fully removed.
 
-Delete a Notebook
+Remove a Notebook
 -----------------
 
-This guide provides instructions on how to remove a Jupyter Notebook from the Data Science Stack (DSS) environment.
-
-Deleting a Jupyter Notebook is useful when you no longer need the notebook and want to clear up resources or declutter your workspace. This process is handled through the DSS command line interface (CLI), and it is non-blocking, meaning you can continue other work while the deletion completes.
+You can remove a Jupyter Notebook using the DSS CLI.
+It is a non-blocking process, meaning you can continue other work while the deletion completes.
 
 .. note::
 
-   When you delete a notebook, any data stored under `~/shared` within the notebook will be preserved and remain accessible to other notebooks. This shared storage is designed to ensure that valuable data is not lost even when individual notebooks are removed from the environment.
+   When you remove a notebook, any data stored under `~/shared` within the notebook will be preserved and remain accessible to other notebooks. 
+   This shared storage is designed to ensure that valuable data is not lost even when individual notebooks are removed from the environment.
 
-Prerequisites
-~~~~~~~~~~~~~
+1. **Remove the notebook**:
 
-Before deleting a notebook, ensure you have the following:
-
-- DSS CLI installed on your workstation.
-- The notebook you wish to delete.
-
-Deleting a Notebook
-~~~~~~~~~~~~~~~~~~~
-
-1. **Check the existing notebooks**:
-
-   Before deletion, verify the notebook you want to delete is listed and check its status with the `dss list` command:
-
-   .. code-block:: bash
-
-       dss list
-
-   Example output:
-
-   .. code-block:: none
-
-       Name          Image                                               URL                       
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
-
-2. **Remove the notebook**:
-
-   To delete the notebook, use the `dss remove` command followed by the name of the notebook:
+   To delete the notebook, use the ``dss remove`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
    .. code-block:: bash
 
        dss remove my-notebook
 
-   Expected output:
+   You should expect an output like this:
 
    .. code-block:: none
 
        Removing the notebook my-notebook. Check `dss list` for the status of the notebook.
 
-3. **Verify the notebook has been removed**:
+2. **Verify the notebook has been removed**:
 
-   After initiating the remove command, the notebook may go through a "Removing" state. To confirm the notebook has been removed, run the `dss list` command again:
+   To confirm the notebook has been removed, you can check the list of notebooks again: 
 
    .. code-block:: bash
 
        dss list
 
-   If the notebook has been successfully removed, it will no longer appear in the list. If it's still showing as "Removing", you may need to wait a bit longer or investigate if there are any issues preventing the deletion.
+   If the notebook has been successfully removed, it will no longer appear in the list. 
+   If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
 
 Start a Notebook
 ----------------
 
-This guide provides instructions on how to start a stopped Jupyter Notebook within the Data Science Stack (DSS) environment.
+You can start a notebook using the DSS CLI.
+This allows you to resume your work without needing to configure a new notebook.
 
-A Jupyter Notebook that has been stopped can be restarted using the DSS command line interface (CLI). This allows you to resume your work without needing to configure a new notebook.
+1. **Start the notebook**:
 
-Prerequisites
-~~~~~~~~~~~~~
-
-Before starting a notebook, ensure you have the following:
-
-- DSS CLI installed on your workstation.
-- A stopped notebook. You can verify the status of notebooks using the ``dss list`` command.
-
-Starting a Stopped Notebook
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-1. **List the available notebooks**:
-
-   First, use the ``dss list`` command to display all notebooks and their statuses:
-
-   .. code-block:: bash
-
-       dss list
-
-   Example output:
-
-   .. code-block:: none
-
-       Name          Image                                               URL       
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
-
-   This shows that ``my-notebook`` is currently stopped.
-
-2. **Start the notebook**:
-
-   To start the notebook, use the ``dss start`` command followed by the name of the notebook:
+   To start the notebook, use the ``dss start`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
    .. code-block:: bash
 
        dss start my-notebook
 
-   Expected output:
+   You should expect an output like this:
 
    .. code-block:: none
 
        Executing start command
        Starting the notebook my-notebook. Check `dss list` for the status of the notebook.
 
-3. **Verify the notebook is running**:
+2. **Verify the notebook is running**:
 
-   After initiating the start command, the notebook may go through statuses such as *Starting* or *Downloading*. To check the current status and access the URL once ready, run:
+   After starting it, the notebook may go through :ref:`different states <notebook_states>`. 
+   To check its state, run:
 
    .. code-block:: bash
 
        dss list
 
-   Example output when the notebook is ready:
+   Once ready, you should expect an output like this:
 
    .. code-block:: none
 
        Name          Image                                               URL                      
        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
-   This URL can be used to access your Jupyter Notebook.
+   You can use this URL to access the notebook.
 
 Stop a Notebook
 ---------------
 
-This guide provides instructions on how to stop a running Jupyter Notebook within the Data Science Stack (DSS) environment.
+You can stop a notebook using the DSS CLI.
+Stopping a notebook frees up resources and ensures data safety when not actively working on it. 
 
-Stopping a Jupyter Notebook that is in use helps free up resources and ensures data safety when not actively working on the notebook. This guide covers the process of stopping a notebook using the DSS command line interface (CLI).
+1. **Stop the notebook**:
 
-Prerequisites
-~~~~~~~~~~~~~
-
-Before stopping a notebook, ensure you have the following:
-
-- DSS CLI installed on your workstation.
-- A running notebook. You can verify the status of notebooks using the ``dss list`` command.
-
-Stopping a Running Notebook
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-1. **List the available notebooks**:
-
-   Use the ``dss list`` command to display all notebooks and their current statuses:
-
-   .. code-block:: bash
-
-       dss list
-
-   Example output might show a running notebook:
-
-   .. code-block:: none
-
-       Name          Image                                               URL                      
-       my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80 
-
-2. **Stop the notebook**:
-
-   To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook:
+   To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
    .. code-block:: bash
 
        dss stop my-notebook
 
-   Expected output:
+   You should see an output like this:
 
    .. code-block:: none
 
        Stopping the notebook my-notebook. Check `dss list` for the status of the notebook.
 
-3. **Verify the notebook has stopped**:
+2. **Verify the notebook has stopped**:
 
-   After initiating the stop command, the notebook will go through a "Stopping" state. To confirm the notebook has stopped, run the `dss list` command again:
+   After stopping it, the notebook may go through :ref:`different states <notebook_states>`. 
+   To confirm it has stopped, check its state:
 
    .. code-block:: bash
 
        dss list
 
-   Example output when the notebook is stopped:
+   You should expect an output like this: 
 
    .. code-block:: none
 
        Name          Image                                               URL       
        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
 
-.. _access-ui:
+.. _access_notebook:
 
 Access the Jupyter Notebooks UI
 -------------------------------

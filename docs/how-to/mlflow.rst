@@ -45,7 +45,7 @@ Retrieving logs is a critical task for maintaining and troubleshooting MLflow.
 
 **Retrieve the logs**:
 
-   To get MLflow logs, use the `dss logs` command with the `--mlflow` option:
+   To get MLflow logs, use the ``dss logs`` command with the ``--mlflow`` option:
 
    .. code-block:: bash
 

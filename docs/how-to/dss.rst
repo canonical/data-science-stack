@@ -13,7 +13,7 @@ Install DSS
 .. important::
    To install DSS, ensure that you have previously installed `Snap`_ and `MicroK8s`_.
 
-You can install DSS using `snap` as follows:
+You can install DSS using ``snap`` as follows:
 
 .. code-block:: bash
 
@@ -28,7 +28,7 @@ Then, you can run the DSS CLI with:
 Start DSS
 ---------
 
-You can initialise DSS through `dss initialize`.
+You can initialise DSS through ``dss initialize``.
 This command:
 
 * stores credentials for the MicroK8s cluster.
@@ -39,10 +39,10 @@ This command:
 
     dss initialize --kubeconfig "$(sudo microk8s config)"
 
-The `--kubeconfig` option is used to provide your MicroK8s cluster's kubeconfig.
+The ``--kubeconfig`` option is used to provide your MicroK8s cluster's kubeconfig.
 
 .. note::
-   Note the use of quotes for the `--kubeconfig` option. Without them, the content may be interpreted by your shell.
+   Note the use of quotes for the ``--kubeconfig`` option. Without them, the content may be interpreted by your shell.
 
 You should expect an output like this:
 
@@ -63,7 +63,7 @@ You should expect an output like this:
 Remove DSS
 ----------
 
-You can remove DSS from your MicroK8s cluster through `dss purge`. 
+You can remove DSS from your MicroK8s cluster through ``dss purge``. 
 This command purges all the DSS components, including:
 
 * All Jupyter Notebooks.
@@ -93,7 +93,7 @@ You should expect an output like this:
 Get DSS status
 --------------
 
-You can check the DSS status through `dss status`. 
+You can check the DSS status through ``dss status``. 
 This command provides a quick way to check the status of your DSS environment, including the MLflow status and whether a GPU is detected in your environment.
 
 .. code-block:: bash
