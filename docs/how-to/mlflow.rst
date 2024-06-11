@@ -3,76 +3,55 @@
 Manage MLflow
 =============
 
-This guide describes how to manage MLflow within the Data Science Stack (DSS).
+This guide describes how to manage MLflow within your Data Science Stack (DSS) environment.
 
-Access the MLflow UI
---------------------
+Access MLflow
+-------------
 
-This guide explains how to access the MLflow User Interface (UI) within the Data Science Stack (DSS) environment.
-
-Accessing the MLflow UI allows you to interact directly with your Experiments and Models. This is done through a web browser by navigating to the URL associated with MLflow.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Ensure the following before attempting to access the MLflow UI:
-
-- DSS CLI installed on your workstation.
-- MLflow deployment is `Ready`.
-
-Finding the MLflow URL
-~~~~~~~~~~~~~~~~~~~~~~
+You can access the MLflow User Interface (UI) within your Data Science Stack (DSS) environment through a web browser, 
+by navigating to the URL associated with MLflow.
+This UI allows you to interact directly with your MLflow experiments and models. 
 
 1. **Get the MLflow URL**:
 
-   To find the URL of MLflow, run the `dss status` command:
+   To find the URL of MLflow, run:
 
    .. code-block:: bash
 
        dss status
 
-   Look for the `MLflow URL` in the output.
-
-   Example output:
+   Look for the MLflow URL in the output.
+   For example:
 
    .. code-block:: none
 
         [INFO] MLflow deployment: Ready
         [INFO] MLflow URL: http://10.152.183.205:5000
 
+.. note::
+
+        To access the UI, your MLflow deployment should be `Ready`.        
+
 2. **Access the MLflow UI**:
 
-   Once you have the URL from the `dss status` command, open a web browser and enter the URL into the address bar. This will direct you to the MLflow interface where you can start working with your models.
+   Once you know the URL, open a web browser and enter the URL into the address bar. 
+   This will direct you to the MLflow interface.
 
 Get MLflow logs
 ---------------
 
-This guide provides instructions on how to retrieve logs for MLflow in the Data Science Stack (DSS) environment.
-Retrieving logs is a critical task for maintaining and troubleshooting MLflow in the DSS environment. 
-This guide has shown you how to access logs quickly to help ensure your MLflow deployment is running smoothly and efficiently.
-
-Retrieving logs for MLflow can help you troubleshoot issues. This process uses the DSS command line interface (CLI).
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Before accessing the logs, ensure you have the following:
-
-- DSS CLI installed on your workstation.
-- MLflow deployment is `Ready`.
-
-Retrieving MLflow logs
-~~~~~~~~~~~~~~~~~~~~~~
+You can retrieve logs for MLflow within your Data Science Stack (DSS) environment. 
+Retrieving logs is a critical task for maintaining and troubleshooting MLflow.
 
 **Retrieve the logs**:
 
-   To get the logs for MLflow, use the `dss logs` command followed by the `--mlflow` option:
+   To get MLflow logs, use the `dss logs` command with the `--mlflow` option:
 
    .. code-block:: bash
 
        dss logs --mlflow
 
-   Expected output:
+   You should expect an output like this:
 
    .. code-block:: none
     
@@ -85,5 +64,9 @@ Retrieving MLflow logs
         [INFO] [2024-04-30 07:57:54 +0000] [25] [INFO] Booting worker with pid: 25
         [INFO] [2024-04-30 07:57:54 +0000] [26] [INFO] Booting worker with pid: 26
 
+See also
+--------
 
+To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
+If you are interested in managing Jupyter Notebooks within your DSS environment, see :ref:`manage_notebooks`.
 
