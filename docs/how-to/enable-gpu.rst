@@ -43,8 +43,7 @@ and the Validator Pod has succeeded. This can take around 5 minutes.
 Ensure DaemonSet is Ready
 """""""""""""""""""""""""
 
-First we need to ensure that the DaemonSet for the Operator Validator is
-created:
+First, ensure that the DaemonSet for the Operator Validator is created:
 
 
 .. code-block:: bash
