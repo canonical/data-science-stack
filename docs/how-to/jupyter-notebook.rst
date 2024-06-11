@@ -9,7 +9,7 @@ All actions can be performed using the DSS Command Line Interface (CLI).
 Create a notebook
 -----------------
 
-You can create a Jupyter Notebook using the DSS Command Line Interface (CLI).  
+You can create a Jupyter Notebook using the DSS CLI.
 This notebook includes different packages and toolkits depending on the image used to create it.
 
 1. **Select an image**:
@@ -46,7 +46,7 @@ This notebook includes different packages and toolkits depending on the image us
 List created notebooks
 ----------------------
 
-You can check the current state of all notebooks within your Data Science Stack (DSS) environment.
+You can check the current state of all notebooks within your DSS environment.
 To view the full list, run:
 
 .. code-block:: bash
@@ -278,6 +278,7 @@ You can integrate `MLflow <Charmed MLflow_>`_ with your Jupyter Notebook for tra
 
 MLflow is a platform for managing the end-to-end machine learning life cycle. 
 It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models. 
+
 DSS environments are pre-configured to interact with an MLflow server through the `MLFLOW_TRACKING_URI` environment variable set in each notebook.
 
 Installing MLflow
@@ -332,7 +333,7 @@ For more detailed information on using MLflow, including advanced configurations
 Access your data from DSS
 -------------------------
 
-You can access the stored data from your notebooks using DSS CLI.
+You can access the stored data from your notebooks using the DSS CLI.
 Accessing your data is useful when you want to browse or modify the files stored from your notebooks.
 
 .. note::
@@ -362,7 +363,7 @@ This directory is shared by all your DSS notebooks.
 
         The characters that follow `dss-notebooks-pvc-` may not be the same for all DSS environments.
 
-2. **Access your Notebooks data**
+2. **Access your notebooks data**
 
     From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. 
     Use the directory name you got from the previous step.

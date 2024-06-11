@@ -31,9 +31,9 @@ Start DSS
 You can initialise DSS through ``dss initialize``.
 This command:
 
-* stores credentials for the MicroK8s cluster.
-* allocates storage for your DSS Jupyter Notebooks.
-* deploys an `MLflow <MLflow Docs_>`_ model registry.
+* Stores credentials for the MicroK8s cluster.
+* Allocates storage for your DSS Jupyter Notebooks.
+* Deploys an `MLflow <MLflow Docs_>`_ model registry.
 
 .. code-block:: shell
 
