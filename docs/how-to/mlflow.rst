@@ -70,3 +70,5 @@ See also
 To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
 If you are interested in managing Jupyter Notebooks within your DSS environment, see :ref:`manage_notebooks`.
 
+See `Charmed MLflow`_ for more details on MLflow.
+
