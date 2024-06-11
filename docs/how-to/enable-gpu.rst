@@ -104,7 +104,7 @@ Once completed, you should expect this output:
 Verify DSS detects the GPU
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-At this point the underlying MicroK8s cluster has been configured for handling the NVIDIA GPu.
+At this point the underlying MicroK8s cluster has been configured for handling the NVIDIA GPU.
 The next step is to ensure the CLI can also detect the GPU in MicroK8s.
 
 .. code-block:: bash
@@ -121,7 +121,7 @@ You should expect this output:
 
 .. note::
 
-  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ frmo your setup.
+  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ from your setup.
 
 Launch GPU-enabled notebook
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
