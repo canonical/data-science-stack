@@ -9,7 +9,8 @@ You can do so by configuring the underlying MicroK8s, on which DSS relies on for
 Prerequisites
 ^^^^^^^^^^^^^
 
-* Have run the :ref:`tutorial` tutorial
+* MicroK8s is installed
+* DSS CLI and initialised
 
 Install the NVIDIA Operator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
