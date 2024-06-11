@@ -4,6 +4,7 @@ Enable NVIDIA GPUs
 ==================
 
 This guide describes how to configure DSS to utilise your NVIDIA GPUs.
+You can do so by configuring the underlying MicroK8s, on which DSS relies on for running the containerised workloads.
 
 Prerequisites
 ^^^^^^^^^^^^^
