@@ -108,6 +108,72 @@ If you already have a DSS environment running and no GPU available, the expected
     [INFO] MLflow URL: http://10.152.183.68:5000
     [INFO] GPU acceleration: Disabled
 
+List DSS commands
+-----------------
+
+You can list the available commands to interact with DSS.
+
+**List the commands**:
+
+    To get the list of available commands for DSS, run ``dss`` with the ``--help`` option:
+
+    .. code-block:: bash
+
+        dss --help
+
+    You should expect an output like this:
+
+    .. code-block:: none
+
+        Usage: dss [OPTIONS] COMMAND [ARGS]...
+
+        Command line interface for managing the DSS application.
+
+        Options:
+        --help  Show this message and exit.
+
+        Commands:
+        create      Create a Jupyter notebook in DSS and connect it to MLflow.
+        initialize  Initialize DSS on the given Kubernetes cluster.
+        list        Lists all created notebooks in the DSS environment.
+        logs        Prints the logs for the specified notebook or DSS component.
+        purge       Removes all notebooks and DSS components.
+        remove      Remove a Jupter Notebook in DSS with the name NAME.
+        start       Starts a stopped notebook in the DSS environment.
+        status      Checks the status of key components within the DSS...
+        stop        Stops a running notebook in the DSS environment.
+
+    
+**Get details about a specific command**:
+
+    To see the usage and options of a DSS command, run ``dss <command>`` with the ``--help`` option.
+    For example:
+
+    .. code-block:: bash
+
+        dss logs --help
+
+    You should expect an output like this:
+
+    .. code-block:: none
+
+        Usage: dss logs [OPTIONS] [NOTEBOOK_NAME]
+
+        Prints the logs for the specified notebook or DSS component.
+
+        Examples:
+            dss logs my-notebook
+            dss logs --mlflow
+            dss logs --all
+
+        Options:
+        --kubeconfig TEXT  Path to a Kubernetes config file. Defaults to the value
+                            of the KUBECONFIG environment variable, else to
+                            './kubeconfig'.
+        --all              Print the logs for all notebooks and MLflow.
+        --mlflow           Print the logs for the MLflow deployment.
+        --help             Show this message and exit.
+
 See also
 --------
 

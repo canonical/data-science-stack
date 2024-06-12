@@ -10,4 +10,3 @@ Specifically, they demonstrate how to perform common tasks for managing and inte
    dss
    jupyter-notebook
    mlflow
-   list-commands
