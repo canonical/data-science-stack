@@ -24,8 +24,7 @@ In this documentation
 
    ..  grid-item:: :doc:`Tutorial <tutorial/index>`
 
-       **Start here**: a hands-on introduction to Data science stack (DSS)
-       for newcomers
+       **Start here**: a hands-on introduction to DSS for newcomers
 
    ..  grid-item:: :doc:`How-to guides <how-to/index>`
 
