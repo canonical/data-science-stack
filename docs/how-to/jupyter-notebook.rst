@@ -3,7 +3,8 @@
 Manage Jupyter Notebooks
 ========================
 
-This guide describes how to manage Jupyter Notebooks within your Data Science Stack (DSS) environment.
+This guide describes how to manage `Jupyter Notebooks`_ within your Data Science Stack (DSS) environment.
+
 All actions can be performed using the DSS Command Line Interface (CLI). 
 
 Create a notebook

@@ -3,7 +3,10 @@
 Manage MLflow
 =============
 
-This guide describes how to manage MLflow within your Data Science Stack (DSS) environment.
+This guide describes how to manage `MLflow <Charmed MLflow_>`_ within your Data Science Stack (DSS) environment.
+
+MLflow is a platform for managing the end-to-end machine learning life cycle. 
+It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models.
 
 Access MLflow
 -------------
