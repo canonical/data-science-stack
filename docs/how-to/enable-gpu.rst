@@ -12,6 +12,8 @@ Prerequisites
 * MicroK8s is installed
 * DSS CLI and initialised
 
+.. _install_nvidia_operator:
+
 Install the NVIDIA Operator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -102,6 +104,8 @@ Once completed, you should expect this output:
    Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
    all validations are successful
 
+.. _verify_nvidia_operator:
+
 Verify DSS detects the GPU
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -127,8 +131,13 @@ You should expect this output:
 Launch GPU-enabled notebook
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Once DSS is fully configured to utilise your GPU, you can deploy a notebook containing
-CUDA runtimes and ML frameworks.
+You can deploy a notebook containing CUDA runtimes and ML frameworks, and
+access its JupyterLab server.
+
+.. note::
+
+   To launch a GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
+   the NVIDIA Operator and :ref:`verify <verify_nvidia_operator>` DSS can detect the GPU.
 
 To see the list of available CUDA images, run:
 
