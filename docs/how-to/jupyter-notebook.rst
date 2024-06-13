@@ -15,34 +15,34 @@ This notebook includes different packages and toolkits depending on the image us
 
 1. **Select an image**:
 
-    Before creating a notebook, you need to select an image that includes the packages and toolkits you need.  
-    To see a list of recommended images and their aliases, do:
+Before creating a notebook, you need to select an image that includes the packages and toolkits you need.  
+To see a list of recommended images and their aliases, do:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss create --help
+    dss create --help
 
-    The output includes a list of recommended images and their aliases.
-    For example, this guide uses the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
+The output includes a list of recommended images and their aliases.
+For example, this guide uses the image `kubeflownotebookswg/jupyter-scipy:v1.8.0`
 
 2. **Create the notebook**:
 
-    Create a new notebook as follows:
+Create a new notebook as follows:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss create my-notebook --image kubeflownotebookswg/jupyter-scipy:v1.8.0
+    dss create my-notebook --image kubeflownotebookswg/jupyter-scipy:v1.8.0
 
-    This command starts a notebook server with the selected image.
-    You should expect an output like this: 
+This command starts a notebook server with the selected image.
+You should expect an output like this: 
 
-    .. code-block:: none
+.. code-block:: none
 
-        [INFO] Executing create command
-        [INFO] Waiting for deployment test-notebook in namespace dss to be ready...
-        [INFO] Deployment test-notebook in namespace dss is ready
-        [INFO] Success: Notebook test-notebook created successfully.
-        [INFO] Access the notebook at http://10.152.183.42:80.
+    [INFO] Executing create command
+    [INFO] Waiting for deployment test-notebook in namespace dss to be ready...
+    [INFO] Deployment test-notebook in namespace dss is ready
+    [INFO] Success: Notebook test-notebook created successfully.
+    [INFO] Access the notebook at http://10.152.183.42:80.
 
 List created notebooks
 ----------------------
@@ -71,17 +71,17 @@ Notebook states
 
 Each notebook can be in one of the following states:
 
-- **Active**: The notebook is running and accessible. You can use the URL under the *URL* column to access it.
+* **Active**: The notebook is running and accessible. You can use the URL under the *URL* column to access it.
 
-- **Stopped**: The notebook is not running. 
+* **Stopped**: The notebook is not running. 
 
-- **Stopping**: The notebook is in the process of stopping. It is advisable to wait until the process completes, transitioning to *Stopped*.
+* **Stopping**: The notebook is in the process of stopping. It is advisable to wait until the process completes, transitioning to *Stopped*.
 
-- **Starting**: The notebook is initialising and will soon be *Active*.
+* **Starting**: The notebook is initialising and will soon be *Active*.
 
-- **Downloading**: The notebook is downloading the specified OCI Image. This is a transient state before it becomes *Active*.
+* **Downloading**: The notebook is downloading the specified OCI Image. This is a transient state before it becomes *Active*.
 
-- **Removing**: The notebook is in the process of being removed. This is a transient state before it is fully removed.
+* **Removing**: The notebook is in the process of being removed. This is a transient state before it is fully removed.
 
 Remove a notebook
 -----------------
@@ -96,28 +96,28 @@ It is a non-blocking process, meaning you can continue other work while the dele
 
 1. **Remove the notebook**:
 
-    To delete the notebook, use the ``dss remove`` command followed by the name of the notebook, ``my-notebook`` in this example:
+To delete the notebook, use the ``dss remove`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       dss remove my-notebook
+    dss remove my-notebook
 
-    You should expect an output like this:
+You should expect an output like this:
 
-    .. code-block:: none
+.. code-block:: none
 
-       Removing the notebook my-notebook. Check `dss list` for the status of the notebook.
+    Removing the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook has been removed**:
 
-    To confirm the notebook has been removed, you can check the list of notebooks again: 
+To confirm the notebook has been removed, you can check the list of notebooks again: 
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       dss list
+    dss list
 
-    If the notebook has been successfully removed, it will no longer appear in the list. 
-    If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
+If the notebook has been successfully removed, it will no longer appear in the list. 
+If it's still showing as *Removing*, you may need to wait a bit longer or investigate if there are any issues preventing its deletion.
 
 .. _start_notebook:
 
@@ -129,36 +129,36 @@ This enables you to resume your work without needing to configure a new notebook
 
 1. **Start the notebook**:
 
-    To start the notebook, use the ``dss start`` command followed by the name of the notebook, ``my-notebook`` in this example:
+To start the notebook, use the ``dss start`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       dss start my-notebook
+    dss start my-notebook
 
-    You should expect an output like this:
+You should expect an output like this:
 
-    .. code-block:: none
+.. code-block:: none
 
-        Executing start command
-        Starting the notebook my-notebook. Check `dss list` for the status of the notebook.
+    Executing start command
+    Starting the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook is running**:
 
-    After starting it, the notebook may go through :ref:`different states <notebook_states>`. 
-    To check its state, run:
+After starting it, the notebook may go through :ref:`different states <notebook_states>`. 
+To check its state, run:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss list
+    dss list
 
-    Once ready, you should expect an output like this:
+Once ready, you should expect an output like this:
 
-    .. code-block:: none
+.. code-block:: none
 
-        Name          Image                                               URL                      
-        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
+    Name          Image                                               URL                      
+    my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
-    You can use this URL to :ref:`access the notebook <access_notebook>`.
+You can use this URL to :ref:`access the notebook <access_notebook>`.
 
 Stop a notebook
 ---------------
@@ -168,33 +168,33 @@ Stopping a notebook frees up resources and ensures data safety when not actively
 
 1. **Stop the notebook**:
 
-    To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook, ``my-notebook`` in this example:
+To stop a running notebook, use the ``dss stop`` command followed by the name of the notebook, ``my-notebook`` in this example:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss stop my-notebook
+    dss stop my-notebook
 
-    You should see an output like this:
+You should see an output like this:
 
-    .. code-block:: none
+.. code-block:: none
 
-        Stopping the notebook my-notebook. Check `dss list` for the status of the notebook.
+    Stopping the notebook my-notebook. Check `dss list` for the status of the notebook.
 
 2. **Verify the notebook has stopped**:
 
-    After stopping it, the notebook may go through :ref:`different states <notebook_states>`. 
-    To confirm it has stopped, check its state:
+After stopping it, the notebook may go through :ref:`different states <notebook_states>`. 
+To confirm it has stopped, check its state:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss list
+    dss list
 
-    You should expect an output like this: 
+You should expect an output like this: 
 
-    .. code-block:: none
+.. code-block:: none
 
-        Name          Image                                               URL       
-        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
+    Name          Image                                               URL       
+    my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  (Stopped)
 
 .. _access_notebook:
 
@@ -212,26 +212,26 @@ This is done through a web browser by navigating to the URL associated with your
 
 1. **Find the notebook URL**:
 
-    To find the URL of your notebook, first list all the notebooks:
+To find the URL of your notebook, first list all the notebooks:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss list
+    dss list
 
-    Look for your notebook in the output, and specifically check the URL column. 
-    An active notebook has associated a URL, which indicates it is ready for accessing.
+Look for your notebook in the output, and specifically check the URL column. 
+An active notebook has associated a URL, which indicates it is ready for accessing.
 
-    You should expect an output like this:
+You should expect an output like this:
 
-    .. code-block:: none
+.. code-block:: none
 
-        Name          Image                                               URL                      
-        my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
+    Name          Image                                               URL                      
+    my-notebook   kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0  http://10.152.183.164:80
 
 2. **Access the Notebook UI**:
 
-    Once you know the URL, open a web browser and enter the URL into the address bar. 
-    This will direct you to the notebook UI where you can start working with your notebook.   
+Once you know the URL, open a web browser and enter the URL into the address bar. 
+This will direct you to the notebook UI where you can start working with your notebook.   
 
 Get notebook logs
 -----------------
@@ -290,24 +290,24 @@ There are two ways to install the MLflow library:
 
 1. **Within a notebook cell** (Recommended):
 
-    It's recommended to install MLflow directly within a notebook cell to ensure the library is available for all subsequent cells during your session:
+It's recommended to install MLflow directly within a notebook cell to ensure the library is available for all subsequent cells during your session:
 
-    .. code-block:: none
+.. code-block:: none
 
-        %%bash
-        pip install mlflow
+    %%bash
+    pip install mlflow
 
 2. **Using the notebook terminal**:
 
-    Alternatively, you can install MLflow from the notebook terminal with the same command. 
-    This method also installs MLflow for the current session:
+Alternatively, you can install MLflow from the notebook terminal with the same command. 
+This method also installs MLflow for the current session:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        pip install mlflow
+    pip install mlflow
 
-    Note that any installations via the notebook or terminal will not persist after the notebook is restarted.
-    Therefore, the first method is preferred to ensure consistency across sessions.
+Note that any installations via the notebook or terminal will not persist after the notebook is restarted.
+Therefore, the first method is preferred to ensure consistency across sessions.
 
 Connecting to MLflow library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -345,35 +345,35 @@ This directory is shared by all your DSS notebooks.
 
 1. **Find the directory of your stored data**
     
-    To find the directory containing your notebooks data, list the directories under `/var/snap/microk8s/common/default-storage`:
+To find the directory containing your notebooks data, list the directories under `/var/snap/microk8s/common/default-storage`:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        ls /var/snap/microk8s/common/default-storage/
+    ls /var/snap/microk8s/common/default-storage/
 
 
-    You should see an output like this:
+You should see an output like this:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        dss-notebooks-pvc-00037e23-e2e2-4ab4-9088-45099154da30
+    dss-notebooks-pvc-00037e23-e2e2-4ab4-9088-45099154da30
 
-    The storage directory is the one prefixed with `dss-notebooks-pvc` as shown in the output.
+The storage directory is the one prefixed with `dss-notebooks-pvc` as shown in the output.
 
-    .. note::
+.. note::
 
-        The characters that follow `dss-notebooks-pvc-` may not be the same for all DSS environments.
+    The characters that follow `dss-notebooks-pvc-` may not be the same for all DSS environments.
 
 2. **Access your notebooks data**
 
-    From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. 
-    Use the directory name you got from the previous step.
+From your local file browser, navigate to the folder `/var/snap/microk8s/common/default-storage/[directory name]`. 
+Use the directory name you got from the previous step.
 
-    Now, you can view and manage all your stored notebooks data.
+Now, you can view and manage all your stored notebooks data.
 
 See also
 --------
 
-To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
-If you are interested in managing MLflow within your DSS environment, see :ref:`manage_MLflow`.
+* To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
+* If you are interested in managing MLflow within your DSS environment, see :ref:`manage_MLflow`.
 
