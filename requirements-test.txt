@@ -108,7 +108,7 @@ pyyaml==6.0.1
     #   lightkube
     #   ops
     #   serialized-data-interface
-requests==2.31.0
+requests==2.32.0
     # via
     #   -r requirements.txt
     #   serialized-data-interface
