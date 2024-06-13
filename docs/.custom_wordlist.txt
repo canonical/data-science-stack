@@ -32,3 +32,6 @@ snapcraft
 Snapcraft
 toolkits
 hostpath
+Validator
+CUDA
+DaemonSet
