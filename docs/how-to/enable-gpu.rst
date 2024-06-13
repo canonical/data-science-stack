@@ -4,27 +4,27 @@ Enable NVIDIA GPUs
 ==================
 
 This guide describes how to configure DSS to utilise your NVIDIA GPUs.
+
 You can do so by configuring the underlying MicroK8s, on which DSS relies on for running the containerised workloads.
 
 Prerequisites
-^^^^^^^^^^^^^
+-------------
 
-* MicroK8s is installed
-* DSS CLI and initialised
+* :ref:`MicroK8s is installed <set_microk8s>`.
+* :ref:`DSS CLI is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 
 .. _install_nvidia_operator:
 
 Install the NVIDIA Operator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
 To ensure DSS can utilise NVIDIA GPUs:
 
 1. The NVIDIA drivers must be installed.
 2. MicroK8s must be set up to utilise NVIDIA drivers.
 
-MicroK8s is leveraging the `NVIDIA Operator`_ for setting up and
-configuring the NVIDIA runtime. The NVIDIA Operator also installs
-the NVIDIA drivers, if they are not present already on your machine.
+MicroK8s is leveraging the `NVIDIA Operator`_ for setting up and configuring the NVIDIA runtime. 
+The NVIDIA Operator also installs the NVIDIA drivers, if they are not present already on your machine.
 
 To enable the NVIDIA runtimes on MicroK8s, run the following command:
 
@@ -33,21 +33,22 @@ To enable the NVIDIA runtimes on MicroK8s, run the following command:
    sudo microk8s enable gpu
 
 .. note::
-   The NVIDIA Operator will detect if the NVIDIA drivers are not present at all
-   and installs them in this case. Otherwise, it uses the installed drivers.
+   The NVIDIA Operator detects the installed NVIDIA drivers in your machine. 
+   If they are not installed, it will do so automatically.
 
 Verify the NVIDIA Operator is up
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
-Before spinning up workloads, you need to ensure the GPU Operator has
-been successfully initialized. This process involved ensuring DaemonSet is ready
-and the Validator Pod has succeeded. This can take around 5 minutes.
+Before spinning up workloads, the GPU Operator has to be successfully initialised. 
+To do so, you need to assure DaemonSet is ready and the Validator Pod has succeeded.
+
+.. note::
+   This process can take approximately 5 minutes to complete.
 
 Ensure DaemonSet is ready
-"""""""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First, ensure that the DaemonSet for the Operator Validator is created:
-
 
 .. code-block:: bash
 
@@ -59,11 +60,11 @@ First, ensure that the DaemonSet for the Operator Validator is created:
   done
 
 .. note::
-   It takes some seconds for the DaemonSet to get created. The above command
-   returns a message like the following at the beginning of the process:
+   It takes some seconds for the DaemonSet to get created. 
+   The above command returns a message like the following at the beginning of the process:
    ``Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found``
 
-Once completed, you should expect this output:
+Once completed, you should expect an output like this:
 
 .. code-block:: text
 
@@ -73,10 +74,10 @@ Once completed, you should expect this output:
    NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                   AGE
    nvidia-operator-validator   1         1         0       1            0           nvidia.com/gpu.deploy.operator-validator=true   17s
 
-Ensure the Validator succeeded
-""""""""""""""""""""""""""""""
+Ensure the Validator Pod succeeded
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next we'll need to wait for the Validator Pod to succeed:
+Next, you need to wait for the Validator Pod to succeed:
 
 .. code-block:: bash
 
@@ -91,11 +92,11 @@ Next we'll need to wait for the Validator Pod to succeed:
    done
 
 .. note::
-   It takes some seconds for the Pod to get initialised . The above command
-   returns a message like the following at the beginning:
+   It takes some seconds for the Validator Pod to get initialised. 
+   The above command returns a message like the following at the beginning of the process:
    ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing``
 
-Once completed, you should expect this output:
+Once completed, you should expect an output like this:
 
 .. code-block:: text
 
@@ -107,16 +108,16 @@ Once completed, you should expect this output:
 .. _verify_nvidia_operator:
 
 Verify DSS detects the GPU
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
-At this point the underlying MicroK8s cluster has been configured for handling the NVIDIA GPU.
-The next step is to ensure the CLI can also detect the GPU in MicroK8s.
+At this point, the underlying MicroK8s cluster has been configured for handling the NVIDIA GPU.
+Verify the DSS CLI has detected the GPU by checking the DSS status as follows:
 
 .. code-block:: bash
 
   dss status
 
-You should expect this output:
+You should expect an output like this:
 
 .. code-block:: bash
 
@@ -128,11 +129,10 @@ You should expect this output:
 
   The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ from your setup.
 
-Launch GPU-enabled notebook
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Launch a GPU-enabled notebook
+-----------------------------
 
-You can deploy a notebook containing CUDA runtimes and ML frameworks, and
-access its JupyterLab server.
+You can deploy a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
 
 .. note::
 

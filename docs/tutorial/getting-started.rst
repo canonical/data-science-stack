@@ -18,6 +18,8 @@ Prerequisites
   But to accommodate workloads, we recommend a system with at least 20G
   of disk space and 4G of memory.
 
+.. _set_microk8s:
+
 Setting up MicroK8s
 ^^^^^^^^^^^^^^^^^^^
 
@@ -32,6 +34,8 @@ You can install MicroK8s using `snap`_ as follows:
    sudo snap install microk8s --channel 1.28/stable --classic
    sudo microk8s enable storage dns rbac
 
+.. _install_DSS_CLI:
+
 Install the DSS CLI
 ^^^^^^^^^^^^^^^^^^^
 
@@ -40,6 +44,8 @@ Now, install the DSS CLI using the following command:
 .. code-block:: bash
 
    sudo snap install data-science-stack --channel latest/stable
+
+.. _initialise_DSS:
 
 Initialise the DSS
 ^^^^^^^^^^^^^^^^^^
