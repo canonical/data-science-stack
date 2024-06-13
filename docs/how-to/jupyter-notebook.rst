@@ -44,6 +44,45 @@ You should expect an output like this:
     [INFO] Success: Notebook test-notebook created successfully.
     [INFO] Access the notebook at http://10.152.183.42:80.
 
+Create a GPU-enabled notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can create a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
+
+.. note::
+
+   To launch a GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
+   the NVIDIA Operator and :ref:`verify <verify_nvidia_operator>` DSS can detect the GPU.
+   See :ref:`nvidia_gpu` for more details.
+
+To see the list of available CUDA images, run:
+
+.. code-block:: bash
+
+   dss create --help | grep cuda
+
+You should see an output similar to this:
+
+.. code-block:: bash
+
+        - pytorch-cuda = kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0
+        - tensorflow-cuda = kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0
+
+Select one of them and create a notebook as follows:
+
+.. code-block:: bash
+
+   dss create my-notebook --image=tensorflow-cuda
+
+
+Confirm the GPU is detected and usable by running:
+
+.. code-block:: python
+
+   import tensorflow as tf
+
+   tf.config.list_physical_devices('GPU')
+
 List created notebooks
 ----------------------
 
