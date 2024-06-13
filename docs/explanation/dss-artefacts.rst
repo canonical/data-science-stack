@@ -3,12 +3,13 @@ DSS Artefacts
 
 Jupyter Notebooks
 -----------------
-When you create a `.ipynb` from the Notebook server, it gets stored in the DSS shared directory. To access your Notebook files, follow the :doc:`../how-to/jupyter-notebook/access-data` guide.
+When you create a `.ipynb` from the Notebook server, it gets stored in the DSS shared directory. 
+To access your Notebook files, follow the :ref:`access-data` guide.
 
 
 MLflow
 ------
-MLflow artefacts can be downloaded from the MLflow UI. To access the UI, follow the :doc:`../how-to/mlflow/access-ui` guide.
+MLflow artefacts can be downloaded from the MLflow UI. To access the UI, follow the :doc:`../how-to/mlflow` guide.
 
 * **Models**
   

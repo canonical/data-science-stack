@@ -1,4 +1,4 @@
-.. _nvidia-gpu:
+.. _nvidia_gpu:
 
 Enable NVIDIA GPUs
 ==================
@@ -129,40 +129,8 @@ You should expect an output like this:
 
   The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ from your setup.
 
-Launch a GPU-enabled notebook
------------------------------
+See also
+--------
 
-You can deploy a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
-
-.. note::
-
-   To launch a GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
-   the NVIDIA Operator and :ref:`verify <verify_nvidia_operator>` DSS can detect the GPU.
-
-To see the list of available CUDA images, run:
-
-.. code-block:: bash
-
-   dss create --help | grep cuda
-
-You should see an output similar to this:
-
-.. code-block:: bash
-
-        - pytorch-cuda = kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0
-        - tensorflow-cuda = kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0
-
-Select one of them and create a notebook with:
-
-.. code-block:: bash
-
-   dss create my-notebook --image=tensorflow-cuda
-
-
-Confirm the GPU is detected and usable by running:
-
-.. code-block:: python
-
-   import tensorflow as tf
-
-   tf.config.list_physical_devices('GPU')
+* To learn how to manage your DSS environment, check :ref:`manage_DSS`. 
+* If you are interested in managing Jupyter Notebooks within your DSS environment, see :ref:`manage_notebooks`.
