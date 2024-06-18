@@ -8,11 +8,11 @@ fi
 
 # Python setup
 export DEBIAN_FRONTEND=noninteractive
-echo "Hello!"
 apt-get update -yqq
 apt-get install -yqq python3-pip
 pip3 install tox
 
+# Restart the systemd service
 sudo systemctl restart snapd.service
 
 # Microk8s setup
