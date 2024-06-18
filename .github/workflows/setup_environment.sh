@@ -7,6 +7,8 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Python setup
+export DEBIAN_FRONTEND=noninteractive
+echo "Hello!"
 apt-get update -yqq
 apt-get install -yqq python3-pip
 pip3 install tox
