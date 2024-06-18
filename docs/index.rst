@@ -24,24 +24,11 @@ In this documentation
 
    ..  grid-item:: :doc:`Tutorial <tutorial/index>`
 
-       **Start here**: a hands-on introduction to DSS for newcomers
+       **Get started** - a hands-on introduction to DSS for newcomers
 
    ..  grid-item:: :doc:`How-to guides <how-to/index>`
 
-      **Step-by-step guides** covering key operations and common tasks with
-      DSS
-
-.. grid:: 1 1 2 2
-   :reverse:
-
-   .. grid-item:: :doc:`Reference <reference/index>`
-
-      **Technical information** - specifications, APIs, architecture of
-      the DSS
-
-   .. grid-item:: :doc:`Explanation <explanation/index>`
-
-      **Discussion and clarification** of key concepts and features about DSS
+      **Step-by-step guides** covering key operations and common tasks with DSS
 
 ---------
 
@@ -61,5 +48,3 @@ Data Science Stack is an open-source project that values its community. We warml
 
    tutorial/index
    how-to/index
-   reference/index
-   explanation/index

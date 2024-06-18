@@ -13,9 +13,6 @@
 .. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
 .. _MicroK8s requirements: https://microk8s.io/docs/getting-started
 .. _MLflow Docs: https://mlflow.org/docs/latest/index.html
-.. _MLflow Experiments: https://mlflow.org/docs/latest/tracking.html#experiments
-.. _MLflow Models: https://mlflow.org/docs/latest/models.html
-.. _MLflow Runs: https://mlflow.org/docs/latest/tracking.html#runs
 .. _NVIDIA Operator: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
 .. _Snap: https://snapcraft.io/
 
