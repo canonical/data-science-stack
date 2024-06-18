@@ -8,6 +8,8 @@ This guide describes how to manage `MLflow <Charmed MLflow_>`_ within your Data 
 MLflow is a platform for managing the end-to-end machine learning life cycle. 
 It includes tracking experiments, packaging code into reproducible runs, and sharing and deploying models.
 
+.. _access_mlflow:
+
 Access MLflow
 -------------
 
@@ -64,6 +66,13 @@ You should expect an output like this:
     [INFO] [2024-04-30 07:57:54 +0000] [24] [INFO] Booting worker with pid: 24
     [INFO] [2024-04-30 07:57:54 +0000] [25] [INFO] Booting worker with pid: 25
     [INFO] [2024-04-30 07:57:54 +0000] [26] [INFO] Booting worker with pid: 26
+
+
+Get MLflow artefacts
+--------------------
+
+MLflow artefacts, including `models <https://mlflow.org/docs/latest/models.html>`_, `experiments <https://mlflow.org/docs/latest/tracking.html#experiments>`_ and `runs <https://mlflow.org/docs/latest/tracking.html#runs>`_ are stored within your DSS environment.
+They can be accessed and downloaded from the :ref:`MLflow UI <access_mlflow>`. 
 
 See also
 --------
