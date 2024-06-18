@@ -7,9 +7,13 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Python setup
+export DEBIAN_FRONTEND=noninteractive
 apt-get update -yqq
 apt-get install -yqq python3-pip
 pip3 install tox
+
+# Restart the systemd service
+systemctl restart snapd.service
 
 # Microk8s setup
 echo "Installing microk8s: $MICROK8S_CHANNEL"
