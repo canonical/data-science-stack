@@ -1,14 +1,46 @@
 How-to guides
 =============
 
-These guides provide practical instructions for how to do common tasks for
-managing and interacting with containerised ML Environments via the DSS.
+The following guides cover key processes in the Data Science Stack (DSS) environment.
+Specifically, they demonstrate how to perform common tasks for managing DSS components.
+
+DSS basics
+----------
+
+Learn basic operations to interact with DSS, including installation and the Command Line Interface (CLI) commands.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   dss/index
-   jupyter-notebook/index
-   mlflow/index
-   list-commands
+   dss
+
+Jupyter Notebooks within DSS
+----------------------------
+
+Learn how to manage `Jupyter Notebooks`_ within your DSS environment. 
+
+.. toctree::
+   :maxdepth: 1
+
+   jupyter-notebook
+
+MLflow within DSS
+-----------------
+
+Learn how to manage `MLflow <Charmed MLflow_>`_ within your DSS environment.
+
+.. toctree::
+   :maxdepth: 1
+
+   mlflow
+
+Leverage NVIDIA GPUs
+--------------------
+
+Learn how to configure DSS to utilise your NVIDIA GPUs.
+
+.. toctree::
+   :maxdepth: 1
+
    enable-gpu
+

@@ -2,21 +2,21 @@
 .. _Read the Docs at Canonical: https://library.canonical.com/documentation/read-the-docs
 .. _How to publish documentation on Read the Docs: https://library.canonical.com/documentation/publish-on-read-the-docs
 .. _Example product documentation: https://canonical-example-product-documentation.readthedocs-hosted.com/
+
+.. _Charmed MLflow: https://documentation.ubuntu.com/charmed-mlflow/en/latest/
 .. _Code of conduct: https://ubuntu.com/community/ethos/code-of-conduct
-.. _Join our online chat: https://matrix.to/#/#dss:ubuntu.com
 .. _Contribute: https://github.com/canonical/data-science-stack/blob/main/CONTRIBUTING.md
 .. _Discourse Forum: https://discourse.charmhub.io/tag/data-science-stack
+.. _Join our online chat: https://matrix.to/#/#dss:ubuntu.com
+.. _Jupyter Notebooks: https://jupyter.org/
 .. _MicroK8s: https://microk8s.io/
-.. _MLflow Docs: https://mlflow.org/docs/latest/index.html
+.. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
 .. _MicroK8s requirements: https://microk8s.io/docs/getting-started
-.. _Install Microk8s: https://microk8s.io/docs/getting-started
-.. _MicroK8s GPU add-on: https://microk8s.io/docs/addon-gpu
+.. _MLflow Docs: https://mlflow.org/docs/latest/index.html
+.. _MLflow Experiments: https://mlflow.org/docs/latest/tracking.html#experiments
 .. _MLflow Models: https://mlflow.org/docs/latest/models.html
 .. _MLflow Runs: https://mlflow.org/docs/latest/tracking.html#runs
-.. _MLflow Experiments: https://mlflow.org/docs/latest/tracking.html#experiments
-.. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
-.. _dss snap store: https://snapcraft.io/data-science-stack
-.. _snap: https://snapcraft.io/
-.. _Microk8s hostpath docs: https://microk8s.io/docs/addon-hostpath-storage
-.. _MicroK8s use the host drivers: https://microk8s.io/docs/addon-gpu#use-host-nvidia-drivers-5
 .. _NVIDIA Operator: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
+.. _Snap: https://snapcraft.io/
+
+
