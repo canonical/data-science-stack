@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: intel-gpu-plugin
+  name: intel-gpu-plugin
+spec:
+  selector:
+    matchLabels:
+      app: intel-gpu-plugin
+  template:
+    metadata:
+      labels:
+        app: intel-gpu-plugin
+    spec:
+      containers:
+      - args:
+        - -enable-monitoring
+        - -v=2
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        image: intel/intel-gpu-plugin:0.30.0
+        imagePullPolicy: IfNotPresent
+        name: intel-gpu-plugin
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          seLinuxOptions:
+            type: container_device_plugin_t
+        volumeMounts:
+        - mountPath: /dev/dri
+          name: devfs
+          readOnly: true
+        - mountPath: /sys/class/drm
+          name: sysfsdrm
+          readOnly: true
+        - mountPath: /var/lib/kubelet/device-plugins
+          name: kubeletsockets
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
+        kubernetes.io/arch: amd64
+      volumes:
+      - hostPath:
+          path: /dev/dri
+        name: devfs
+      - hostPath:
+          path: /sys/class/drm
+        name: sysfsdrm
+      - hostPath:
+          path: /var/lib/kubelet/device-plugins
+        name: kubeletsockets
