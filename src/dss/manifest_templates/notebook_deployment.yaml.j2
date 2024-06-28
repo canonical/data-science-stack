@@ -37,10 +37,10 @@ spec:
             - --port=8888
             - --ServerApp.token=''
             - --ServerApp.password=''
-            - --ServerApp.allow_origin="*"
+            - --ServerApp.allow_origin='*'
             - --ServerApp.allow_remote_access=True
             - --ServerApp.authenticate_prometheus=False
-            - --ServerApp.base_url="/"
+            - --ServerApp.base_url='/'
           resources:
             limits:
               gpu.intel.com/i915: 1
