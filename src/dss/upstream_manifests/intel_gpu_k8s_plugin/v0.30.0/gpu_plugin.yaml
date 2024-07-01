@@ -16,6 +16,7 @@ spec:
       containers:
       - args:
         - -enable-monitoring
+        - -shared-dev-num=10
         - -v=2
         env:
         - name: NODE_NAME
