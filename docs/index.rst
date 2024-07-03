@@ -30,6 +30,13 @@ In this documentation
 
       **Step-by-step guides** covering key operations and common tasks with DSS
 
+.. grid:: 1 1 2 2
+   :reverse:
+
+   .. grid-item:: :doc:`Explanation <explanation/index>`
+
+      **Discussion and clarification** of key topics
+
 ---------
 
 Project and community
@@ -48,3 +55,4 @@ Data Science Stack is an open-source project that values its community. We warml
 
    tutorial/index
    how-to/index
+   explanation/index
