@@ -6,6 +6,7 @@ DSS
 GeForce
 GPUs
 hostpath
+Hostpath
 Initialize
 initialize
 initialized
