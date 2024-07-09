@@ -146,7 +146,7 @@ See :ref:`manage_DSS` for more details.
 Accessibility
 -------------
 
-Jupyter Notebooks and MLflow are accessed from a web browser through the pod IP that is given access through Microk8s.
+Jupyter Notebooks and MLflow are accessed from a web browser through the pod IP that is given access through MicroK8s.
 See :ref:`access_notebook` and :ref:`access_mlflow` for more details.
 
 
