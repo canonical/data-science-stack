@@ -29,7 +29,7 @@ The DSS architecture involves three high-level layers:
 
 The following diagram showcases it:
 
-.. figure:: https://assets.ubuntu.com/v1/617450b0-dss_arch.png
+.. figure:: https://assets.ubuntu.com/v1/297b97d4-dss_arch.png
    :width: 600px
    :alt: text
 
@@ -42,7 +42,7 @@ Application
 
 At the application layer, DSS includes:
 
-* Jupyter Notebook: Open source environment that provides a flexible interface to organise DS projects and ML workloads. 
+* Jupyter Notebooks: Open source environment that provides a flexible interface to organise DS projects and ML workloads. 
 * MLflow: Open source platform for managing ML life cycle, including experiment tracking and model registry.
 * ML frameworks: DSS comes by default with PyTorch and Tensorflow. Users can manually add other frameworks, depending on their needs and use cases.
 
@@ -105,7 +105,7 @@ This choice ensures that all storage is backed up on the host machine in the eve
 
 The following diagram summarises the DSS storage:
 
-.. figure:: https://assets.ubuntu.com/v1/299750d3-dss_storage.png
+.. figure:: https://assets.ubuntu.com/v1/2130fd66-dss_storage.png
    :width: 800px
    :alt: text
 
@@ -128,9 +128,15 @@ DSS has a dedicated namespace running on MicroK8s.
 By default, it has two Kubernetes pods, but users can add new pods or attach new ML frameworks to the existing ones. 
 
 The NVIDIA GPU support runs on a dedicated namespace. 
-This includes the GPU Operator for managing access and usage, together with the `NVIDIA Network Operator <https://docs.nvidia.com/networking/display/cokan10/network+operator>`_, for managing networking components and enabling fast networking. 
+This includes the GPU Operator for managing access and usage, together with the `Network Operator <https://docs.nvidia.com/networking/display/cokan10/network+operator>`_, for managing networking components and enabling fast networking. 
 
-Namespaces and all associated data can be manage using the DSS CLI.
+.. figure:: https://assets.ubuntu.com/v1/d28ea080-dss_namespace_config.png
+   :width: 800px
+   :alt: text
+
+   Namespace configuration
+
+Namespaces and all associated data can be managed using the DSS CLI.
 See :ref:`manage_DSS` for more details.
 
 
