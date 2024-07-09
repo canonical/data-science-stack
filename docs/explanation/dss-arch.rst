@@ -35,6 +35,9 @@ The following diagram showcases it:
 
    Architecture overview
 
+The DSS square represents the application layer, MicroK8s provides the orchestration layer, and Ubuntu is the native operating system for DSS.
+More details on each layer are discussed in the following sections.
+
 .. _app_layer:
 
 Application
