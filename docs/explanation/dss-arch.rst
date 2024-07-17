@@ -1,9 +1,9 @@
 DSS architecture
 ================
 
-This guide provides an overview of the DSS architecture, its main components and their interactions. 
+This guide provides an overview of the Data science stack (DSS) architecture, its main components and their interactions. 
 
-Data science stack (DSS) is a ready-to-run environment for Machine Learning (ML) and Data Science (DS). 
+DSS is a ready-to-run environment for Machine Learning (ML) and Data Science (DS). 
 It's built on open-source tooling, including `MicroK8s`_, JupyterLab and `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_, and usable on any Ubuntu / `snap`_-enabled workstation.
 
 Architecture overview
@@ -29,7 +29,7 @@ The DSS architecture involves three high-level layers:
 
 The following diagram showcases it:
 
-.. figure:: https://assets.ubuntu.com/v1/297b97d4-dss_arch.png
+.. figure:: https://assets.ubuntu.com/v1/1cd21eb3-dss_arch.png
    :width: 600px
    :alt: text
 
@@ -132,12 +132,6 @@ By default, it has two Kubernetes pods, but users can add new pods or attach new
 
 The NVIDIA GPU support runs on a dedicated namespace. 
 This includes the GPU Operator for managing access and usage, together with the `Network Operator <https://docs.nvidia.com/networking/display/cokan10/network+operator>`_, for managing networking components and enabling fast networking. 
-
-.. figure:: https://assets.ubuntu.com/v1/d28ea080-dss_namespace_config.png
-   :width: 800px
-   :alt: text
-
-   Namespace configuration
 
 Namespaces and all associated data can be managed using the DSS CLI.
 See :ref:`manage_DSS` for more details.
