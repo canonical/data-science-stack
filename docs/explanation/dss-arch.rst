@@ -19,7 +19,7 @@ Using DSS, you can perform the following tasks:
 Architecture overview
 ---------------------
 
-The DSS architecture involves the following layers:
+The DSS architecture includes these layers:
 
 * :ref:`Application <app_layer>`.
 * :ref:`ML tools <ml_tools>`.
@@ -85,13 +85,14 @@ It must be configured with the storage add-on.
 This is required to use Hostpath storage in the cluster. 
 See :ref:`set_microk8s` to learn how to install MicroK8s.
 
-DSS can run with or without the use of GPUs.
-If :ref:`gpu_support` is needed, MicroK8s can be configured with the desired `GPU add-on <https://microk8s.io/docs/addon-gpu>`_. 
-
 .. _gpu_support:
 
 GPU support
 ^^^^^^^^^^^
+
+DSS can run with or without the use of GPUs.
+If needed, MicroK8s can be configured with the desired `GPU add-on <https://microk8s.io/docs/addon-gpu>`_. 
+
 DSS is designed to support the deployment of containerised GPU workloads on NVIDIA GPUs. 
 MicroK8s simplifies the GPU access and usage through the `NVIDIA GPU Operator <NVIDIA Operator_>`_. 
 
@@ -115,7 +116,7 @@ This is the DSS default storage configuration and cannot be altered.
 This choice ensures that all storage is backed up on the host machine in the event of MicroK8s restarts.
 
 .. note::
-   By default, you can access this storage anytime under your local directory `/var/snap/microk8s/common/default-storage`. 
+   By default, you can access the DSS storage anytime under your local directory `/var/snap/microk8s/common/default-storage`. 
 
 The following diagram summarises the DSS storage:
 
@@ -137,7 +138,7 @@ Namespace configuration
 -----------------------
 
 DSS runs on a dedicated Kubernetes namespace. 
-By default, it contains two Kubernetes pods, but users can add new pods or attach new ML frameworks to the existing ones. 
+By default, it contains two Kubernetes Pods. 
 
 The NVIDIA GPU support runs on another dedicated namespace. 
 This includes the GPU Operator for managing access and usage.
