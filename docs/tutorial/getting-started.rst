@@ -35,7 +35,9 @@ You can install MicroK8s using ``snap`` as follows:
 .. code-block:: bash
 
    sudo snap install microk8s --channel 1.28/stable --classic
-   sudo microk8s enable storage dns rbac
+   sudo microk8s enable hostpath-storage
+   sudo microk8s enable dns
+   sudo microk8s enable rbac
 
 .. _install_DSS_CLI:
 
