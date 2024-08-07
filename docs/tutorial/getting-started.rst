@@ -17,9 +17,6 @@ Prerequisites
 * `Snap`_ installed.
 * 50GB of disk space is recommended. This includes the `requirements <https://microk8s.io/docs/getting-started>`_ for MicroK8s.
 
-.. note::
-   All the code commands provided throughout this guide can be run from any host terminal.
-
 .. _set_microk8s:
 
 Setting up MicroK8s
