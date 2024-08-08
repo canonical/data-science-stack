@@ -15,6 +15,7 @@ Prerequisites
 * Ubuntu 22.04 LTS.
 * An Internet connection.
 * `Snap`_ installed.
+* 50GB of disk space is recommended. This includes the `requirements <https://microk8s.io/docs/getting-started>`_ for MicroK8s.
 
 .. _set_microk8s:
 
@@ -23,12 +24,7 @@ Setting up MicroK8s
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
 `MicroK8s`_ is used as the orchestration system.
-All the workloads and state managed by DSS will be running on top of MicroK8s.
-
-.. note::
-
-   `MicroK8s requires <https://microk8s.io/docs/getting-started>`_ 540MB of memory.
-   To better accommodate workloads, a system with at least 20G of disk space and 4G of memory is recommended.
+All the workloads and state managed by DSS are running on top of MicroK8s.
 
 You can install MicroK8s using ``snap`` as follows:
 
@@ -66,7 +62,13 @@ Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
 
    The initialisation might take a few minutes to complete.
    While the process is in progress, you will see the following message:
-   ``[INFO] Waiting for deployment my-tensorflow-notebook in namespace dss to be ready...``
+   ``[INFO] Waiting for deployment mlflow in namespace dss to be ready...``
+
+Once initialised, you should see an output like this:
+
+.. code-block:: none
+
+   [INFO] Deployment mlflow in namespace dss is ready
    
 Launch a Notebook
 -----------------
