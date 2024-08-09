@@ -32,6 +32,7 @@ microk8s.io
 MLflow
 mlruns
 Multipass
+NFD
 Nvidia
 OCI
 ons
