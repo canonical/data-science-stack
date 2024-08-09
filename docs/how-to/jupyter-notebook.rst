@@ -44,8 +44,8 @@ You should expect an output like this:
     [INFO] Success: Notebook test-notebook created successfully.
     [INFO] Access the notebook at http://10.152.183.42:80.
 
-Create a GPU-enabled notebook
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Create an NVIDIA GPU-enabled notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can create a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
 

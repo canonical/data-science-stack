@@ -101,4 +101,5 @@ Next Steps
 * To learn more about how to interact with DSS, see :ref:`manage_DSS`.
 * To learn about handling data, check out :ref:`access-data`.
 * To connect to MLflow, see :ref:`manage_MLflow`.
+* To enable your Intel GPUs, check out :ref:`enable_intel_gpu`.
 * To enable your NVIDIA GPUs, check out :ref:`nvidia_gpu`.
