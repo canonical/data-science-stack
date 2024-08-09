@@ -7,17 +7,21 @@ GeForce
 GPUs
 hostpath
 Hostpath
+HWE
 Initialize
 initialize
 initialized
 initializing
+intel
 io
 ipynb
 Jupyter
 jupyter
 JupyterLab
 kubeconfig
+kubectl
 kubeflownotebookswg
+kustomization
 runtime
 runtimes
 MacOS
@@ -45,3 +49,4 @@ Tensorflow
 toolkits
 Validator
 WSL
+yaml

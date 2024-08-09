@@ -1,6 +1,7 @@
 .. _reStructuredText style guide: https://canonical-documentation-with-sphinx-and-readthedocscom.readthedocs-hosted.com/style-guide/
 .. _Read the Docs at Canonical: https://library.canonical.com/documentation/read-the-docs
 .. _How to publish documentation on Read the Docs: https://library.canonical.com/documentation/publish-on-read-the-docs
+.. _Intel device plugins for Kubernetes: https://github.com/intel/intel-device-plugins-for-kubernetes
 .. _Example product documentation: https://canonical-example-product-documentation.readthedocs-hosted.com/
 
 .. _Charmed MLflow: https://documentation.ubuntu.com/charmed-mlflow/en/latest/
@@ -14,6 +15,8 @@
 .. _MicroK8s requirements: https://microk8s.io/docs/getting-started
 .. _MLflow Docs: https://mlflow.org/docs/latest/index.html
 .. _NVIDIA Operator: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
+.. _Node Feature Discovery: https://github.com/kubernetes-sigs/node-feature-discovery
+.. _Installation with NFD: https://github.com/intel/intel-device-plugins-for-kubernetes/blob/main/cmd/gpu_plugin/README.md#install-with-nfd
 .. _Pod: https://kubernetes.io/docs/concepts/workloads/pods/
 .. _Snap: https://snapcraft.io/
 
