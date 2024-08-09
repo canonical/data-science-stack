@@ -4,6 +4,7 @@ DaemonSet
 DS
 DSS
 GeForce
+gpu
 GPUs
 hostpath
 Hostpath
