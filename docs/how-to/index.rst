@@ -44,7 +44,7 @@ Learn how to configure DSS to utilise your GPUs.
 
    enable-intel-gpu
    
-Leverage NVIDIA GPUs
+Leverage GPUs
 --------------------
 
 Learn how to configure DSS to utilise your NVIDIA GPUs.
