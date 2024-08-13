@@ -88,7 +88,7 @@ The MicroK8s cluster is now configured to recognise and utilise your Intel GPU.
  After the YAML configuration files have been applied, they can be safely deleted.
 
 Verify the Intel GPU plugin is installed
-----------------------------------
+-------------------------------------------------
 To verify the Intel GPU plugin is installed and the MicroK8s cluster recognises your GPU, run:
 
 .. code-block:: bash
