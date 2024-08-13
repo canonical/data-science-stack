@@ -37,7 +37,7 @@ Learn how to manage `MLflow <Charmed MLflow_>`_ within your DSS environment.
 Leverage Intel GPUs
 --------------------
 
-Learn how to configure DSS to utilise your Intel GPUs.
+Learn how to configure DSS to utilise your GPUs.
 
 .. toctree::
    :maxdepth: 1
