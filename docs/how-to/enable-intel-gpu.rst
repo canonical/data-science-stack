@@ -8,7 +8,7 @@ This guide describes how to configure DSS to utilise the Intel GPUs on your mach
 Prerequisites
 -------------
 
-* :ref:`DSS CLI is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
+* :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * Your machine has an Intel GPU.
 
 Install the Intel GPU plugin
