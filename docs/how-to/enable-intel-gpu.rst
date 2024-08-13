@@ -30,7 +30,7 @@ Create a configuration file so that `kubectl` can communicate with MicroK8s by r
 Enable the Intel GPU plugin in your Kubernetes cluster 
 ------------------------------------------------------
 
-To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster. The plugin uses the `Intel device plugins for Kubernetes`_ to detect whether an Intel GPU exists on a machine. You can see the `Installation with NFD`_ page for more details.
+To ensure DSS can utilise Intel GPUs, enable the Intel GPU plugin in your Kubernetes cluster. This plugin uses the `Intel device plugins for Kubernetes`_ to detect whether an Intel GPU exists on a machine. See `Installation with NFD`_  for more details.
 
 To enable the plugin, you must download the appropriate `kustomization.yaml` files from Intel’s device plugins for Kubernetes repository, and then apply them on your MicroK8s cluster.
 
