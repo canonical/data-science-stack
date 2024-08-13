@@ -74,7 +74,7 @@ To allow multiple containers to utilise the same GPU, run:
 				
   sed -i 's/enable-monitoring/enable-monitoring\n        - -shared-dev-num=10/' gpu_plugin.yaml
 
-Then, apply the built YAML files to your MicroK8s cluster by running:
+Finally, apply the built YAML files to your MicroK8s cluster as follows:
 
 .. code-block:: bash
 				
