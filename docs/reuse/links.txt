@@ -15,8 +15,6 @@
 .. _MicroK8s requirements: https://microk8s.io/docs/getting-started
 .. _MLflow Docs: https://mlflow.org/docs/latest/index.html
 .. _NVIDIA Operator: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html
-.. _Node Feature Discovery: https://github.com/kubernetes-sigs/node-feature-discovery
-.. _Installation with NFD: https://github.com/intel/intel-device-plugins-for-kubernetes/blob/main/cmd/gpu_plugin/README.md#install-with-nfd
 .. _Pod: https://kubernetes.io/docs/concepts/workloads/pods/
 .. _Snap: https://snapcraft.io/
 

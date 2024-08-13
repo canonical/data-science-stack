@@ -10,8 +10,8 @@ You can do so by configuring the underlying MicroK8s, on which DSS relies on for
 Prerequisites
 -------------
 
-* :ref:`MicroK8s is installed <set_microk8s>`.
 * :ref:`DSS CLI is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
+* Your machine has an NVIDIA GPU.  
 
 .. _install_nvidia_operator:
 
