@@ -36,7 +36,7 @@ To list the Intel GPU devices on your machine, run:
 If the drivers are correctly installed, you should receive information about your GPU device from the command's output.
 
 .. note::
-For Intel discrete GPUs on older versions of Ubuntu like 22.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
+   For Intel discrete GPUs on older versions of Ubuntu like 22.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
 
 Install the kubectl snap
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ First, install the `kubectl` snap package:
 
 .. code-block:: bash
 				
-  sudo snap install kubectl -–classic
+  sudo snap install kubectl --classic
 
 Create a configuration file so that `kubectl` can communicate with MicroK8s by running:
 
@@ -87,6 +87,16 @@ The MicroK8s cluster is now configured to recognise and utilise your Intel GPU.
 .. note::
  After the YAML configuration files have been applied, they can be safely deleted.
 
+Verify the Intel GPU plugin is installed
+----------------------------------
+To verify the Intel GPU plugin is installed and the MicroK8s cluster recognises your GPU, run:
+
+.. code-block:: bash
+
+   kubectl get nodes --show-labels | grep intel
+
+You should receive non-empty output with the name of your cluster.   
+ 
 Verify DSS detects the GPU
 ----------------------------------
 
