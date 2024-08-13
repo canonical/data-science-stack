@@ -57,7 +57,7 @@ Then, apply the created YAML files to your MicroK8s cluster by running:
   kubectl apply -f node_feature_rules.yaml
   kubectl apply -f gpu_plugin.yaml
 
-The MicroK8s cluster should now be configured to recognise and utilise your Intel GPU.
+The MicroK8s cluster is now configured to recognise and utilise your Intel GPU.
 
 .. note::
  After the YAML configuration files have been applied, they can be safely deleted.
