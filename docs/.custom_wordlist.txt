@@ -23,6 +23,7 @@ kubeconfig
 kubectl
 kubeflownotebookswg
 kustomization
+kustomize
 runtime
 runtimes
 MacOS

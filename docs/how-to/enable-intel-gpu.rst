@@ -51,7 +51,7 @@ Create a configuration file so that `kubectl` can communicate with MicroK8s by r
 Enable the Intel GPU plugin in your Kubernetes cluster 
 ------------------------------------------------------
 
-To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster. To enable the plugin, you must download the appropriate `kustomization.yaml` files from `Intel device plugins for Kubernetes`_ repository, run `kubectl kustomize` to build YAML configuration files, and then apply them on your MicroK8s cluster.
+To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster. To enable the plugin, you must download the appropriate `kustomization.yaml` files from the `Intel device plugins for Kubernetes <https://github.com/intel/intel-device-plugins-for-kubernetes>`_ repository, run `kubectl kustomize` to build YAML configuration files, and then apply them on your MicroK8s cluster.
 
 Now, build the YAML files for Node Feature Discovery, Node Feature Rules, and the GPU plugin by running the following:
 
