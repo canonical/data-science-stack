@@ -27,7 +27,13 @@ And list the Intel GPU devices on your machine as follows:
 
    intel_gpu_top -L
 
-If the drivers are correctly installed, you should receive information about your GPU device from the command's output.
+If the drivers are correctly installed, you should see information about your GPU device such as the following:
+
+.. code-block::
+
+   card0                    8086:56a0
+   pci:vendor=8086,device=56A0,card=0
+   └─renderD128 
 
 .. note::
    For Intel discrete GPUs on Ubuntu version older than 24.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
@@ -38,7 +44,7 @@ Configure the kubectl snap for MicroK8s
 Create a configuration file so that `kubectl` can communicate with MicroK8s by running:
 
 .. code-block:: bash
-				
+                
   mkdir -p ~/.kube
   microk8s config > ~/.kube/config
 
@@ -59,13 +65,13 @@ First, download the appropriate `kustomization.yaml` files from the `Intel devic
 To allow multiple containers to utilise the same GPU, run:
 
 .. code-block:: bash
-				
+                
   sed -i 's/enable-monitoring/enable-monitoring\n        - -shared-dev-num=10/' gpu_plugin.yaml
 
 Finally, apply the built YAML files to your MicroK8s cluster as follows:
 
 .. code-block:: bash
-				
+                
   kubectl apply -f node_feature_discovery.yaml
   kubectl apply -f node_feature_rules.yaml
   kubectl apply -f gpu_plugin.yaml
@@ -97,7 +103,7 @@ Verify DSS has detected the GPU by checking the DSS status. To do so, run the fo
 You should expect an output like this:
 
 .. code-block:: bash
-				
+                
   Output:
   [INFO] MLflow deployment: Ready
   [INFO] MLflow URL: http://10.152.183.68:5000
