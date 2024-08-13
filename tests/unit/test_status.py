@@ -22,6 +22,7 @@ from dss.status import get_status
                 "MLflow deployment: Ready",
                 "MLflow URL: <Mocked MLflow URL>",
                 "NVIDIA GPU acceleration: Enabled (Test-GPU)",
+                "Intel GPU acceleration: Disabled",
             ],
         ),
         (
