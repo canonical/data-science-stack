@@ -9,17 +9,11 @@ Prerequisites
 -------------
 
 * :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
+* The `kubectl` snap package is installed.
 * Your machine has an Intel GPU.
-
-Install the Intel GPU plugin
-----------------------------
-
-To ensure DSS can utilise Intel GPUs:
-1. The Intel GPU drivers must be installed.
-2. MicroK8s must be set up to utilise the Intel GPU drivers.   
-
+  
 Verify the Intel GPU drivers are installed in your machine
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------------------------
 
 To confirm that your machine has the Intel GPU drivers set up, install the `intel-gpu-tools` package:
 
