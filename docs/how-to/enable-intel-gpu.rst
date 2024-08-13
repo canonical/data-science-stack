@@ -59,7 +59,7 @@ Enable the Intel GPU plugin in your Kubernetes cluster
 
 To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster. To enable the plugin, you must download the appropriate `kustomization.yaml` files from `Intel device plugins for Kubernetes`_ repository, run `kubectl kustomize` to build YAML configuration files, and then apply them on your MicroK8s cluster.
 
-First, build the YAML files for Node Feature Discovery, Node Feature Rules, and the GPU plugin, by running:
+Now, build the YAML files for Node Feature Discovery, Node Feature Rules, and the GPU plugin by running the following:
 
 .. code-block:: bash
 
