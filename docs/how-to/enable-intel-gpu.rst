@@ -73,7 +73,7 @@ Initialise the DSS CLI by running:
 				
   dss initialize --kubeconfig=$(microk8s config)
 
-Verify the DSS CLI has detected the GPU by checking the DSS status as follows:
+Verify DSS has detected the GPU by checking the DSS status. To do so, run the following command using the DSS CLI: 
 
 .. code-block:: bash
 
