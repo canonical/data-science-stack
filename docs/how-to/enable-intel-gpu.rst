@@ -63,7 +63,7 @@ The MicroK8s cluster should now be configured to recognise and utilise your Inte
  After the YAML configuration files have been applied, they can be safely deleted.
 
 
-Verify the DSS CLI detects the GPU
+Verify DSS detects the GPU
 ----------------------------------
 
 Initialise the DSS CLI by running:
