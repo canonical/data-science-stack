@@ -11,7 +11,7 @@ Prerequisites
 -------------
 
 * :ref:`DSS CLI is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
-* Your machine has an NVIDIA GPU.  
+* Your machine includes an NVIDIA GPU.  
 
 .. _install_nvidia_operator:
 

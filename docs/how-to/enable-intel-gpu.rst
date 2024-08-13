@@ -10,7 +10,7 @@ Prerequisites
 
 * :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * The `kubectl` snap package is installed.
-* Your machine has an Intel GPU.
+* Your machine includes an Intel GPU.
   
 Verify the Intel GPU drivers are installed in your machine
 ----------------------------------------------------------
@@ -30,7 +30,7 @@ And list the Intel GPU devices on your machine as follows:
 If the drivers are correctly installed, you should receive information about your GPU device from the command's output.
 
 .. note::
-   For Intel discrete GPUs on older versions of Ubuntu like 22.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
+   For Intel discrete GPUs on Ubuntu version older than 24.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
 
 Install the kubectl snap
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
