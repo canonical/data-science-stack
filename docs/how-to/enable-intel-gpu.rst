@@ -27,7 +27,7 @@ To confirm that your machine has the Intel GPU drivers set up, install the `inte
 
    sudo apt install intel-gpu-tools
 
-To list the Intel GPU devices on your machine, run:
+And list the Intel GPU devices on your machine as follows:
 
 .. code-block:: bash
 
