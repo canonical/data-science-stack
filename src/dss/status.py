@@ -50,13 +50,8 @@ def get_status(lightkube_client: Client) -> None:
     else:
         logger.info("NVIDIA GPU acceleration: Disabled")
 
-    # Check Intel GPU acceleration
-    intel_gpu_acceleration = False
+    # Check Intel GPU acceleration and Log status
     if "intel.feature.node.kubernetes.io/gpu" in node_labels:
-        intel_gpu_acceleration = True
-
-    # Log Intel GPU status
-    if intel_gpu_acceleration:
         logger.info("Intel GPU acceleration: Enabled")
     else:
         logger.info("Intel GPU acceleration: Disabled")
