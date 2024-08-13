@@ -21,7 +21,37 @@ from dss.status import get_status
             [
                 "MLflow deployment: Ready",
                 "MLflow URL: <Mocked MLflow URL>",
-                "GPU acceleration: Enabled (Test-GPU)",
+                "NVIDIA GPU acceleration: Enabled (Test-GPU)",
+            ],
+        ),
+        (
+            True,
+            "<Mocked MLflow URL>",
+            {
+                "intel.feature.node.kubernetes.io/gpu": "true",
+            },
+            [
+                "MLflow deployment: Ready",
+                "MLflow URL: <Mocked MLflow URL>",
+                "NVIDIA GPU acceleration: Disabled",
+                "Intel GPU acceleration: Enabled",
+            ],
+        ),
+        (
+            True,
+            "<Mocked MLflow URL>",
+            {
+                "nvidia.com/gpu.present": "true",
+                "nvidia.com/gpu.deploy.container-toolkit": "true",
+                "nvidia.com/gpu.deploy.device-plugin": "true",
+                "nvidia.com/gpu.product": "Test-GPU",
+                "intel.feature.node.kubernetes.io/gpu": "true",
+            },
+            [
+                "MLflow deployment: Ready",
+                "MLflow URL: <Mocked MLflow URL>",
+                "NVIDIA GPU acceleration: Enabled (Test-GPU)",
+                "Intel GPU acceleration: Enabled",
             ],
         ),
         (
@@ -31,10 +61,20 @@ from dss.status import get_status
             [
                 "MLflow deployment: Ready",
                 "MLflow URL: <Mocked MLflow URL>",
-                "GPU acceleration: Disabled",
+                "NVIDIA GPU acceleration: Disabled",
+                "Intel GPU acceleration: Disabled",
             ],
         ),
-        (False, None, {}, ["MLflow deployment: Not ready", "GPU acceleration: Disabled"]),
+        (
+            False,
+            None,
+            {},
+            [
+                "MLflow deployment: Not ready",
+                "NVIDIA GPU acceleration: Disabled",
+                "Intel GPU acceleration: Disabled",
+            ],
+        ),
     ],
 )
 def test_get_status_with_different_scenarios(
