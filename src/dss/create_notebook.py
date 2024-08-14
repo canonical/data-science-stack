@@ -24,6 +24,7 @@ from dss.utils import (
     does_notebook_exist,
     get_mlflow_tracking_uri,
     get_service_url,
+    intel_is_present_in_node,
     wait_for_deployment_ready,
 )
 
@@ -68,7 +69,7 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
     )
 
     image_full_name = _get_notebook_image_name(image)
-    config = _get_notebook_config(image_full_name, name)
+    config = _get_notebook_config(image_full_name, name, lightkube_client)
 
     k8s_resource_handler = KubernetesResourceHandler(
         field_manager=FIELD_MANAGER,
@@ -109,7 +110,14 @@ def create_notebook(name: str, image: str, lightkube_client: Client) -> None:
         logger.info(f"Access the notebook at {url}.")
 
 
-def _get_notebook_config(image: str, name: str) -> dict:
+def _get_notebook_config(image: str, name: str, lightkube_client: Client) -> dict:
+    """Return a dictionary with the context to render the notebooks Deployment.
+
+    Args:
+        image(str): the container image to use for the Server.
+        name(str): name of the notebook Server.
+        lightkube_client(Client): a Kubernetes Client to get information to expand the context.
+    """
     mlflow_tracking_uri = get_mlflow_tracking_uri()
     context = {
         "mlflow_tracking_uri": mlflow_tracking_uri,
@@ -118,6 +126,11 @@ def _get_notebook_config(image: str, name: str) -> dict:
         "notebook_image": image,
         "pvc_name": NOTEBOOK_PVC_NAME,
     }
+
+    # Add intel_enabled to context to render with Intel GPU resource limits
+    if intel_is_present_in_node(lightkube_client):
+        context["intel_enabled"] = True
+
     return context
 
 

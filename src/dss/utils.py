@@ -286,6 +286,23 @@ def does_mlflow_deployment_exist(lightkube_client: Client) -> bool:
             raise e
 
 
+def intel_is_present_in_node(lightkube_client: Client) -> bool:
+    """Return True if the Node has the intel GPU label, False otherwise.
+
+    Args:
+        lightkube_client (Client): The Kubernetes client.
+    """
+    try:
+        node_labels = get_labels_for_node(lightkube_client)
+    except ValueError as e:
+        logger.debug(f"Failed to get labels for nodes: {e}.", exc_info=True)
+        logger.error(f"Failed to retrieve status: {e}.")
+        raise RuntimeError()
+    if "intel.feature.node.kubernetes.io/gpu" in node_labels:
+        return True
+    return False
+
+
 def get_labels_for_node(lightkube_client: Client) -> dict:
     """
     Get the labels of the only node in the cluster.

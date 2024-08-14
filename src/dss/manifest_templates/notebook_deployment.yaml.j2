@@ -24,6 +24,11 @@ spec:
           - name: MLFLOW_TRACKING_URI
             value: {{ mlflow_tracking_uri }}
           image: {{ notebook_image }}
+      {%- if intel_enabled == true %}
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+      {%- endif %}
           imagePullPolicy: IfNotPresent
           name: {{ notebook_name }}
           ports:
