@@ -2,7 +2,12 @@ from lightkube import Client
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.logger import setup_logger
-from dss.utils import does_mlflow_deployment_exist, get_labels_for_node, get_service_url
+from dss.utils import (
+    does_mlflow_deployment_exist,
+    get_labels_for_node,
+    get_service_url,
+    intel_is_present_in_node,
+)
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -26,32 +31,30 @@ def get_status(lightkube_client: Client) -> None:
     else:
         logger.info("MLflow deployment: Not ready")
 
-    # Get the labels for the node in the cluster
+    # Check NVIDIA GPU acceleration
+    gpu_acceleration = False
     try:
         node_labels = get_labels_for_node(lightkube_client)
     except ValueError as e:
         logger.debug(f"Failed to get labels for nodes: {e}.", exc_info=True)
         logger.error(f"Failed to retrieve status: {e}.")
         raise RuntimeError()
-
-    # Check NVIDIA GPU acceleration
-    nvidia_gpu_acceleration = False
     if (
         "nvidia.com/gpu.present" in node_labels
         and "nvidia.com/gpu.deploy.container-toolkit" in node_labels
         and "nvidia.com/gpu.deploy.device-plugin" in node_labels
     ):
-        nvidia_gpu_acceleration = True
+        gpu_acceleration = True
         card_name = node_labels.get("nvidia.com/gpu.product", "NVIDIA GPU")
 
-    # Log NVIDIA GPU status
-    if nvidia_gpu_acceleration:
+    # Log GPU status
+    if gpu_acceleration:
         logger.info(f"NVIDIA GPU acceleration: Enabled ({card_name})")
     else:
         logger.info("NVIDIA GPU acceleration: Disabled")
 
     # Check Intel GPU acceleration and Log status
-    if "intel.feature.node.kubernetes.io/gpu" in node_labels:
+    if intel_is_present_in_node(lightkube_client):
         logger.info("Intel GPU acceleration: Enabled")
     else:
         logger.info("Intel GPU acceleration: Disabled")

@@ -92,6 +92,7 @@ def test_get_status_with_different_scenarios(
     mocker.patch("dss.status.does_mlflow_deployment_exist", return_value=mlflow_exist)
     mocker.patch("dss.status.get_service_url", return_value=mlflow_url)
     mocker.patch("dss.status.get_labels_for_node", return_value=gpu_labels)
+    mocker.patch("dss.utils.get_labels_for_node", return_value=gpu_labels)
 
     # Mock the logger
     mock_logger = mocker.patch("dss.status.logger")
