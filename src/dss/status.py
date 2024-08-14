@@ -2,7 +2,12 @@ from lightkube import Client
 
 from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.logger import setup_logger
-from dss.utils import does_mlflow_deployment_exist, get_labels_for_node, get_service_url
+from dss.utils import (
+    does_mlflow_deployment_exist,
+    get_labels_for_node,
+    get_service_url,
+    intel_is_present_in_node,
+)
 
 # Set up logger
 logger = setup_logger("logs/dss.log")
@@ -44,6 +49,12 @@ def get_status(lightkube_client: Client) -> None:
 
     # Log GPU status
     if gpu_acceleration:
-        logger.info(f"GPU acceleration: Enabled ({card_name})")
+        logger.info(f"NVIDIA GPU acceleration: Enabled ({card_name})")
     else:
-        logger.info("GPU acceleration: Disabled")
+        logger.info("NVIDIA GPU acceleration: Disabled")
+
+    # Check Intel GPU acceleration and Log status
+    if intel_is_present_in_node(lightkube_client):
+        logger.info("Intel GPU acceleration: Enabled")
+    else:
+        logger.info("Intel GPU acceleration: Disabled")
