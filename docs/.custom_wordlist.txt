@@ -4,6 +4,7 @@ DaemonSet
 DS
 DSS
 GeForce
+gpu
 GPUs
 hostpath
 Hostpath
@@ -12,7 +13,10 @@ initialize
 initialized
 initializing
 io
+intel
+IPEX
 ipynb
+ITEX
 Jupyter
 jupyter
 JupyterLab

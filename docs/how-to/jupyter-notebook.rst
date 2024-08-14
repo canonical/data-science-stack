@@ -44,14 +44,14 @@ You should expect an output like this:
     [INFO] Success: Notebook test-notebook created successfully.
     [INFO] Access the notebook at http://10.152.183.42:80.
 
-Create a GPU-enabled notebook
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Create an NVIDIA GPU-enabled notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can create a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
 
 .. note::
 
-   To launch a GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
+   To launch an NVIDIA GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
    the NVIDIA Operator and :ref:`verify <verify_nvidia_operator>` DSS can detect the GPU.
    See :ref:`nvidia_gpu` for more details.
 
@@ -82,6 +82,34 @@ Confirm the GPU is detected and usable by running:
    import tensorflow as tf
 
    tf.config.list_physical_devices('GPU')
+
+Create an Intel GPU-enabled notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can create an Intel GPU-enabled Jupyter Notebook with IPEX or ITEX.
+
+.. note::
+
+   To launch an Intel GPU-enabled notebook, you must first :ref:`enable_intel_gpu`.
+
+To see the list of available Intel images, run:
+
+.. code-block:: bash
+
+   dss create --help | grep intel
+
+You should see an output similar to this:
+
+.. code-block:: bash
+
+        - intel-pytorch = intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter
+        - intel-tensorflow = intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter
+
+Select one of them and create a notebook as follows:
+
+.. code-block:: bash
+
+   dss create my-ipex-notebook --image=intel-pytorch
 
 List created notebooks
 ----------------------
