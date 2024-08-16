@@ -7,6 +7,18 @@ from dss.config import DSS_NAMESPACE, NOTEBOOK_PVC_NAME, RECOMMENDED_IMAGES_MESS
 from dss.create_notebook import _get_notebook_config, create_notebook
 from dss.utils import ImagePullBackOffError
 
+NOTEBOOK_NAME = "test-notebook"
+NOTEBOOK_IMAGE = "test-image"
+MLFLOW_TRACKING_URI = "http://mlflow.dss.svc.cluster.local:5000"
+EXPECTED_CONTEXT = {
+    "mlflow_tracking_uri": MLFLOW_TRACKING_URI,
+    "notebook_name": NOTEBOOK_NAME,
+    "namespace": DSS_NAMESPACE,
+    "notebook_image": NOTEBOOK_IMAGE,
+    "pvc_name": NOTEBOOK_PVC_NAME,
+}
+EXPECTED_CONTEXT_INTEL = {**EXPECTED_CONTEXT, "intel_enabled": True}
+
 
 @pytest.fixture
 def mock_get_service_url() -> MagicMock:
@@ -50,7 +62,9 @@ def mock_logger() -> MagicMock:
         yield mock_logger
 
 
+@patch("dss.create_notebook._get_notebook_config", return_value=EXPECTED_CONTEXT)
 def test_create_notebook_success(
+    _,
     mock_get_service_url: MagicMock,
     mock_resource_handler: MagicMock,
     mock_logger: MagicMock,
@@ -58,9 +72,7 @@ def test_create_notebook_success(
     """
     Test case to verify successful create_notebook call.
     """
-    notebook_name = "test-notebook"
-    notebook_image = "test-image"
-    notebook_url = "http://somewhere.com:1234/notebook/namespace/name/lab"
+    notebook_url = f"http://somewhere.com:1234/notebook/{DSS_NAMESPACE}/{NOTEBOOK_NAME}/lab"
 
     # Mock the behavior of Client
     mock_client_instance = MagicMock()
@@ -76,7 +88,7 @@ def test_create_notebook_success(
     ), patch("dss.create_notebook.wait_for_deployment_ready") as mock_wait_for_deployment_ready:
         # Call the function to test
         create_notebook(
-            name=notebook_name, image=notebook_image, lightkube_client=mock_client_instance
+            name=NOTEBOOK_NAME, image=NOTEBOOK_IMAGE, lightkube_client=mock_client_instance
         )
 
         # Assertions
@@ -84,7 +96,7 @@ def test_create_notebook_success(
         mock_wait_for_deployment_ready.assert_called_once_with(
             mock_client_instance,
             namespace=DSS_NAMESPACE,
-            deployment_name=notebook_name,
+            deployment_name=NOTEBOOK_NAME,
             timeout_seconds=None,
         )
         mock_logger.info.assert_called_with(f"Access the notebook at {notebook_url}.")
@@ -195,7 +207,9 @@ def test_create_notebook_failure_notebook_exists(
         )
 
 
+@patch("dss.create_notebook._get_notebook_config", return_value=EXPECTED_CONTEXT)
 def test_create_notebook_failure_api(
+    _,
     mock_logger: MagicMock,
     mock_wait_for_deployment_ready: MagicMock,
     mock_remove_notebook: MagicMock,
@@ -233,7 +247,9 @@ def test_create_notebook_failure_api(
         mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
+@patch("dss.create_notebook._get_notebook_config", return_value=EXPECTED_CONTEXT)
 def test_create_notebook_failure_image_pull(
+    _,
     mock_logger: MagicMock,
     mock_wait_for_deployment_ready: MagicMock,
     mock_remove_notebook: MagicMock,
@@ -277,20 +293,20 @@ def test_create_notebook_failure_image_pull(
         mock_remove_notebook.assert_called_once_with(notebook_name, mock_client_instance)
 
 
-def test_get_notebook_config() -> None:
+@pytest.fixture()
+def mock_client(mocker):
+    client = mocker.patch("dss.create_notebook.Client")
+    yield client
+
+
+@pytest.mark.parametrize(
+    "intel, expected_context", ((False, EXPECTED_CONTEXT), (True, EXPECTED_CONTEXT_INTEL))
+)
+@patch("dss.create_notebook.get_mlflow_tracking_uri", return_value=MLFLOW_TRACKING_URI)
+def test_get_notebook_config(_, intel, expected_context, mock_client) -> None:
     """
     Test case to verify behavior when an ImagePullBackOffError is raised.
     """
-    notebook_name = "test-notebook"
-    notebook_image = "test-image"
-    mlflow_tracking_uri = "http://mlflow.dss.svc.cluster.local:5000"
-    expected_context = {
-        "mlflow_tracking_uri": mlflow_tracking_uri,
-        "notebook_name": notebook_name,
-        "namespace": DSS_NAMESPACE,
-        "notebook_image": notebook_image,
-        "pvc_name": NOTEBOOK_PVC_NAME,
-    }
-    with patch("dss.create_notebook.get_mlflow_tracking_uri", return_value=mlflow_tracking_uri):
-        actual_context = _get_notebook_config(notebook_image, notebook_name)
+    with patch("dss.create_notebook.intel_is_present_in_node", return_value=intel):
+        actual_context = _get_notebook_config(NOTEBOOK_IMAGE, NOTEBOOK_NAME, mock_client)
         assert actual_context == expected_context
