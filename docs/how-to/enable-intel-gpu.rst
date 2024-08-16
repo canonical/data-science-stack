@@ -9,10 +9,10 @@ Prerequisites
 -------------
 
 * :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
-* The `kubectl` snap package is installed.
+* The ``kubectl` snap <https://snapcraft.io/kubectl>`_ package is installed.
 * Your machine includes an Intel GPU.
   
-Verify the Intel GPU drivers are installed in your machine
+Verify the Intel GPU drivers
 ----------------------------------------------------------
 
 To confirm that your machine has the Intel GPU drivers set up, install the `intel-gpu-tools` package:
@@ -36,24 +36,14 @@ If the drivers are correctly installed, you should see information about your GP
    └─renderD128 
 
 .. note::
-   For Intel discrete GPUs on Ubuntu version older than 24.04, you may need to perform additional steps like install a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_.   
+   For Intel discrete GPUs on Ubuntu versions older than 24.04, you may need to perform additional steps such as installing a `HWE kernel <https://ubuntu.com/kernel/lifecycle>`_. 
 
-Configure the kubectl snap for MicroK8s
----------------------------------------
-
-Create a configuration file so that `kubectl` can communicate with MicroK8s by running:
-
-.. code-block:: bash
-                
-  mkdir -p ~/.kube
-  microk8s config > ~/.kube/config
-
-Enable the Intel GPU plugin in your Kubernetes cluster 
+Enable the Intel GPU plugin 
 ------------------------------------------------------
 
-To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster. To enable the plugin, you need to apply the YAML configuration files for Node Feature Discovery, Node Feature Rules, and the GPU plugin.
+To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster.
 
-First, download the appropriate `kustomization.yaml` files from the `Intel device plugins for Kubernetes <https://github.com/intel/intel-device-plugins-for-kubernetes>`_ repository, and use `kubectl kustomize` to build the YAML configuration files:
+1. Use `kubectl kustomize` to build the plugin YAML configuration files:
 
 .. code-block:: bash
 
@@ -68,7 +58,7 @@ To allow multiple containers to utilise the same GPU, run:
                 
   sed -i 's/enable-monitoring/enable-monitoring\n        - -shared-dev-num=10/' gpu_plugin.yaml
 
-Finally, apply the built YAML files to your MicroK8s cluster as follows:
+2. Apply the built YAML files to your MicroK8s cluster:
 
 .. code-block:: bash
                 
@@ -81,7 +71,7 @@ The MicroK8s cluster is now configured to recognise and utilise your Intel GPU.
 .. note::
  After the YAML configuration files have been applied, they can be safely deleted.
 
-Verify the Intel GPU plugin is installed
+Verify the Intel GPU plugin
 -------------------------------------------------
 To verify the Intel GPU plugin is installed and the MicroK8s cluster recognises your GPU, run:
 
@@ -89,7 +79,7 @@ To verify the Intel GPU plugin is installed and the MicroK8s cluster recognises 
 
    kubectl get nodes --show-labels | grep intel
 
-You should receive non-empty output with the name of your cluster.   
+You should see an output with the cluster name such as the following:
  
 Verify DSS detects the GPU
 ----------------------------------
