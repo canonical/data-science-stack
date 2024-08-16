@@ -8,10 +8,12 @@ gpu
 GPUs
 hostpath
 Hostpath
+HWE
 Initialize
 initialize
 initialized
 initializing
+intel
 io
 intel
 IPEX
@@ -21,7 +23,10 @@ Jupyter
 jupyter
 JupyterLab
 kubeconfig
+kubectl
 kubeflownotebookswg
+kustomization
+kustomize
 runtime
 runtimes
 MacOS
@@ -32,6 +37,7 @@ microk8s.io
 MLflow
 mlruns
 Multipass
+NFD
 Nvidia
 OCI
 ons
@@ -49,3 +55,4 @@ Tensorflow
 toolkits
 Validator
 WSL
+yaml
