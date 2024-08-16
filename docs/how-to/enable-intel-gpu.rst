@@ -9,7 +9,7 @@ Prerequisites
 -------------
 
 * :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
-* The ``kubectl` snap <https://snapcraft.io/kubectl>`_ package is installed.
+* The `kubectl` snap <https://snapcraft.io/kubectl>`_ package is installed.
 * Your machine includes an Intel GPU.
   
 Verify the Intel GPU drivers
