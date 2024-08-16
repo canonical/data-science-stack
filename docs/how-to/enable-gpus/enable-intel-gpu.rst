@@ -1,27 +1,30 @@
 .. _enable_intel_gpu:
 
 Enable Intel GPUs
-=============================
+=================
 
-This guide describes how to configure DSS to utilise the Intel GPUs on your machine. This can be done by enabling the Intel device plugin on your MicroK8s cluster.
+This guide describes how to configure Data Science Stack (DSS) to utilise the Intel GPUs on your machine. 
+
+You can do so done by enabling the Intel device plugin on your `MicroK8s`_ cluster.
 
 Prerequisites
 -------------
 
-* :ref:`DSS is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
+* Ubuntu 22.04.
+* DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * The `kubectl snap <https://snapcraft.io/kubectl>`_ package is installed.
 * Your machine includes an Intel GPU.
   
 Verify the Intel GPU drivers
 ----------------------------------------------------------
 
-To confirm that your machine has the Intel GPU drivers set up, install the `intel-gpu-tools` package:
+To confirm that your machine has the Intel GPU drivers set up, first install the `intel-gpu-tools` package:
 
 .. code-block:: bash
 
    sudo apt install intel-gpu-tools
 
-And list the Intel GPU devices on your machine as follows:
+Now list the Intel GPU devices on your machine as follows:
 
 .. code-block:: bash
 
@@ -41,7 +44,7 @@ If the drivers are correctly installed, you should see information about your GP
 Enable the Intel GPU plugin 
 ------------------------------------------------------
 
-To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Kubernetes cluster.
+To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your MicroK8s cluster.
 
 1. Use `kubectl kustomize` to build the plugin YAML configuration files:
 
@@ -108,6 +111,5 @@ You should expect an output like this:
 See also
 --------
 
-* To enable the NVIDIA GPUs on your machine, see :ref:`nvidia_gpu`.
 * To learn how to manage your DSS environment, check :ref:`manage_DSS`.
 * If you are interested in managing Jupyter Notebooks within your DSS environment, see :ref:`manage_notebooks`.

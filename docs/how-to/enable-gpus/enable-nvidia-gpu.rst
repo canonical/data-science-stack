@@ -3,14 +3,14 @@
 Enable NVIDIA GPUs
 ==================
 
-This guide describes how to configure DSS to utilise your NVIDIA GPUs.
+This guide describes how to configure Data Science Stack (DSS) to utilise your NVIDIA GPUs.
 
-You can do so by configuring the underlying MicroK8s, on which DSS relies on for running the containerised workloads.
+You can do so by configuring the underlying `MicroK8s`_, on which DSS relies on for running the containerised workloads.
 
 Prerequisites
 -------------
 
-* :ref:`DSS CLI is installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
+* DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * Your machine includes an NVIDIA GPU.  
 
 .. _install_nvidia_operator:
