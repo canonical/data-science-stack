@@ -24,6 +24,26 @@ spec:
           - name: MLFLOW_TRACKING_URI
             value: {{ mlflow_tracking_uri }}
           image: {{ notebook_image }}
+          command:
+            - jupyter
+          args:
+            - lab
+            - --notebook-dir=/home/jovyan
+            - --ip=0.0.0.0
+            - --no-browser
+            - --allow-root
+            - --port=8888
+            - --ServerApp.token=''
+            - --ServerApp.password=''
+            - --ServerApp.allow_origin='*'
+            - --ServerApp.allow_remote_access=True
+            - --ServerApp.authenticate_prometheus=False
+            - --ServerApp.base_url='/'
+      {%- if intel_enabled == true %}
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+      {%- endif %}
           imagePullPolicy: IfNotPresent
           name: {{ notebook_name }}
           ports:
