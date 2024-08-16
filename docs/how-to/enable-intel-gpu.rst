@@ -80,7 +80,12 @@ To verify the Intel GPU plugin is installed and the MicroK8s cluster recognises 
    kubectl get nodes --show-labels | grep intel
 
 You should see an output with the cluster name such as the following:
- 
+
+.. code-block:: bash
+
+   kubectl get nodes --show-labels | grep intel
+   fluent-greenshank   Ready    <none>   18s   v1.30.3   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,intel.feature.node.kubernetes.io/gpu=true
+
 Verify DSS detects the GPU
 ----------------------------------
 
