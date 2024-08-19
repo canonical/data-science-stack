@@ -90,7 +90,7 @@ You can create an Intel GPU-enabled Jupyter Notebook with IPEX or ITEX.
 
 .. note::
 
-   To launch an Intel GPU-enabled notebook, you must first :doc:`Enable Intel GPUs <../how-to/enable-gpus/enable-intel-gpu>`.
+   To launch an Intel GPU-enabled notebook, you must first :ref:`enable_intel_gpu`.
 
 To see the list of available Intel images, run:
 
