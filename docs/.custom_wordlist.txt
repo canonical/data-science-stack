@@ -15,7 +15,10 @@ initialized
 initializing
 intel
 io
+intel
+IPEX
 ipynb
+ITEX
 Jupyter
 jupyter
 JupyterLab
@@ -52,4 +55,5 @@ Tensorflow
 toolkits
 Validator
 WSL
+XPU
 yaml
