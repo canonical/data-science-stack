@@ -86,7 +86,7 @@ Confirm the GPU is detected and usable by running:
 Create an Intel GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create an Intel GPU-enabled Jupyter Notebook with IPEX or ITEX.
+You can create an Intel GPU-enabled Jupyter Notebook with `Intel Extension for PyTorch`_ (IPEX) or `Intel Extension for TensorFlow`_ (ITEX).
 
 .. note::
 
