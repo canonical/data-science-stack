@@ -55,4 +55,5 @@ Tensorflow
 toolkits
 Validator
 WSL
+XPU
 yaml
