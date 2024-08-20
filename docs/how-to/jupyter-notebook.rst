@@ -47,7 +47,7 @@ You should expect an output like this:
 Create an NVIDIA GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
+You can create an NVIDIA GPU-enabled Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
 
 .. note::
 
@@ -86,7 +86,8 @@ Confirm the GPU is detected and usable by running:
 Create an Intel GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create an Intel GPU-enabled Jupyter Notebook with `Intel Extension for PyTorch`_ (IPEX) or `Intel Extension for TensorFlow`_ (ITEX).
+You can create an Intel GPU-enabled Jupyter Notebook with `Intel Extension for PyTorch (IPEX) <https://github.com/intel/intel-extension-for-pytorch?tab=readme-ov-file#intel-extension-for-pytorch>`_ 
+or `Intel Extension for TensorFlow (ITEX) <https://github.com/intel/intel-extension-for-tensorflow?tab=readme-ov-file#intel-extension-for-tensorflow>`_.
 
 .. note::
 
