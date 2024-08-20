@@ -90,7 +90,7 @@ You can create an Intel GPU-enabled Jupyter Notebook with IPEX or ITEX.
 
 .. note::
 
-   To launch an Intel GPU-enabled notebook, you must first :doc:`Enable Intel GPUs <../how-to/enable-gpus/enable-intel-gpu>`.
+   To launch an Intel GPU-enabled notebook, you must first :ref:`enable_intel_gpu`.
 
 To see the list of available Intel images, run:
 
@@ -111,7 +111,7 @@ Select one of them and create a notebook as follows:
 
    dss create my-itex-notebook --image=intel-tensorflow
 
-Confirm the devices are detected and usable by running:
+Confirm the GPU is detected and usable by running:
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ Confirm the devices are detected and usable by running:
 
    tf.config.experimental.list_physical_devices()
 
-Example of the expected output for a host system containing an Intel CPU and a single Intel GPU:
+For example, you should expect an output like the following for a host system containing an Intel CPU and a single Intel GPU:
 
 .. code-block:: python
 
@@ -127,7 +127,7 @@ Example of the expected output for a host system containing an Intel CPU and a s
 
 .. note::
 
-    Intel calls GPU+CPU mode XPU
+    Intel denotes XPU the combination of an Intel CPU with GPU.
 
 List created notebooks
 ----------------------
