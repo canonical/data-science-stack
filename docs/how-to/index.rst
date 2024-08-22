@@ -33,16 +33,6 @@ Learn how to manage `MLflow <Charmed MLflow_>`_ within your DSS environment.
    :maxdepth: 1
 
    mlflow
-
-Running calculations with Intel frameworks
-------------------------------------------
-
-Learn how to run simple calculations with machine learning frameworks on Intel hardware with DSS.
-
-.. toctree::
-   :maxdepth: 1
-
-   intel-gpu-computation
    
 Enable GPUs
 --------------------

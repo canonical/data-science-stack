@@ -130,6 +130,14 @@ For example, you should expect an output like the following for a host system co
 
     Intel denotes XPU the combination of an Intel CPU with GPU.
 
+.. note::
+
+   Example machine learning computations can be found directly in the following resources:
+   
+   * `IPEX Example <https://intel.github.io/intel-extension-for-pytorch/xpu/latest/tutorials/examples.html#float32>`_
+   * `ITEX Example <https://github.com/intel/intel-extension-for-tensorflow/blob/main/examples/quick_example.md>`_
+
+
 List created notebooks
 ----------------------
 
