@@ -47,11 +47,11 @@ You should expect an output like this:
 Create an NVIDIA GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create a Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
+You can create an NVIDIA GPU-enabled Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
 
 .. note::
 
-   To launch a GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
+   To launch an NVIDIA GPU-enabled notebook, you must first :ref:`install <install_nvidia_operator>`
    the NVIDIA Operator and :ref:`verify <verify_nvidia_operator>` DSS can detect the GPU.
    See :ref:`nvidia_gpu` for more details.
 
@@ -82,6 +82,53 @@ Confirm the GPU is detected and usable by running:
    import tensorflow as tf
 
    tf.config.list_physical_devices('GPU')
+
+Create an Intel GPU-enabled notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can create an Intel GPU-enabled Jupyter Notebook with `Intel Extension for PyTorch (IPEX) <https://github.com/intel/intel-extension-for-pytorch?tab=readme-ov-file#intel-extension-for-pytorch>`_ 
+or `Intel Extension for TensorFlow (ITEX) <https://github.com/intel/intel-extension-for-tensorflow?tab=readme-ov-file#intel-extension-for-tensorflow>`_.
+
+.. note::
+
+   To launch an Intel GPU-enabled notebook, you must first :ref:`enable_intel_gpu`.
+
+To see the list of available Intel images, run:
+
+.. code-block:: bash
+
+   dss create --help | grep intel
+
+You should see an output similar to this:
+
+.. code-block:: bash
+
+        - intel-pytorch = intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter
+        - intel-tensorflow = intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter
+
+Select one of them and create a notebook as follows:
+
+.. code-block:: bash
+
+   dss create my-itex-notebook --image=intel-tensorflow
+
+Confirm the GPU is detected and usable by running:
+
+.. code-block:: python
+
+   import tensorflow as tf
+
+   tf.config.experimental.list_physical_devices()
+
+For example, you should expect an output like the following for a host system containing an Intel CPU and a single Intel GPU:
+
+.. code-block:: python
+
+    [PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'), PhysicalDevice(name='/physical_device:XPU:0', device_type='XPU')]
+
+.. note::
+
+    Intel denotes XPU the combination of an Intel CPU with GPU.
 
 List created notebooks
 ----------------------
