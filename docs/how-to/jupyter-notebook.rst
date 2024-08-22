@@ -47,7 +47,7 @@ You should expect an output like this:
 Create an NVIDIA GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create an NVIDIA GPU-enabled Jupyter Notebook containing CUDA runtimes and ML frameworks, and access its JupyterLab server.
+You can create an NVIDIA GPU-enabled Jupyter Notebook containing CUDA runtimes and Machine Learning (ML) frameworks, and access its JupyterLab server.
 
 .. note::
 
@@ -75,7 +75,7 @@ Select one of them and create a notebook as follows:
    dss create my-notebook --image=tensorflow-cuda
 
 
-Confirm the GPU is detected and usable by running:
+You can confirm your GPU is detected and usable by running the following within your notebook:
 
 .. code-block:: python
 
@@ -112,7 +112,14 @@ Select one of them and create a notebook as follows:
 
    dss create my-itex-notebook --image=intel-tensorflow
 
-Confirm the GPU is detected and usable by running:
+.. note::
+
+   Once created, you can :ref:`access it <access_notebook>` and run Intel-based ML workloads within your DSS environment. 
+   See `IPEX example <https://intel.github.io/intel-extension-for-pytorch/xpu/latest/tutorials/examples.html#float32>`_ 
+   and `ITEX example <https://github.com/intel/intel-extension-for-tensorflow/blob/main/examples/quick_example.md>`_ 
+   for detailed examples using the Intel extensions for Pytorch and Tensorflow respectively. 
+
+You can confirm your Intel GPU is detected and usable by running the following within your notebook:
 
 .. code-block:: python
 

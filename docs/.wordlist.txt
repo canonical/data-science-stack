@@ -20,6 +20,9 @@ html
 https
 IAM
 installable
+Intel
+IPEX
+ITEX
 jovyan
 JSON
 Juju
