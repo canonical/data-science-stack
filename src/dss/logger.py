@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 class CustomFormatter(logging.Formatter):
     """Custom formatter to adjust format based on log level."""
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> str:  # noqa: A003
         # Check if the log level is INFO and remove the brackets if so
         if record.levelname == "INFO":
             self._style._fmt = "%(message)s"
