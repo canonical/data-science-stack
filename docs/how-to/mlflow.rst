@@ -30,8 +30,8 @@ For example:
 
 .. code-block:: none
 
-    [INFO] MLflow deployment: Ready
-    [INFO] MLflow URL: http://10.152.183.205:5000
+    MLflow deployment: Ready
+    MLflow URL: http://10.152.183.205:5000
 
 .. note::
 
@@ -58,14 +58,14 @@ You should expect an output like this:
 
 .. code-block:: none
 
-    [INFO] Logs for mlflow-6bbfc5db5-xlfvj:
-    [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Starting gunicorn 20.1.0
-    [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Listening at: http://0.0.0.0:5000 (22)
-    [INFO] [2024-04-30 07:57:54 +0000] [22] [INFO] Using worker: sync
-    [INFO] [2024-04-30 07:57:54 +0000] [23] [INFO] Booting worker with pid: 23
-    [INFO] [2024-04-30 07:57:54 +0000] [24] [INFO] Booting worker with pid: 24
-    [INFO] [2024-04-30 07:57:54 +0000] [25] [INFO] Booting worker with pid: 25
-    [INFO] [2024-04-30 07:57:54 +0000] [26] [INFO] Booting worker with pid: 26
+    Logs for mlflow-6bbfc5db5-xlfvj:
+    [2024-04-30 07:57:54 +0000] [22] [INFO] Starting gunicorn 20.1.0
+    [2024-04-30 07:57:54 +0000] [22] [INFO] Listening at: http://0.0.0.0:5000 (22)
+    [2024-04-30 07:57:54 +0000] [22] [INFO] Using worker: sync
+    [2024-04-30 07:57:54 +0000] [23] [INFO] Booting worker with pid: 23
+    [2024-04-30 07:57:54 +0000] [24] [INFO] Booting worker with pid: 24
+    [2024-04-30 07:57:54 +0000] [25] [INFO] Booting worker with pid: 25
+    [2024-04-30 07:57:54 +0000] [26] [INFO] Booting worker with pid: 26
 
 
 Get MLflow artefacts

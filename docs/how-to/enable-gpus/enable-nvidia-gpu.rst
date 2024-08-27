@@ -121,9 +121,9 @@ You should expect an output like this:
 
 .. code-block:: bash
 
-  [INFO] MLflow deployment: Ready
-  [INFO] MLflow URL: http://10.152.183.74:5000
-  [INFO] GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+  MLflow deployment: Ready
+  MLflow URL: http://10.152.183.74:5000
+  GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
 
 .. note::
 
