@@ -62,13 +62,13 @@ Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
 
    The initialisation might take a few minutes to complete.
    While the process is in progress, you will see the following message:
-   ``[INFO] Waiting for deployment mlflow in namespace dss to be ready...``
+   ``Waiting for deployment mlflow in namespace dss to be ready...``
 
 Once initialised, you should see an output like this:
 
 .. code-block:: none
 
-   [INFO] Deployment mlflow in namespace dss is ready
+   Deployment mlflow in namespace dss is ready
    
 Launch a Notebook
 -----------------
@@ -87,11 +87,11 @@ For example, you should expect an output like this:
 
 .. code-block:: none
 
-   [INFO] Executing create command
-   [INFO] Waiting for deployment my-tensorflow-notebook in namespace dss to be ready...
-   [INFO] Deployment my-tensorflow-notebook in namespace dss is ready
-   [INFO] Success: Notebook my-tensorflow-notebook created successfully.
-   [INFO] Access the notebook at http://10.152.183.42:80.
+   Executing create command
+   Waiting for deployment my-tensorflow-notebook in namespace dss to be ready...
+   Deployment my-tensorflow-notebook in namespace dss is ready
+   Success: Notebook my-tensorflow-notebook created successfully.
+   Access the notebook at http://10.152.183.42:80.
 
 Once you know the URL, open a web browser and enter the URL into the address bar. 
 This will direct you to the notebook UI where you can start working with your notebook.

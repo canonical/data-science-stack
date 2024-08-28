@@ -48,11 +48,11 @@ You should expect an output like this:
 
 .. code-block:: none
 
-    [INFO] Executing initialize command
-    [INFO] Storing provided kubeconfig to /home/user/.dss/config
-    [INFO] Waiting for deployment mlflow in namespace dss to be ready...
-    [INFO] Deployment mlflow in namespace dss is ready
-    [INFO] DSS initialized. To create your first notebook run the command:
+    Executing initialize command
+    Storing provided kubeconfig to /home/user/.dss/config
+    Waiting for deployment mlflow in namespace dss to be ready...
+    Deployment mlflow in namespace dss is ready
+    DSS initialized. To create your first notebook run the command:
 
     dss create
 
@@ -87,8 +87,8 @@ You should expect an output like this:
 
 .. code-block:: none
 
-    [INFO] Waiting for namespace dss to be deleted...
-    [INFO] Success: All DSS components and notebooks purged successfully from the Kubernetes cluster.
+    Waiting for namespace dss to be deleted...
+    Success: All DSS components and notebooks purged successfully from the Kubernetes cluster.
 
 Get DSS status
 --------------
@@ -104,9 +104,9 @@ If you already have a DSS environment running and no GPU available, the expected
 
 .. code-block:: none
 
-    [INFO] MLflow deployment: Ready
-    [INFO] MLflow URL: http://10.152.183.68:5000
-    [INFO] GPU acceleration: Disabled
+    MLflow deployment: Ready
+    MLflow URL: http://10.152.183.68:5000
+    GPU acceleration: Disabled
 
 List DSS commands
 -----------------

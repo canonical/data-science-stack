@@ -103,10 +103,10 @@ You should expect an output like this:
 .. code-block:: bash
                 
   Output:
-  [INFO] MLflow deployment: Ready
-  [INFO] MLflow URL: http://10.152.183.68:5000
-  [INFO] NVIDIA GPU acceleration: Disabled
-  [INFO] Intel GPU acceleration: Enabled
+  MLflow deployment: Ready
+  MLflow URL: http://10.152.183.68:5000
+  NVIDIA GPU acceleration: Disabled
+  Intel GPU acceleration: Enabled
 
 See also
 --------

@@ -38,11 +38,11 @@ You should expect an output like this:
 
 .. code-block:: none
 
-    [INFO] Executing create command
-    [INFO] Waiting for deployment test-notebook in namespace dss to be ready...
-    [INFO] Deployment test-notebook in namespace dss is ready
-    [INFO] Success: Notebook test-notebook created successfully.
-    [INFO] Access the notebook at http://10.152.183.42:80.
+    Executing create command
+    Waiting for deployment test-notebook in namespace dss to be ready...
+    Deployment test-notebook in namespace dss is ready
+    Success: Notebook test-notebook created successfully.
+    Access the notebook at http://10.152.183.42:80.
 
 Create an NVIDIA GPU-enabled notebook
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -342,26 +342,26 @@ You should expect an output like this:
 
 .. code-block:: none
 
-    [INFO] Logs for my-notebook-8cf4d9bc-jm9zm:
-    [INFO] s6-rc: info: service s6rc-oneshot-runner: starting
-    [INFO] s6-rc: info: service s6rc-oneshot-runner successfully started
-    [INFO] s6-rc: info: service fix-attrs: starting
-    [INFO] s6-rc: info: service fix-attrs successfully started
-    [INFO] s6-rc: info: service legacy-cont-init: starting
-    [INFO] cont-init: info: running /etc/cont-init.d/01-copy-tmp-home
-    [INFO] cont-init: info: /etc/cont-init.d/01-copy-tmp-home exited 0
-    [INFO] s6-rc: info: service legacy-cont-init successfully started
-    [INFO] s6-rc: info: service legacy-services: starting
-    [INFO] services-up: info: copying legacy longrun jupyterlab (no readiness notification)
-    [INFO] s6-rc: info: service legacy-services successfully started
-    [INFO] [W 2024-04-30 13:44:20.991 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
-    [INFO] [I 2024-04-30 13:44:20.996 ServerApp] Package jupyterlab took 0.0000s to import
-    [INFO] [I 2024-04-30 13:44:20.997 ServerApp] Package jupyter_server_fileid took 0.0013s to import
-    [INFO] [I 2024-04-30 13:44:20.998 ServerApp] Package jupyter_server_mathjax took 0.0007s to import
-    [INFO] [I 2024-04-30 13:44:21.001 ServerApp] Package jupyter_server_terminals took 0.0024s to import
-    [INFO] [I 2024-04-30 13:44:21.012 ServerApp] Package jupyter_server_ydoc took 0.0105s to import
-    [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package jupyterlab_git took 0.0104s to import
-    [INFO] [I 2024-04-30 13:44:21.022 ServerApp] Package nbclassic took 0.0000s to import
+    Logs for my-notebook-8cf4d9bc-jm9zm:
+    s6-rc: info: service s6rc-oneshot-runner: starting
+    s6-rc: info: service s6rc-oneshot-runner successfully started
+    s6-rc: info: service fix-attrs: starting
+    s6-rc: info: service fix-attrs successfully started
+    s6-rc: info: service legacy-cont-init: starting
+    cont-init: info: running /etc/cont-init.d/01-copy-tmp-home
+    cont-init: info: /etc/cont-init.d/01-copy-tmp-home exited 0
+    s6-rc: info: service legacy-cont-init successfully started
+    s6-rc: info: service legacy-services: starting
+    services-up: info: copying legacy longrun jupyterlab (no readiness notification)
+    s6-rc: info: service legacy-services successfully started
+    [W 2024-04-30 13:44:20.991 ServerApp] ServerApp.token config is deprecated in 2.0. Use IdentityProvider.token.
+    [I 2024-04-30 13:44:20.996 ServerApp] Package jupyterlab took 0.0000s to import
+    [I 2024-04-30 13:44:20.997 ServerApp] Package jupyter_server_fileid took 0.0013s to import
+    [I 2024-04-30 13:44:20.998 ServerApp] Package jupyter_server_mathjax took 0.0007s to import
+    [I 2024-04-30 13:44:21.001 ServerApp] Package jupyter_server_terminals took 0.0024s to import
+    [I 2024-04-30 13:44:21.012 ServerApp] Package jupyter_server_ydoc took 0.0105s to import
+    [I 2024-04-30 13:44:21.022 ServerApp] Package jupyterlab_git took 0.0104s to import
+    [I 2024-04-30 13:44:21.022 ServerApp] Package nbclassic took 0.0000s to import
 
 .. _notebook-mlflow:
 

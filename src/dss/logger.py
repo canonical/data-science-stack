@@ -4,11 +4,23 @@ import sys
 from logging.handlers import RotatingFileHandler
 
 
+class CustomFormatter(logging.Formatter):
+    """Custom formatter to adjust format based on log level."""
+
+    def format(self, record: logging.LogRecord) -> str:  # noqa: A003
+        # Check if the log level is INFO and remove the brackets if so
+        if record.levelname == "INFO":
+            self._style._fmt = "%(message)s"
+        else:
+            self._style._fmt = "[%(levelname)s] %(message)s"
+        return super().format(record)
+
+
 def setup_logger(
     log_file_path: str, file_log_level: int = logging.DEBUG, console_log_level: int = logging.INFO
 ) -> logging.Logger:
     """
-    Set up a logger with a file handler and console handler.
+    Set up a logger with both file and console handlers.
 
     Args:
         log_file_path (str): Path to the log file.
@@ -20,37 +32,36 @@ def setup_logger(
     """
     logger = logging.getLogger(__name__)
 
-    # Check if the logger already has handlers to avoid duplication
     if not logger.handlers:
         logger.setLevel(file_log_level)
 
-        # Create console formatter
-        console_formatter = logging.Formatter(
+        # Formatter for console - omits [INFO]
+        console_formatter = CustomFormatter(
             "[%(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
-        # Create file formatter
+        # Formatter for file - includes [INFO]
         file_formatter = logging.Formatter(
             "%(asctime)s [%(levelname)s] [%(module)s] [%(funcName)s]: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
-        # Create the log directory if it doesn't exist
+        # Ensure the log directory exists
         if not os.path.exists(os.path.dirname(log_file_path)):
             os.makedirs(os.path.dirname(log_file_path))
 
-        # Create file handler
+        # File handler setup
         file_handler = RotatingFileHandler(log_file_path, maxBytes=5 * 1024 * 1024, backupCount=5)
         file_handler.setLevel(file_log_level)
         file_handler.setFormatter(file_formatter)
 
-        # Create console handler
+        # Console handler setup
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(console_log_level)
         console_handler.setFormatter(console_formatter)
 
-        # Add handlers to the logger
+        # Add handlers to logger
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
 
