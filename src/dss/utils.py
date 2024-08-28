@@ -99,11 +99,8 @@ def wait_for_deployment_ready(
             raise TimeoutError(
                 f"Timeout waiting for deployment {deployment_name} in namespace {namespace} to be ready"  # noqa E501
             )
-        else:
-            time.sleep(interval_seconds)
-            logger.info(
-                f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."
-            )
+
+        time.sleep(interval_seconds)
 
 
 def get_kubeconfig_path(
