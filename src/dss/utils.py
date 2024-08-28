@@ -101,7 +101,7 @@ def wait_for_deployment_ready(
             )
         else:
             time.sleep(interval_seconds)
-            logger.info(
+            logger.debug(
                 f"Waiting for deployment {deployment_name} in namespace {namespace} to be ready..."
             )
 
