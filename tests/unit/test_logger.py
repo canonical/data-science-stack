@@ -51,9 +51,9 @@ def get_log_file_path(logger: logging.Logger) -> Optional[str]:
 @pytest.mark.parametrize(
     "log_level, log_message, expected_prefix",
     [
+        (logging.DEBUG, "This is a debug message", "[DEBUG]"),
         (logging.INFO, "This is an info message", "[INFO]"),
         (logging.WARNING, "This is a warning message", "[WARNING]"),
-        (logging.DEBUG, "This is a debug message", "[DEBUG]"),
         (logging.ERROR, "This is an error message", "[ERROR]"),
     ],
 )
