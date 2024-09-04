@@ -7,4 +7,4 @@ It is the entry point to start learning about DSS, how it works, how to customis
 .. toctree::
    :maxdepth: 1
 
-   getting-started
+   Get started <get-started>

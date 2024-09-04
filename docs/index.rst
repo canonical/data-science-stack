@@ -1,8 +1,8 @@
 
 .. _home:
 
-Data Science Stack
-==================
+Data Science Stack documentation
+================================
 
 Data science stack (DSS) is a ready-to-run environment for machine learning and data science.  
 It's built on open-source tooling (including MicroK8s, JupyterLab and MLflow) and usable on any Ubuntu/Snap-enabled workstation.
@@ -53,6 +53,7 @@ Data Science Stack is an open-source project that values its community. We warml
    :hidden:
    :maxdepth: 2
 
+   Home <self>
    tutorial/index
-   how-to/index
+   How to <how-to/index>
    explanation/index
