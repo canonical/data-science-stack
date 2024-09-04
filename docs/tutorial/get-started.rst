@@ -1,6 +1,6 @@
 .. _tutorial:
 
-Get Started
+Get started
 ============
 
 This guide describes how you can get started with Data Science Stack (DSS). 
