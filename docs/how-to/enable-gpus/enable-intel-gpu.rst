@@ -55,6 +55,15 @@ To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in
   kubectl kustomize https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=${VERSION} > node_feature_rules.yaml
   kubectl kustomize https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=${VERSION} > gpu_plugin.yaml
 
+.. note::
+   To use `kubectl` commands with MicroK8s, ensure your Kubernetes configuration is set up correctly. 
+   After installing the `kubectl` snap, run the following commands to configure it:
+
+   .. code-block:: bash
+
+      mkdir -p ~/.kube
+      microk8s config > ~/.kube/config 
+
 To allow multiple containers to utilise the same GPU, run:
 
 .. code-block:: bash
