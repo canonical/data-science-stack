@@ -1,7 +1,7 @@
 .. _tutorial:
 
-Get started
-============
+Get started with DSS
+====================
 
 This guide describes how you can get started with Data Science Stack (DSS). 
 From setting up MicroK8s in your host environment, all the way to running your first notebook.
