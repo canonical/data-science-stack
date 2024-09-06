@@ -1,7 +1,7 @@
 .. _tutorial:
 
-Getting Started
-===============
+Get started with DSS
+====================
 
 This guide describes how you can get started with Data Science Stack (DSS). 
 From setting up MicroK8s in your host environment, all the way to running your first notebook.
@@ -13,7 +13,6 @@ Prerequisites
 -------------
 
 * Ubuntu 22.04 LTS.
-* An Internet connection.
 * `Snap`_ installed.
 * 50GB of disk space is recommended. This includes the `requirements <https://microk8s.io/docs/getting-started>`_ for MicroK8s.
 

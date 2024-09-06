@@ -1,8 +1,8 @@
 
 .. _home:
 
-Data Science Stack
-==================
+Data Science Stack documentation
+================================
 
 Data science stack (DSS) is a ready-to-run environment for machine learning and data science.  
 It's built on open-source tooling (including MicroK8s, JupyterLab and MLflow) and usable on any Ubuntu/Snap-enabled workstation.
@@ -44,15 +44,16 @@ Project and community
 
 Data Science Stack is an open-source project that values its community. We warmly welcome contributions, suggestions, fixes, and constructive feedback from everyone.
 
-* `Code of conduct`_
-* `Contribute`_
-* `Join our online chat`_
-* `Discourse Forum`_
+* Read our `Code of conduct`_.
+* `Contribute`_ and `report bugs <https://github.com/canonical/data-science-stack/issues/new/choose>`_.
+* Join the `Discourse forum`_.
+* Talk to us on `Matrix`_.
 
 .. toctree::
    :hidden:
    :maxdepth: 2
 
+   Home <self>
    tutorial/index
-   how-to/index
+   How to <how-to/index>
    explanation/index
