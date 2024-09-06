@@ -103,14 +103,14 @@ You should see an output similar to this:
 
 .. code-block:: bash
 
-        - intel-pytorch = intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter
-        - intel-tensorflow = intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter
+        - pytorch-intel= intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter
+        - tensorflow-intel = intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter
 
 Select one of them and create a notebook as follows:
 
 .. code-block:: bash
 
-   dss create my-itex-notebook --image=intel-tensorflow
+   dss create my-itex-notebook --image=tensorflow-intel
 
 .. note::
 
