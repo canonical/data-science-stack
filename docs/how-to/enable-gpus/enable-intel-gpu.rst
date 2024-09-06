@@ -14,7 +14,15 @@ Prerequisites
 * DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * The `kubectl snap <https://snapcraft.io/kubectl>`_ package is installed.
 * Your machine includes an Intel GPU.
-  
+
+.. note::
+   After installing `kubectl`, configure MicroK8s to run `kubectl` commands as follows:
+
+   .. code-block:: bash
+
+      mkdir -p ~/.kube
+      microk8s config > ~/.kube/config 
+
 Verify the Intel GPU drivers
 ----------------------------------------------------------
 
