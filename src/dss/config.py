@@ -9,12 +9,12 @@ MANIFEST_TEMPLATES_LOCATION = "./manifest_templates"
 MLFLOW_DEPLOYMENT_NAME = "mlflow"
 NOTEBOOK_PVC_NAME = "notebooks"
 NOTEBOOK_IMAGES_ALIASES = {
-    "intel-pytorch": "intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter",
     "pytorch": "kubeflownotebookswg/jupyter-pytorch-full:v1.8.0",
     "pytorch-cuda": "kubeflownotebookswg/jupyter-pytorch-cuda-full:v1.8.0",
-    "intel-tensorflow": "intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter",
+    "pytorch-intel": "intel/intel-extension-for-pytorch:2.1.20-xpu-idp-jupyter",
     "tensorflow": "kubeflownotebookswg/jupyter-tensorflow-full:v1.8.0",
     "tensorflow-cuda": "kubeflownotebookswg/jupyter-tensorflow-cuda-full:v1.8.0",
+    "tensorflow-intel": "intel/intel-extension-for-tensorflow:2.15.0-xpu-idp-jupyter",
 }
 NOTEBOOK_LABEL = "canonical.com/dss-notebook"
 
