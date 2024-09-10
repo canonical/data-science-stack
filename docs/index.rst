@@ -31,7 +31,6 @@ In this documentation
       **Step-by-step guides** covering key operations and common tasks with DSS
 
 .. grid:: 1 1 2 2
-   :reverse:
 
    .. grid-item:: :doc:`Explanation <explanation/index>`
 
