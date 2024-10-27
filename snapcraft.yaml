@@ -9,6 +9,7 @@ base: core22
 confinement: strict
 architectures:
   - build-on: amd64
+  - build-on: arm64
 
 apps:
   dss:
