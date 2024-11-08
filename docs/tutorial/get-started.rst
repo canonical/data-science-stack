@@ -18,8 +18,8 @@ Prerequisites
 
 .. _set_microk8s:
 
-Setting up MicroK8s
--------------------
+Set up MicroK8s
+---------------
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
 `MicroK8s`_ is used as the orchestration system.

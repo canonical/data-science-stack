@@ -7,8 +7,8 @@ This guide describes how to manage Data Science Stack (DSS).
 
 DSS is a Command Line Interface (CLI)-based environment and distributed as a `snap`_.
 
-Install DSS
------------
+Install
+--------
 
 .. note::
    To install DSS, ensure you have previously installed `Snap`_ and `MicroK8s`_.
@@ -25,8 +25,8 @@ Then, you can run the DSS CLI with:
 
     dss
 
-Start DSS
----------
+Initialise
+-----------
 
 You can initialise DSS through ``dss initialize``.
 This command:
@@ -60,8 +60,8 @@ You should expect an output like this:
       dss create my-notebook --image=pytorch
       dss create my-notebook --image=kubeflownotebookswg/jupyter-scipy:v1.8.0
 
-Remove DSS
-----------
+Remove
+-------
 
 You can remove DSS from your MicroK8s cluster through ``dss purge``. 
 This command purges all the DSS components, including:
@@ -90,8 +90,8 @@ You should expect an output like this:
     Waiting for namespace dss to be deleted...
     Success: All DSS components and notebooks purged successfully from the Kubernetes cluster.
 
-Get DSS status
---------------
+Get status
+-----------
 
 You can check the DSS status through ``dss status``. 
 This command provides a quick way to check the status of your DSS environment, including the MLflow status and whether a GPU is detected in your environment.
@@ -108,8 +108,8 @@ If you already have a DSS environment running and no GPU available, the expected
     MLflow URL: http://10.152.183.68:5000
     GPU acceleration: Disabled
 
-List DSS commands
------------------
+List commands
+--------------
 
 You can get the list of available commands for DSS through the ``dss`` command with the ``--help`` option:
 

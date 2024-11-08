@@ -13,7 +13,7 @@ It includes tracking experiments, packaging code into reproducible runs, and sha
 Access MLflow
 -------------
 
-You can access the MLflow User Interface (UI) within your Data Science Stack (DSS) environment through a web browser, 
+You can access the MLflow User Interface (UI) within your DSS environment through a web browser, 
 by navigating to the URL associated with MLflow.
 This UI allows you to interact directly with your MLflow experiments and models. 
 
@@ -42,10 +42,10 @@ For example:
 Once you know the URL, open a web browser and enter the URL into the address bar. 
 This will direct you to the MLflow interface.
 
-Get MLflow logs
----------------
+Get logs
+---------
 
-You can retrieve logs for MLflow within your Data Science Stack (DSS) environment. 
+You can retrieve MLflow logs within your DSS environment. 
 Retrieving logs is a critical task for maintaining and troubleshooting MLflow.
 
 To get MLflow logs, use the ``dss logs`` command with the ``--mlflow`` option:
@@ -68,11 +68,11 @@ You should expect an output like this:
     [2024-04-30 07:57:54 +0000] [26] [INFO] Booting worker with pid: 26
 
 
-Get MLflow artefacts
---------------------
+Get artefacts
+--------------
 
 MLflow artefacts, including `models <https://mlflow.org/docs/latest/models.html>`_, `experiments <https://mlflow.org/docs/latest/tracking.html#experiments>`_ and `runs <https://mlflow.org/docs/latest/tracking.html#runs>`_ are stored within your DSS environment.
-They can be accessed and downloaded from the :ref:`MLflow UI <access_mlflow>`. 
+You can access and download them from the :ref:`MLflow UI <access_mlflow>`. 
 
 See also
 --------
