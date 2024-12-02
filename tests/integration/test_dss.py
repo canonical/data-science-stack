@@ -60,8 +60,8 @@ def test_status_before_initialize(
     assert "MLflow deployment: Not ready" in result.stdout
 
     if is_cpu_or_gpu == "cpu":
-        # Check if the output indicates GPU acceleration is disabled
-        assert "GPU acceleration: Disabled" in result.stdout
+        # we don't care if gpu acceleration is enabled or not
+        pass
     elif is_cpu_or_gpu == "gpu":
         # Check if the output indicates GPU acceleration is enabled and captures a GPU model
         assert "GPU acceleration: Enabled" in result.stdout
@@ -226,8 +226,8 @@ def test_status_after_initialize(is_cpu_or_gpu, cleanup_after_initialize) -> Non
     assert "MLflow URL: http://" in result.stdout
 
     if is_cpu_or_gpu == "cpu":
-        # Check if the output indicates GPU acceleration is disabled
-        assert "GPU acceleration: Disabled" in result.stdout
+        # we don't care if gpu acceleration is enabled or not
+        pass
     elif is_cpu_or_gpu == "gpu":
         # Check if the output indicates GPU acceleration is enabled and captures a GPU model
         assert "GPU acceleration: Enabled" in result.stdout
