@@ -78,7 +78,7 @@ tenacity==8.2.3
     # via charmed-kubeflow-chisme
 typing-extensions==4.9.0
     # via anyio
-urllib3==2.2.0
+urllib3==2.2.2
     # via requests
 wcwidth==0.2.13
     # via prettytable
