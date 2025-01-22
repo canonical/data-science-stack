@@ -36,6 +36,17 @@ spec:
         app.kubernetes.io/name: {{ mlflow_name }}
         app.kubernetes.io/part-of: dss
     spec:
+      initContainers:
+        - name: remove-problematic-folder
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              rm -rf /mlruns/lost+found/
+          volumeMounts:
+            - name: mlflow
+              mountPath: /mlruns
       containers:
         - name: mlflow
           image: ubuntu/mlflow:2.1.1_1.0-22.04
