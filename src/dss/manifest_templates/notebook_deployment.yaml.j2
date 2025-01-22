@@ -19,6 +19,20 @@ spec:
         app.kubernetes.io/part-of: dss
         canonical.com/dss-notebook: {{ notebook_name }}
     spec:
+      initContainers:
+        - name: set-shared-folder-permissions
+          image: {{ notebook_image }}
+          command:
+            - sh
+            - -c
+            - |
+              chmod -R 775 /home/jovyan/shared && \
+              chown -R jovyan:users /home/jovyan/shared
+          securityContext:
+            runAsUser: 0  # Run as root
+          volumeMounts:
+            - mountPath: /home/jovyan/shared
+              name: home-volume
       containers:
         - env:
           - name: MLFLOW_TRACKING_URI
