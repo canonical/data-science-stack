@@ -36,8 +36,6 @@ jobs:
     # is resolved and applied to all ROCKs repositories
     - name: Install python version from input
       run: |
-        # TODO: remove when fixed: https://github.com/microsoft/linux-package-repositories/issues/130#issuecomment-2074645171
-        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update -y
         VERSION=3.10
@@ -47,11 +45,11 @@ jobs:
         python3.10 -m pip install tox
         rm get-pip.py
     
-    - uses: balchua/microk8s-actions@v0.3.2
-      with:
-        channel: '1.28/stable'
-        addons: '["hostpath-storage"]'
+    - name: Install dependencies
+      run: |
+        sudo snap install concierge --classic
+        sudo concierge prepare --extra-snaps=kubectl -c .github/concierge.yaml
 
-    - name: Install library
-      run: sg microk8s -c "tox -vve integration"
+    - name: Run tests
+      run: tox -vve integration
 
