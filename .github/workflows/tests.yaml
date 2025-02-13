@@ -47,8 +47,9 @@ jobs:
     
     - name: Install dependencies
       run: |
+        sudo apt-get remove -y docker-ce docker-ce-cli containerd.io
+        sudo rm -rf /run/containerd
         sudo snap install concierge --classic
-        systemctl stop containerd
         sudo concierge prepare --extra-snaps=kubectl -c .github/concierge.yaml
 
     - name: Run tests
