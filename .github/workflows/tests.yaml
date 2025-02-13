@@ -47,10 +47,12 @@ jobs:
     
     - name: Install dependencies
       run: |
+        # Removing docker as it is blocking canonical k8s bootstrap
         sudo apt-get remove -y docker-ce docker-ce-cli containerd.io
         sudo rm -rf /run/containerd
+        
         sudo snap install kubectl --classic
-        sudo snap install k8s --classic
+        sudo snap install k8s --classic --channel=1.32-classic/stable
         sudo k8s bootstrap
         sudo k8s enable local-storage
         mkdir -p ~/.kube
