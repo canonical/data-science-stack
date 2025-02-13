@@ -48,6 +48,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo snap install concierge --classic
+        systemctl stop containerd
         sudo concierge prepare --extra-snaps=kubectl -c .github/concierge.yaml
 
     - name: Run tests
