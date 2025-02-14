@@ -40,16 +40,42 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup gpu for k8s
-      run: sudo -E bash .github/workflows/setup-environment.sh
-
-    - name: Setup gpu for k8s
-      run: sudo -E bash .github/workflows/setup-gpu.sh
-
-    - name: Run tests as root
+    - name: Install python version from input
       run: |
-        mkdir -p $HOME/.kube
-        sudo cp /root/.kube/config $HOME/.kube/config
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update -yqq
+        sudo apt-get install -yqq python3-pip
+        pip3 install tox
+
+    - name: Run tests
+      run: |
+        sudo snap install kubectl --classic
+        sudo snap install k8s --classic --channel=1.32-classic/stable
+        sudo k8s bootstrap
+        sudo k8s enable local-storage
+        mkdir -p ~/.kube
+        sudo k8s config > ~/.kube/config
+
+        # Setup Nvidia k8s operator
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
+            && chmod 700 get_helm.sh \
+            && ./get_helm.sh
+
+        helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
+            && helm repo update
+
+        # Ensure KUBECONFIG is set
+        export KUBECONFIG=~/.kube/config
+
+        # Install GPU operator
+        helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
+
+        # Wait until the GPU operator validations pass
+        while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"; do
+            echo "Waiting for GPU operator validations to pass..."
+            sleep 5
+        done
+        
         tox -e integration-gpu -- -vv -s
 
   stop-runner:
