@@ -14,9 +14,15 @@ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scr
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
     && helm repo update
 
+# Ensure KUBECONFIG is set
+export KUBECONFIG=~/.kube/config
+
+# Install GPU operator
 helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
-while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"
-do   
-    echo "waiting for validations"
+
+# Wait until the GPU operator validations pass
+while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"; do
+    echo "Waiting for GPU operator validations to pass..."
     sleep 5
 done
+
