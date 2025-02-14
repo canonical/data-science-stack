@@ -53,8 +53,11 @@ jobs:
         sudo snap install k8s --classic --channel=1.32-classic/stable
         sudo k8s bootstrap
         sudo k8s enable local-storage
+
         mkdir -p ~/.kube
-        sudo k8s config > ~/.kube/config
+        sudo k8s config | sudo tee ~/.kube/config > /dev/null
+        sudo chown $(id -u):$(id -g) ~/.kube/config
+        export KUBECONFIG=~/.kube/config
 
         # Setup Nvidia k8s operator
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
@@ -64,9 +67,6 @@ jobs:
         helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
             && helm repo update
 
-        # Ensure KUBECONFIG is set
-        export KUBECONFIG=~/.kube/config
-
         # Install GPU operator
         helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
 
@@ -75,7 +75,7 @@ jobs:
             echo "Waiting for GPU operator validations to pass..."
             sleep 5
         done
-        
+
         tox -e integration-gpu -- -vv -s
 
   stop-runner:
