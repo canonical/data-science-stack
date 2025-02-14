@@ -6,7 +6,7 @@ microk8s enable storage $MICROK8S_ADDONS
 microk8s kubectl rollout status deployment/hostpath-provisioner -n kube-system
 
 # Wait for gpu operator components to be ready
-while ! sudo microk8s.kubectl logs -n gpu-operator-resources -l app=nvidia-operator-validator | grep "all validations are successful"
+while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"
 do
   echo "waiting for validations"
   sleep 5
