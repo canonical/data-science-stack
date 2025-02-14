@@ -48,6 +48,8 @@ jobs:
 
     - name: Run tests as root
       run: |
+        mkdir -p ~/.kube
+        sudo k8s config > ~/.kube/config
         tox -e integration-gpu -- -vv -s
 
   stop-runner:
