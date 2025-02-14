@@ -54,11 +54,10 @@ jobs:
         sudo k8s bootstrap
         sudo k8s enable local-storage
 
-        # Create kubeconfig in the current user's home directory with proper permissions
-        mkdir -p $HOME/.kube
-        sudo k8s config | sudo tee $HOME/.kube/config > /dev/null
-        sudo chown $(id -u):$(id -g) $HOME/.kube/config
-        export KUBECONFIG=$HOME/.kube/config
+        mkdir -p ~/.kube
+        sudo k8s config | sudo tee ~/.kube/config > /dev/null
+        sudo chown $(id -u):$(id -g) ~/.kube/config
+        export KUBECONFIG=~/.kube/config
 
         # Setup Nvidia k8s operator
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
@@ -77,7 +76,7 @@ jobs:
             sleep 5
         done
 
-        tox -e integration-gpu -- -vv -s
+        sudo tox -e integration-gpu -- -vv -s
 
   stop-runner:
     name: Stop self-hosted EC2 runner
