@@ -40,8 +40,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup operator environment
-      run: sudo -E bash .github/workflows/setup-gpu-environment.sh
+    - name: Setup gpu for k8s
+      run: sudo -E bash .github/workflows/setup-environment.sh
+
+    - name: Setup gpu for k8s
+      run: sudo -E bash .github/workflows/setup-gpu.sh
 
     - name: Run tests as root
       run: |
