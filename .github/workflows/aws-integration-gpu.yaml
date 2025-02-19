@@ -59,6 +59,7 @@ jobs:
         sudo k8s enable local-storage
         mkdir -p ~/.kube
         sudo k8s config > ~/.kube/config
+        sudo chown $(id -u):$(id -g) ~/.kube/config
     
     - name: Enable NVIDIA operator
       run: |
@@ -69,7 +70,7 @@ jobs:
         helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
             && helm repo update
 
-        sudo helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
+        helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
 
         # Wait until the GPU operator validations pass
         while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"; do
