@@ -48,6 +48,7 @@ jobs:
     - name: Install dependencies
       run: |
         # Removing docker as it is blocking canonical k8s bootstrap
+        # For local dev reffer to this guide https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/install/dev-env/#containerd-conflicts
         sudo apt-get remove -y docker-ce docker-ce-cli containerd.io
         sudo rm -rf /run/containerd
         
