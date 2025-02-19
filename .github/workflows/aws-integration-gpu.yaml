@@ -40,7 +40,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Install python version from input
+    - name: Install python
       run: |
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update -y
