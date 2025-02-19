@@ -40,26 +40,28 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Install Python and Tox
+    - name: Install python version from input
       run: |
-        export DEBIAN_FRONTEND=noninteractive
-        sudo apt-get update -yqq
-        sudo apt-get install -yqq python3-pip
-        pip3 install tox
-
-    - name: Run tests
-      run: |
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt update -y
+        VERSION=3.10
+        sudo apt install python3.10 python3.10-distutils python3.10-venv -y
+        wget https://bootstrap.pypa.io/get-pip.py
+        python3.10 get-pip.py
+        python3.10 -m pip install tox
+        rm get-pip.py
+    
+    - name: Install and setup Canonical k8s
+      run: |        
         sudo snap install kubectl --classic
         sudo snap install k8s --classic --channel=1.32-classic/stable
         sudo k8s bootstrap
         sudo k8s enable local-storage
-
         mkdir -p ~/.kube
-        sudo k8s config | sudo tee ~/.kube/config > /dev/null
-        sudo chown $(id -u):$(id -g) ~/.kube/config
-        export KUBECONFIG=~/.kube/config
-
-        # Setup Nvidia k8s operator
+        sudo k8s config > ~/.kube/config
+    
+    - name: Enable NVIDIA operator
+      run: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
             && chmod 700 get_helm.sh \
             && ./get_helm.sh
@@ -67,7 +69,6 @@ jobs:
         helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
             && helm repo update
 
-        # Install GPU operator
         helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
 
         # Wait until the GPU operator validations pass
@@ -76,6 +77,8 @@ jobs:
             sleep 5
         done
 
+    - name: Run tests
+      run: |
         sudo tox -e integration-gpu -- -vv -s
 
   stop-runner:
