@@ -36,8 +36,6 @@ jobs:
     # is resolved and applied to all ROCKs repositories
     - name: Install python version from input
       run: |
-        # TODO: remove when fixed: https://github.com/microsoft/linux-package-repositories/issues/130#issuecomment-2074645171
-        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo add-apt-repository ppa:deadsnakes/ppa -y
         sudo apt update -y
         VERSION=3.10
@@ -47,11 +45,20 @@ jobs:
         python3.10 -m pip install tox
         rm get-pip.py
     
-    - uses: balchua/microk8s-actions@v0.3.2
-      with:
-        channel: '1.28/stable'
-        addons: '["hostpath-storage"]'
+    - name: Install dependencies
+      run: |
+        # Removing docker as it is blocking canonical k8s bootstrap
+        # Based on this guide https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/install/dev-env/#containerd-conflicts
+        sudo apt-get remove -y docker-ce docker-ce-cli containerd.io
+        sudo rm -rf /run/containerd
+        
+        sudo snap install kubectl --classic
+        sudo snap install k8s --classic --channel=1.32-classic/stable
+        sudo k8s bootstrap
+        sudo k8s enable local-storage
+        mkdir -p ~/.kube
+        sudo k8s config > ~/.kube/config
 
-    - name: Install library
-      run: sg microk8s -c "tox -vve integration"
+    - name: Run tests
+      run: tox -vve integration
 
