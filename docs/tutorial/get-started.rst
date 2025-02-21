@@ -12,7 +12,7 @@ It provides easy access to a solution for developing and optimising ML models, u
 Prerequisites
 -------------
 
-* Ubuntu 22.04 LTS.
+* Ubuntu 24.04 LTS.
 * `Snap`_ installed.
 * 50GB of disk space is recommended. This includes the `requirements <https://microk8s.io/docs/getting-started>`_ for MicroK8s.
 
