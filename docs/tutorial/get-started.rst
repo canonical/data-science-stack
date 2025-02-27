@@ -44,7 +44,7 @@ Now, install the DSS CLI using the following command:
 
 .. code-block:: bash
 
-   sudo snap install data-science-stack --channel latest/stable
+   sudo snap install data-science-stack
 
 .. _initialise_DSS:
 
