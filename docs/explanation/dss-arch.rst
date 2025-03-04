@@ -19,12 +19,13 @@ Using DSS, you can perform the following tasks:
 Architecture overview
 ---------------------
 
-The DSS architecture includes these layers:
+The DSS architecture can be thought of as a stack of layers. 
+These layers, from top to bottom, include:
 
 * :ref:`Application <app_layer>`.
 * :ref:`ML tools <ml_tools>`.
 * :ref:`Orchestration <orch_layer>`.
-* :ref:`Operating system <os_layer>`.
+* :ref:`Operating system (OS) <os_layer>`.
 
 The following diagram showcases it:
 

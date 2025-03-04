@@ -9,7 +9,7 @@ From setting up MicroK8s in your host environment, all the way to running your f
 Data Science Stack is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. 
 It provides easy access to a solution for developing and optimising ML models, utilising your machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
-Prerequisites
+Requirements
 -------------
 
 * Ubuntu 22.04 LTS.
