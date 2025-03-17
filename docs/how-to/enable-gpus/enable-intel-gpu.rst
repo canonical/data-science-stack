@@ -10,7 +10,7 @@ You can do so done by enabling the Intel device plugin on your `MicroK8s`_ clust
 Prerequisites
 -------------
 
-* Ubuntu 22.04.
+* Ubuntu 24.04.
 * DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * The `kubectl snap <https://snapcraft.io/kubectl>`_ package is installed.
 * Your machine includes an Intel GPU.
