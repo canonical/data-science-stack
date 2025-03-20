@@ -60,7 +60,7 @@ Run the following command to check if the NVIDIA Operator validation is successf
    done
 
 .. note::
-   If the validator pod is still initializing, you may see an error like:
+   If the pod is still initializing, you may see an error like:
    ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-xxxx" is waiting to start: PodInitializing``
 
 Once completed, the output should include:
@@ -79,7 +79,7 @@ Device with No NVIDIA Driver Installed
 
 - The GPU Operator will **automatically install** the necessary NVIDIA driver.
 - This installation process may take longer as it involves setting up drivers and runtime components.
-- Once the process is complete, `nvidia-smi` should detect the GPU successfully.
+- Once the process is complete, GPU should be detected successfully.
 
 Device with an Up-to-Date NVIDIA Driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

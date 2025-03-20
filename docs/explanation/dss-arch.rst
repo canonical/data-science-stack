@@ -52,8 +52,8 @@ ML tools
 
 DSS includes:
 
-* Jupyter Notebooks: Open-source environment that provides a flexible interface to organize DS projects and ML workloads. 
-* MLflow: Open-source platform for managing the ML lifecycle, including experiment tracking and model registry.
+* Jupyter Notebooks: Open-source environment that provides a flexible interface to organise DS projects and ML workloads. 
+* MLflow: Open-source platform for managing the ML life cycle, including experiment tracking and model registry.
 * ML frameworks: DSS comes by default with PyTorch and TensorFlow. Users can manually add other frameworks, depending on their needs and use cases.
 
 Jupyter Notebooks
@@ -68,7 +68,7 @@ MLflow
 ^^^^^^
 
 `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_ operates in `local mode <https://mlflow.org/docs/latest/tracking.html#other-configuration-with-mlflow-tracking-server>`_, 
-meaning that metadata and artifacts are, by default, stored in a local directory.
+meaning that metadata and artefacts are, by default, stored in a local directory.
 
 This local directory is backed by a persistent volume, mounted to a Hostpath directory of the MLflow Pod.
 The persistent volume can be found in the directory `/mlruns`.
@@ -103,11 +103,11 @@ It also depends on the chosen image, for example, CUDA when working with NVIDIA 
 Storage
 ^^^^^^^
 
-DSS expects a default `storage class <https://kubernetes.io/docs/concepts/storage/storage-classes/>`_ in the Kubernetes deployment, which is used to persist Jupyter Notebooks and MLflow artifacts.   
+DSS expects a default `storage class <https://kubernetes.io/docs/concepts/storage/storage-classes/>`_ in the Kubernetes deployment, which is used to persist Jupyter Notebooks and MLflow artefacts.   
 In Canonical K8s, a local storage class should be configured to provision Kubernetes' *PersistentVolumeClaims* (`PVCs <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_). 
 
 A shared PVC is used across all Jupyter Notebooks to share and persist data. 
-MLflow also uses its dedicated PVC to store the logged artifacts.
+MLflow also uses its dedicated PVC to store the logged artefacts.
 This is the DSS default storage configuration and cannot be altered.
 
 This choice ensures that all storage is backed up on the host machine in the event of cluster restarts.
@@ -115,7 +115,7 @@ This choice ensures that all storage is backed up on the host machine in the eve
 .. note::
    By default, you can access the DSS storage anytime under your local directory `/var/snap/k8s/common/default-storage`. 
 
-The following diagram summarizes the DSS storage:
+The following diagram summarises the DSS storage:
 
 .. figure:: https://assets.ubuntu.com/v1/2130fd66-dss_storage.png
    :width: 800px
