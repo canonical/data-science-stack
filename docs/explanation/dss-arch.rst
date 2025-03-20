@@ -67,7 +67,7 @@ The full path to that persistent volume is `/home/jovyan/shared`.
 MLflow
 ^^^^^^
 
-`MLflow <https://ubuntu.com/blog/what-is-mlflow>`_ operates in `local mode <https://mlflow.org/docs/latest/tracking.html#other-configuration-with-mlflow-tracking-server>`_, 
+`MLflow <https://ubuntu.com/blog/what-is-mlflow>`_ operates in `local mode <https://mlflow.org/docs/latest/tracking/#other-tracking-setup>`_, 
 meaning that metadata and artefacts are, by default, stored in a local directory.
 
 This local directory is backed by a persistent volume, mounted to a Hostpath directory of the MLflow Pod.

@@ -73,7 +73,7 @@ This command purges all the DSS components, including:
 .. note::
 
     This action removes the components of the DSS environment, but it does not remove the DSS CLI or your Canonical K8s cluster.  
-    To remove those, `delete their snaps <https://snapcraft.io/docs/quickstart-tour>`_.
+    To remove those, `delete their snaps <https://snapcraft.io/docs/get-started>`_.
 
 .. code-block:: bash
 
