@@ -3,131 +3,117 @@
 Enable NVIDIA GPUs
 ==================
 
-This guide describes how to configure Data Science Stack (DSS) to utilise your NVIDIA GPUs.
+This guide describes how to configure Data Science Stack (DSS) to utilise your NVIDIA GPUs within a Canonical K8s environment.
 
-You can do so by configuring the underlying `MicroK8s`_, on which DSS relies on for running the containerised workloads.
+DSS supports GPU acceleration by leveraging the `NVIDIA GPU Operator`_. The operator ensures that the necessary components, including drivers and runtime, are set up correctly to enable GPU workloads.
 
 Prerequisites
 -------------
 
 * DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
-* Your machine includes an NVIDIA GPU.  
+* Your machine includes an NVIDIA GPU.
 
-.. _install_nvidia_operator:
+Install the NVIDIA GPU Operator
+-------------------------------
 
-Install the NVIDIA Operator
----------------------------
+To enable GPU support, you must install the NVIDIA GPU Operator in your Kubernetes cluster. Follow the official NVIDIA documentation for installation steps:
 
-To ensure DSS can utilise NVIDIA GPUs:
+`NVIDIA GPU Operator Installation Guide <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_
 
-1. The NVIDIA drivers must be installed.
-2. MicroK8s must be set up to utilise NVIDIA drivers.
-
-MicroK8s is leveraging the `NVIDIA Operator`_ for setting up and configuring the NVIDIA runtime. 
-The NVIDIA Operator also installs the NVIDIA drivers, if they are not present already on your machine.
-
-To enable the NVIDIA runtimes on MicroK8s, run the following command:
-
-.. code-block:: bash
-
-   sudo microk8s enable gpu
-
-.. note::
-   The NVIDIA Operator detects the installed NVIDIA drivers in your machine. 
-   If they are not installed, it will do so automatically.
-
-Verify the NVIDIA Operator is up
+Verify the NVIDIA Operator is Up
 --------------------------------
 
-Before spinning up workloads, the GPU Operator has to be successfully initialised. 
-To do so, you need to assure DaemonSet is ready and the Validator Pod has succeeded.
+Once the NVIDIA GPU Operator is installed, verify that it has successfully initialized before running workloads.
 
-.. note::
-   This process can take approximately 5 minutes to complete.
-
-Ensure DaemonSet is ready
+Ensure DaemonSet is Ready
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First, ensure that the DaemonSet for the Operator Validator is created:
+Run the following command to verify that the DaemonSet for the NVIDIA Operator Validator is created:
 
 .. code-block:: bash
 
-  while ! sudo microk8s.kubectl get ds \
-      -n gpu-operator-resources \
-      nvidia-operator-validator
-  do
-    sleep 5
-  done
+   while ! kubectl get ds -n gpu-operator-resources nvidia-operator-validator; do
+      sleep 5
+   done
 
 .. note::
-   It takes some seconds for the DaemonSet to get created. 
-   The above command returns a message like the following at the beginning of the process:
-   ``Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found``
+   It may take a few seconds for the DaemonSet to be created.
 
-Once completed, you should expect an output like this:
+Once completed, you should see an output similar to this:
 
 .. code-block:: text
 
-   Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found
-   ...
-   Error from server (NotFound): daemonsets.apps "nvidia-operator-validator" not found
    NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                   AGE
    nvidia-operator-validator   1         1         0       1            0           nvidia.com/gpu.deploy.operator-validator=true   17s
 
-Ensure the Validator Pod succeeded
+Ensure the Validator Pod Succeeded
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, you need to wait for the Validator Pod to succeed:
+Run the following command to check if the NVIDIA Operator validation is successful:
 
 .. code-block:: bash
 
    echo "Waiting for the NVIDIA Operator validations to complete..."
 
-   while ! sudo microk8s.kubectl logs \
-       -n gpu-operator-resources \
-       -l app=nvidia-operator-validator \
-       -c nvidia-operator-validator | grep "all validations are successful"
-   do
+   while ! kubectl logs -n gpu-operator-resources -l app=nvidia-operator-validator -c nvidia-operator-validator | grep "all validations are successful"; do
        sleep 5
    done
 
 .. note::
-   It takes some seconds for the Validator Pod to get initialised. 
-   The above command returns a message like the following at the beginning of the process:
-   ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing``
+   If the validator pod is still initializing, you may see an error like:
+   ``Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-xxxx" is waiting to start: PodInitializing``
 
-Once completed, you should expect an output like this:
+Once completed, the output should include:
 
 .. code-block:: text
 
-   Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
-   ...
-   Error from server (BadRequest): container "nvidia-operator-validator" in pod "nvidia-operator-validator-4rq5n" is waiting to start: PodInitializing
    all validations are successful
 
-.. _verify_nvidia_operator:
+Use Cases for Different Driver States
+-------------------------------------
 
-Verify DSS detects the GPU
+The NVIDIA GPU Operator behaves differently depending on whether your system already has an NVIDIA driver installed. Below are the three primary scenarios:
+
+Device with No NVIDIA Driver Installed
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The GPU Operator will **automatically install** the necessary NVIDIA driver.
+- This installation process may take longer as it involves setting up drivers and runtime components.
+- Once the process is complete, `nvidia-smi` should detect the GPU successfully.
+
+Device with an Up-to-Date NVIDIA Driver
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The GPU Operator detects the existing driver and proceeds without reinstalling it.
+- However, to avoid redundant installations, it is recommended to disable driver installation explicitly when deploying the operator.
+- Follow the upstream documentation for the correct configuration to disable driver installation in this case.
+
+Device with an Outdated NVIDIA Driver
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- If an older driver version is detected, the operator may attempt to install a newer version.
+- This could lead to conflicts if the outdated driver does not match the required CUDA version.
+- To prevent issues, update the driver manually or remove the outdated version before deploying the GPU Operator.
+
+Verify DSS Detects the GPU
 --------------------------
 
-At this point, the underlying MicroK8s cluster has been configured for handling the NVIDIA GPU.
-Verify the DSS CLI has detected the GPU by checking the DSS status as follows:
+After installing and configuring the NVIDIA GPU Operator, verify that DSS detects the GPU by checking its status:
 
 .. code-block:: bash
 
-  dss status
+   dss status
 
-You should expect an output like this:
+Expected output:
 
-.. code-block:: bash
+.. code-block:: text
 
-  MLflow deployment: Ready
-  MLflow URL: http://10.152.183.74:5000
-  GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
+   MLflow deployment: Ready
+   MLflow URL: http://10.152.183.74:5000
+   GPU acceleration: Enabled (NVIDIA-GeForce-RTX-3070-Ti)
 
 .. note::
-
-  The GPU model `NVIDIA-GeForce-RTX-3070-Ti` might differ from your setup.
+  The GPU model displayed may differ based on your hardware.
 
 See also
 --------

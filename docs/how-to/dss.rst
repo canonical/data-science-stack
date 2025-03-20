@@ -8,10 +8,10 @@ This guide describes how to manage Data Science Stack (DSS).
 DSS is a Command Line Interface (CLI)-based environment and distributed as a `snap`_.
 
 Install
---------
+-------
 
 .. note::
-   To install DSS, ensure you have previously installed `Snap`_ and `MicroK8s`_.
+   To install DSS, ensure you have previously installed `Snap`_ and `Canonical K8s`_.
 
 You can install DSS using ``snap`` as follows:
 
@@ -26,20 +26,20 @@ Then, you can run the DSS CLI with:
     dss
 
 Initialise
------------
+----------
 
 You can initialise DSS through ``dss initialize``.
 This command:
 
-* Stores credentials for the MicroK8s cluster.
+* Stores credentials for the Canonical K8s cluster.
 * Allocates storage for your DSS Jupyter Notebooks.
 * Deploys an `MLflow <MLflow Docs_>`_ model registry.
 
 .. code-block:: shell
 
-    dss initialize --kubeconfig "$(sudo microk8s config)"
+    dss initialize --kubeconfig "$(sudo k8s config)"
 
-The ``--kubeconfig`` option is used to provide your MicroK8s cluster's kubeconfig.
+The ``--kubeconfig`` option is used to provide your Canonical K8s cluster's kubeconfig.
 
 .. note::
    Note the use of quotes for the ``--kubeconfig`` option. Without them, the content may be interpreted by your shell.
@@ -61,9 +61,9 @@ You should expect an output like this:
       dss create my-notebook --image=kubeflownotebookswg/jupyter-scipy:v1.8.0
 
 Remove
--------
+------
 
-You can remove DSS from your MicroK8s cluster through ``dss purge``. 
+You can remove DSS from your Canonical K8s cluster through ``dss purge``. 
 This command purges all the DSS components, including:
 
 * All Jupyter Notebooks.
@@ -72,7 +72,7 @@ This command purges all the DSS components, including:
 
 .. note::
 
-    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your MicroK8s cluster.  
+    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your Canonical K8s cluster.  
     To remove those, `delete their snaps <https://snapcraft.io/docs/quickstart-tour>`_.
 
 .. code-block:: bash
@@ -91,7 +91,7 @@ You should expect an output like this:
     Success: All DSS components and notebooks purged successfully from the Kubernetes cluster.
 
 Get status
------------
+----------
 
 You can check the DSS status through ``dss status``. 
 This command provides a quick way to check the status of your DSS environment, including the MLflow status and whether a GPU is detected in your environment.
@@ -109,7 +109,7 @@ If you already have a DSS environment running and no GPU available, the expected
     GPU acceleration: Disabled
 
 List commands
---------------
+-------------
 
 You can get the list of available commands for DSS through the ``dss`` command with the ``--help`` option:
 
@@ -134,12 +134,11 @@ You should expect an output like this:
     list        Lists all created notebooks in the DSS environment.
     logs        Prints the logs for the specified notebook or DSS component.
     purge       Removes all notebooks and DSS components.
-    remove      Remove a Jupter Notebook in DSS with the name NAME.
+    remove      Remove a Jupyter Notebook in DSS with the name NAME.
     start       Starts a stopped notebook in the DSS environment.
     status      Checks the status of key components within the DSS...
     stop        Stops a running notebook in the DSS environment.
 
-    
 **Get details about a specific command**:
 
 To see the usage and options of a DSS command, run ``dss <command>`` with the ``--help`` option.
