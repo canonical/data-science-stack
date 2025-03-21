@@ -97,6 +97,5 @@ This will direct you to the notebook UI where you can start working with your no
 Next Steps
 ----------
 * To learn more about how to interact with DSS, see :ref:`manage_DSS`.
-* To learn about handling data, check out :ref:`access-data`.
 * To connect to MLflow, see :ref:`manage_MLflow`.
 * To leverage your GPUs, see :doc:`Enable GPUs <../how-to/enable-gpus/index>`.

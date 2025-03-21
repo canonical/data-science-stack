@@ -171,6 +171,8 @@ Stopping a notebook frees up resources and ensures data safety when not actively
 
     dss stop my-notebook
 
+.. _access_notebook:
+
 Access a notebook
 -----------------
 

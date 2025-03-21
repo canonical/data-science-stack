@@ -13,19 +13,20 @@ Prerequisites
 * DSS is :ref:`installed <install_DSS_CLI>` and :ref:`initialised <initialise_DSS>`.
 * Your machine includes an NVIDIA GPU.
 
+.. _install_nvidia_operator:
+
 Install the NVIDIA GPU Operator
 -------------------------------
 
-To enable GPU support, you must install the NVIDIA GPU Operator in your Kubernetes cluster. Follow the official NVIDIA documentation for installation steps:
+To enable GPU support, you must install the NVIDIA GPU Operator in your Kubernetes cluster. 
+Follow `NVIDIA GPU Operator Installation Guide <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_ for installation details.
 
-`NVIDIA GPU Operator Installation Guide <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_
-
-Verify the NVIDIA Operator is Up
+Verify the NVIDIA Operator is up
 --------------------------------
 
-Once the NVIDIA GPU Operator is installed, verify that it has successfully initialized before running workloads.
+Once the NVIDIA GPU Operator is installed, verify that it has been successfully initialized before running workloads.
 
-Ensure DaemonSet is Ready
+Ensure DaemonSet is ready
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to verify that the DaemonSet for the NVIDIA Operator Validator is created:
@@ -46,7 +47,7 @@ Once completed, you should see an output similar to this:
    NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                   AGE
    nvidia-operator-validator   1         1         0       1            0           nvidia.com/gpu.deploy.operator-validator=true   17s
 
-Ensure the Validator Pod Succeeded
+Ensure the Validator Pod succeeded
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to check if the NVIDIA Operator validation is successful:
@@ -69,33 +70,35 @@ Once completed, the output should include:
 
    all validations are successful
 
-Use Cases for Different Driver States
+Use cases for different driver states
 -------------------------------------
 
 The NVIDIA GPU Operator behaves differently depending on whether your system already has an NVIDIA driver installed. Below are the three primary scenarios:
 
-Device with No NVIDIA Driver Installed
+Device with no NVIDIA driver installed
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - The GPU Operator will **automatically install** the necessary NVIDIA driver.
 - This installation process may take longer as it involves setting up drivers and runtime components.
 - Once the process is complete, GPU should be detected successfully.
 
-Device with an Up-to-Date NVIDIA Driver
+Device with an up-to-date NVIDIA driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - The GPU Operator detects the existing driver and proceeds without reinstalling it.
 - However, to avoid redundant installations, it is recommended to disable driver installation explicitly when deploying the operator.
 - Follow the upstream documentation for the correct configuration to disable driver installation in this case.
 
-Device with an Outdated NVIDIA Driver
+Device with an outdated NVIDIA driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - If an older driver version is detected, the operator may attempt to install a newer version.
 - This could lead to conflicts if the outdated driver does not match the required CUDA version.
 - To prevent issues, update the driver manually or remove the outdated version before deploying the GPU Operator.
 
-Verify DSS Detects the GPU
+.. _verify_nvidia_operator:
+
+Verify DSS detects the GPU
 --------------------------
 
 After installing and configuring the NVIDIA GPU Operator, verify that DSS detects the GPU by checking its status:
@@ -104,7 +107,7 @@ After installing and configuring the NVIDIA GPU Operator, verify that DSS detect
 
    dss status
 
-Expected output:
+You should expect an output like this:
 
 .. code-block:: text
 

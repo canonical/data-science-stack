@@ -90,8 +90,7 @@ GPU support
 ^^^^^^^^^^^
 
 DSS can run with or without the use of GPUs.
-If needed, the NVIDIA GPU Operator should be deployed following the official documentation: 
-`NVIDIA GPU Operator <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_.
+If needed, follow `NVIDIA GPU Operator <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_ for deployment details.
 
 DSS does not automatically install the tools and libraries required for running GPU workloads.
 It relies on Canonical K8s for the required operating-system drivers.
