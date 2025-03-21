@@ -71,7 +71,7 @@ You should expect an output like this:
 Get artefacts
 --------------
 
-MLflow artefacts, including `models <https://mlflow.org/docs/latest/models.html>`_, `experiments <https://mlflow.org/docs/latest/tracking.html#experiments>`_ and `runs <https://mlflow.org/docs/latest/tracking.html#runs>`_ are stored within your DSS environment.
+MLflow artefacts, including `models <https://mlflow.org/docs/latest/models.html>`_, `experiments <https://mlflow.org/docs/latest/tracking/>`_ and `runs <https://mlflow.org/docs/latest/tracking.html#runs>`_ are stored within your DSS environment.
 You can access and download them from the :ref:`MLflow UI <access_mlflow>`. 
 
 See also

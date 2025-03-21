@@ -4,35 +4,34 @@ Get started with DSS
 ====================
 
 This guide describes how you can get started with Data Science Stack (DSS). 
-From setting up MicroK8s in your host environment, all the way to running your first notebook.
+From setting up Canonical K8s in your host environment, all the way to running your first notebook.
 
 Data Science Stack is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. 
 It provides easy access to a solution for developing and optimising ML models, utilising your machine's GPUs and allowing users to utilise different ML environment images based on their needs.
 
-Prerequisites
+Requirements
 -------------
 
-* Ubuntu 22.04 LTS.
+* Ubuntu 24.04 LTS.
 * `Snap`_ installed.
-* 50GB of disk space is recommended. This includes the `requirements <https://microk8s.io/docs/getting-started>`_ for MicroK8s.
+* 50GB of disk space is recommended.
 
-.. _set_microk8s:
+.. _set_canonical_k8s:
 
-Set up MicroK8s
----------------
+Set up Canonical K8s
+--------------------
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
-`MicroK8s`_ is used as the orchestration system.
-All the workloads and state managed by DSS are running on top of MicroK8s.
+`Canonical K8s`_ is used as the orchestration system.
+All the workloads and state managed by DSS are running on top of Canonical K8s.
 
-You can install MicroK8s using ``snap`` as follows:
+You can install Canonical K8s using ``snap`` as follows:
 
 .. code-block:: bash
 
-   sudo snap install microk8s --channel 1.28/stable --classic
-   sudo microk8s enable hostpath-storage
-   sudo microk8s enable dns
-   sudo microk8s enable rbac
+   sudo snap install k8s --classic --channel=1.32-classic/stable
+   sudo k8s bootstrap
+   sudo k8s enable local-storage
 
 .. _install_DSS_CLI:
 
@@ -44,18 +43,18 @@ Now, install the DSS CLI using the following command:
 
 .. code-block:: bash
 
-   sudo snap install data-science-stack --channel latest/stable
+   sudo snap install data-science-stack
 
 .. _initialise_DSS:
 
 Initialise DSS
 --------------
 
-Next, you need to initialise DSS on top of MicroK8s and prepare MLflow:
+Next, you need to initialise DSS on top of Canonical K8s and prepare MLflow:
 
 .. code-block:: bash
 
-   dss initialize --kubeconfig="$(sudo microk8s config)"
+   dss initialize --kubeconfig="$(sudo k8s config)"
 
 .. note::
 
@@ -98,6 +97,5 @@ This will direct you to the notebook UI where you can start working with your no
 Next Steps
 ----------
 * To learn more about how to interact with DSS, see :ref:`manage_DSS`.
-* To learn about handling data, check out :ref:`access-data`.
 * To connect to MLflow, see :ref:`manage_MLflow`.
 * To leverage your GPUs, see :doc:`Enable GPUs <../how-to/enable-gpus/index>`.

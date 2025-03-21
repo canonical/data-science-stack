@@ -1,10 +1,10 @@
 DSS architecture
 ================
 
-This guide provides an overview of the Data science stack (DSS) architecture, its main components and their interactions. 
+This guide provides an overview of the Data Science Stack (DSS) architecture, its main components, and their interactions. 
 
 DSS is a ready-to-run environment for Machine Learning (ML) and Data Science (DS). 
-It's built on open-source tooling, including `MicroK8s`_, JupyterLab and `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_.
+It's built on open-source tooling, including `Canonical K8s`_, JupyterLab, and `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_.
 
 DSS is distributed as a `snap`_ and usable on any Ubuntu workstation. 
 This provides robust security management and user-friendly version control, enabling seamless updates and auto-rollback in case of failure. 
@@ -19,12 +19,13 @@ Using DSS, you can perform the following tasks:
 Architecture overview
 ---------------------
 
-The DSS architecture includes these layers:
+The DSS architecture can be thought of as a stack of layers. 
+These layers, from top to bottom, include:
 
 * :ref:`Application <app_layer>`.
 * :ref:`ML tools <ml_tools>`.
 * :ref:`Orchestration <orch_layer>`.
-* :ref:`Operating system <os_layer>`.
+* :ref:`Operating system (OS) <os_layer>`.
 
 The following diagram showcases it:
 
@@ -51,14 +52,14 @@ ML tools
 
 DSS includes:
 
-* Jupyter Notebooks: Open source environment that provides a flexible interface to organise DS projects and ML workloads. 
-* MLflow: Open source platform for managing the ML life cycle, including experiment tracking and model registry.
-* ML frameworks: DSS comes by default with PyTorch and Tensorflow. Users can manually add other frameworks, depending on their needs and use cases.
+* Jupyter Notebooks: Open-source environment that provides a flexible interface to organise DS projects and ML workloads. 
+* MLflow: Open-source platform for managing the ML life cycle, including experiment tracking and model registry.
+* ML frameworks: DSS comes by default with PyTorch and TensorFlow. Users can manually add other frameworks, depending on their needs and use cases.
 
 Jupyter Notebooks
 ^^^^^^^^^^^^^^^^^
 
-A `Jupyter Notebook <Jupyter Notebooks_>`_ is essentially a `Kubernetes deployment <Pod_>`_, also known as `Pod`, running a Docker image with Jupyter Lab and a dedicated ML framework, such as Pytorch or Tensorflow.
+A `Jupyter Notebook <Jupyter Notebooks_>`_ is essentially a `Kubernetes deployment <Pod_>`_, also known as `Pod`, running a Docker image with Jupyter Lab and a dedicated ML framework, such as PyTorch or TensorFlow.
 For each Jupyter Notebook, DSS mounts a `Hostpath <Microk8s hostpath docs_>`_ directory-backed persistent volume to the data directory. 
 All Jupyter Notebooks share the same persistent volume, allowing them to exchange data seamlessly. 
 The full path to that persistent volume is `/home/jovyan/shared`.
@@ -66,7 +67,7 @@ The full path to that persistent volume is `/home/jovyan/shared`.
 MLflow
 ^^^^^^
 
-`MLflow <https://ubuntu.com/blog/what-is-mlflow>`_ operates in `local mode <https://mlflow.org/docs/latest/tracking.html#other-configuration-with-mlflow-tracking-server>`_, 
+`MLflow <https://ubuntu.com/blog/what-is-mlflow>`_ operates in `local mode <https://mlflow.org/docs/latest/tracking/#other-tracking-setup>`_, 
 meaning that metadata and artefacts are, by default, stored in a local directory.
 
 This local directory is backed by a persistent volume, mounted to a Hostpath directory of the MLflow Pod.
@@ -78,12 +79,10 @@ Orchestration
 ~~~~~~~~~~~~~
 
 DSS requires a container orchestration solution. 
-DSS relies on `MicroK8s`_, a lightweight Kubernetes distribution.
+DSS relies on `Canonical K8s`_, a lightweight Kubernetes distribution.
 
-Therefore, MicroK8s needs to be deployed before installing DSS on the host machine. 
-It must be configured with the storage add-on. 
-This is required to use Hostpath storage in the cluster. 
-See :ref:`set_microk8s` to learn how to install MicroK8s.
+Therefore, Canonical K8s needs to be deployed before installing DSS on the host machine. 
+It must be configured with local storage support to handle persistent volumes used by DSS.
 
 .. _gpu_support:
 
@@ -91,14 +90,11 @@ GPU support
 ^^^^^^^^^^^
 
 DSS can run with or without the use of GPUs.
-If needed, MicroK8s can be configured with the desired `GPU add-on <https://microk8s.io/docs/addon-gpu>`_. 
-
-DSS is designed to support the deployment of containerised GPU workloads on NVIDIA GPUs. 
-MicroK8s simplifies the GPU access and usage through the `NVIDIA GPU Operator <NVIDIA Operator_>`_. 
+If needed, follow `NVIDIA GPU Operator <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_ for deployment details.
 
 DSS does not automatically install the tools and libraries required for running GPU workloads.
-To do so, it relies on MicroK8s for the required operating-system drivers.
-It also relies on the chosen image, for example, CUDA when working with NVIDIA GPUs.
+It relies on Canonical K8s for the required operating-system drivers.
+It also depends on the chosen image, for example, CUDA when working with NVIDIA GPUs.
 
 .. caution::
    GPUs from other silicon vendors rather than NVIDIA can be configured. However, its functionality is not guaranteed.
@@ -107,16 +103,16 @@ Storage
 ^^^^^^^
 
 DSS expects a default `storage class <https://kubernetes.io/docs/concepts/storage/storage-classes/>`_ in the Kubernetes deployment, which is used to persist Jupyter Notebooks and MLflow artefacts.   
-In MicroK8s, the Hostpath storage add-on is chosen, used to provision Kubernetes' *PersistentVolumeClaims* (`PVCs <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_). 
+In Canonical K8s, a local storage class should be configured to provision Kubernetes' *PersistentVolumeClaims* (`PVCs <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_). 
 
 A shared PVC is used across all Jupyter Notebooks to share and persist data. 
 MLflow also uses its dedicated PVC to store the logged artefacts.
 This is the DSS default storage configuration and cannot be altered.
 
-This choice ensures that all storage is backed up on the host machine in the event of MicroK8s restarts.
+This choice ensures that all storage is backed up on the host machine in the event of cluster restarts.
 
 .. note::
-   By default, you can access the DSS storage anytime under your local directory `/var/snap/microk8s/common/default-storage`. 
+   By default, you can access the DSS storage anytime under your local directory `/var/snap/k8s/common/default-storage`. 
 
 The following diagram summarises the DSS storage:
 
@@ -131,7 +127,7 @@ The following diagram summarises the DSS storage:
 Operating system
 ~~~~~~~~~~~~~~~~
 
-DSS is native on Ubuntu, being developed, tested and validated on it. 
+DSS is native on Ubuntu, being developed, tested, and validated on it. 
 Moreover, the solution can be used on any Linux distribution.
 
 Namespace configuration
@@ -146,8 +142,7 @@ This includes the GPU Operator for managing access and usage.
 Accessibility
 -------------
 
-Jupyter Notebooks and MLflow can be accessed from a web browser through the Pod IP that is given access through MicroK8s.
+Jupyter Notebooks and MLflow can be accessed from a web browser through the Pod IP that is given access through Canonical K8s.
 See :ref:`access_notebook` and :ref:`access_mlflow` for more details.
 
-
-
+.. _Canonical K8s: https://snapcraft.io/k8s
