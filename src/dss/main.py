@@ -14,7 +14,7 @@ from dss.stop import stop_notebook
 from dss.utils import KUBECONFIG_DEFAULT, get_lightkube_client, save_kubeconfig
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 @click.group()

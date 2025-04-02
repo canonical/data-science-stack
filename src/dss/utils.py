@@ -18,7 +18,7 @@ from dss.config import (
 from dss.logger import setup_logger
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 # Resource types used for a DSS Notebook
 NOTEBOOK_RESOURCES = (Service, Deployment)

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installation hook for data-science-stack snap.
+
+set -eux
+
+# Just create the directory, no chown or touch
+LOG_DIR="${SNAP_COMMON}/logs"
+mkdir -p "${LOG_DIR}"
+chmod 777 "${LOG_DIR}"

@@ -7,7 +7,7 @@ from dss.config import DSS_NAMESPACE, MLFLOW_DEPLOYMENT_NAME
 from dss.logger import setup_logger
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def get_logs(parts: str, name: str, lightkube_client: Client) -> None:
