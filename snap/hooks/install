@@ -3,7 +3,8 @@
 
 set -eux
 
-# Just create the directory, no chown or touch
-LOG_DIR="${SNAP_COMMON}/logs"
-mkdir -p "${LOG_DIR}"
-chmod 777 "${LOG_DIR}"
+export LOGS="${SNAP_COMMON}/logs"
+mkdir -p $LOGS
+
+chmod -R 770 "${LOGS}"
+chown -R 584788:root "${LOGS}"
