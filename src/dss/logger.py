@@ -22,12 +22,12 @@ def setup_logger(
     console_log_level: int = logging.INFO,
 ) -> logging.Logger:
     """
-    Set up a logger with optional file and console handlers.
+    Set up a logger with optional file and console arguments.
 
     Args:
-        log_file_path (str): Path to the log file. If None, uses $SNAP_COMMON/logs/dss.log.
-        file_log_level (int, optional): Logging level for file logs.
-        console_log_level (int, optional): Logging level for console logs.
+        log_file_path (str, optional): Path to the log file. If None, defaults to $SNAP_COMMON/logs/dss.log.
+        file_log_level (int, optional): Logging level for file logs. Defaults to logging.DEBUG.
+        console_log_level (int, optional): Logging level for console logs. Defaults to logging.INFO.
 
     Returns:
         logging.Logger: Configured logger.
