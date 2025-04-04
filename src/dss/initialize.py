@@ -18,7 +18,7 @@ from dss.logger import setup_logger
 from dss.utils import wait_for_deployment_ready
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def initialize(lightkube_client: Client) -> None:

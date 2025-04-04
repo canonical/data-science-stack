@@ -6,7 +6,7 @@ from dss.logger import setup_logger
 from dss.utils import does_namespace_exist, wait_for_namespace_to_be_deleted
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def purge(lightkube_client: Client) -> None:

@@ -17,52 +17,51 @@ class CustomFormatter(logging.Formatter):
 
 
 def setup_logger(
-    log_file_path: str, file_log_level: int = logging.DEBUG, console_log_level: int = logging.INFO
+    log_file_path: str = None,
+    file_log_level: int = logging.DEBUG,
+    console_log_level: int = logging.INFO,
 ) -> logging.Logger:
     """
-    Set up a logger with both file and console handlers.
+    Set up a logger with optional file and console arguments.
 
     Args:
-        log_file_path (str): Path to the log file.
+        log_file_path (str, optional): Path to the log file. Defaults to $SNAP_COMMON/logs/dss.log.
         file_log_level (int, optional): Logging level for file logs. Defaults to logging.DEBUG.
         console_log_level (int, optional): Logging level for console logs. Defaults to logging.INFO.
 
     Returns:
-        logging.Logger: Configured logger object.
+        logging.Logger: Configured logger.
     """
     logger = logging.getLogger(__name__)
 
     if not logger.handlers:
-        logger.setLevel(file_log_level)
+        logger.setLevel(min(file_log_level, console_log_level))
 
-        # Formatter for console - omits [INFO]
+        # Console formatter
         console_formatter = CustomFormatter(
             "[%(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(console_log_level)
+        console_handler.setFormatter(console_formatter)
+        logger.addHandler(console_handler)
 
-        # Formatter for file - includes [INFO]
+        # Setup file handler if path is provided or fallback to SNAP_COMMON
+        if log_file_path is None:
+            snap_common = os.environ.get("SNAP_COMMON", "/tmp")
+            log_dir = os.path.join(snap_common, "logs")
+            os.makedirs(log_dir, exist_ok=True)
+            log_file_path = os.path.join(log_dir, "dss.log")
+
+        # File formatter
         file_formatter = logging.Formatter(
             "%(asctime)s [%(levelname)s] [%(module)s] [%(funcName)s]: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
-
-        # Ensure the log directory exists
-        if not os.path.exists(os.path.dirname(log_file_path)):
-            os.makedirs(os.path.dirname(log_file_path))
-
-        # File handler setup
         file_handler = RotatingFileHandler(log_file_path, maxBytes=5 * 1024 * 1024, backupCount=5)
         file_handler.setLevel(file_log_level)
         file_handler.setFormatter(file_formatter)
-
-        # Console handler setup
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(console_log_level)
-        console_handler.setFormatter(console_formatter)
-
-        # Add handlers to logger
         logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
 
     return logger

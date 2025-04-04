@@ -11,7 +11,7 @@ from dss.logger import setup_logger
 from dss.utils import get_deployment_state, get_service_url
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def list_notebooks(lightkube_client: Client, wide: bool = False) -> None:

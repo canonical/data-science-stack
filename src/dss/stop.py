@@ -9,7 +9,7 @@ from dss.logger import setup_logger
 from dss.utils import does_notebook_exist
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def stop_notebook(name: str, lightkube_client: Client) -> None:
