@@ -25,7 +25,7 @@ def setup_logger(
     Set up a logger with optional file and console arguments.
 
     Args:
-        log_file_path (str, optional): Path to the log file. If None, defaults to $SNAP_COMMON/logs/dss.log.
+        log_file_path (str, optional): Path to the log file. Defaults to $SNAP_COMMON/logs/dss.log.
         file_log_level (int, optional): Logging level for file logs. Defaults to logging.DEBUG.
         console_log_level (int, optional): Logging level for console logs. Defaults to logging.INFO.
 
