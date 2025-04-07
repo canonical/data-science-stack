@@ -40,21 +40,48 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    # Issue: https://github.com/canonical/data-science-stack/issues/116
-    - name: Setup operator environment
-      run: sudo -E bash .github/workflows/setup_environment.sh
-      env:
-        MICROK8S_CHANNEL: 1.28/stable
-
-    - name: Setup microk8s
-      run: sudo -E bash .github/workflows/configure_microk8s.sh
-      env:
-        MICROK8S_ADDONS: "storage dns rbac gpu"
-
-    - name: Run tests as root
+    - name: Install python
       run: |
-        sudo snap alias microk8s.kubectl kubectl
-        tox -e integration-gpu -- -vv -s
+        sudo add-apt-repository ppa:deadsnakes/ppa -y
+        sudo apt update -y
+        VERSION=3.10
+        sudo apt install python3.10 python3.10-distutils python3.10-venv -y
+        wget https://bootstrap.pypa.io/get-pip.py
+        python3.10 get-pip.py
+        python3.10 -m pip install tox
+        rm get-pip.py
+    
+    - name: Install and setup Canonical k8s
+      run: |        
+        sudo snap install kubectl --classic
+        sudo snap install k8s --classic --channel=1.32-classic/stable
+        sudo k8s bootstrap
+        sudo k8s enable local-storage
+        mkdir -p ~/.kube
+        sudo k8s config > ~/.kube/config
+        sudo chown $(id -u):$(id -g) ~/.kube/config
+    
+    - name: Enable NVIDIA operator
+      run: |
+        export KUBECONFIG=~/.kube/config
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
+            && chmod 700 get_helm.sh \
+            && ./get_helm.sh
+
+        helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
+            && helm repo update
+
+        helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator
+
+        # Wait until the GPU operator validations pass
+        while ! kubectl logs -n gpu-operator -l app=nvidia-operator-validator | grep "all validations are successful"; do
+            echo "Waiting for GPU operator validations to pass..."
+            sleep 5
+        done
+
+    - name: Run tests
+      run: |
+        sudo tox -e integration-gpu -- -vv -s
 
   stop-runner:
     name: Stop self-hosted EC2 runner

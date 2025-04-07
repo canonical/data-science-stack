@@ -10,6 +10,9 @@ confinement: strict
 architectures:
   - build-on: amd64
 
+system-usernames:
+  snap_daemon: shared
+
 apps:
   dss:
     command: bin/dss
@@ -22,7 +25,7 @@ parts:
     source: .
     override-pull: |
       craftctl default
-      # Pull the version from setup.cfg, parsing the value after 
+      # Pull the version from setup.cfg, parsing the value after
       # the '=' and truncating any whitespace
       CODE_VERSION=$(grep version setup.cfg)
       CODE_VERSION=$(echo ${CODE_VERSION#*=} | tr -d ' ')

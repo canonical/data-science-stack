@@ -22,7 +22,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - uses: snapcore/action-build@v1.2.0
+    - uses: snapcore/action-build@v1.3.0
       id: snapcraft
       with:
         # Use a deterministic file name, so we can easily reference it later

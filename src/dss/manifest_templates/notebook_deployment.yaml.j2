@@ -19,6 +19,8 @@ spec:
         app.kubernetes.io/part-of: dss
         canonical.com/dss-notebook: {{ notebook_name }}
     spec:
+      securityContext:
+        fsGroup: 1000  # Ensures group ownership for files
       containers:
         - env:
           - name: MLFLOW_TRACKING_URI

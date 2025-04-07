@@ -10,7 +10,7 @@ from dss.utils import (
 )
 
 # Set up logger
-logger = setup_logger("logs/dss.log")
+logger = setup_logger()
 
 
 def get_status(lightkube_client: Client) -> None:

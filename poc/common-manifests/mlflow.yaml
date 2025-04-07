@@ -31,6 +31,17 @@ spec:
       labels:
         app: dss-mlflow
     spec:
+      initContainers:
+        - name: remove-problematic-folder
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              rm -rf /mlruns/lost+found/
+          volumeMounts:
+            - name: mlflow
+              mountPath: /mlruns
       containers:
         - name: mlflow-container
           image: ubuntu/mlflow:2.1.1_1.0-22.04

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Installation hook for data-science-stack snap.
+# This hook sets up the logs folder  for DSS
+
+set -eux
+
+export LOGS="${SNAP_COMMON}/logs"
+mkdir -p $LOGS
+
+chmod -R 777 "${LOGS}"
