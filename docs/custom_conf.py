@@ -1,4 +1,5 @@
 import datetime
+import os
 
 # Custom configuration for the Sphinx documentation builder.
 # All configuration specific to your project should be done in this file.
@@ -157,7 +158,8 @@ custom_extensions = [
     'canonical.related-links',
     'canonical.custom-rst-roles',
     'canonical.terminal-output',
-    'notfound.extension'
+    'notfound.extension',
+    'sphinx_sitemap'
 ]
 
 # Add custom required Python modules that must be added to the
@@ -167,7 +169,9 @@ custom_extensions = [
 # pyspelling, sphinx, sphinx-autobuild, sphinx-copybutton, sphinx-design,
 # sphinx-notfound-page, sphinx-reredirects, sphinx-tabs, sphinxcontrib-jquery,
 # sphinxext-opengraph
-custom_required_modules = []
+custom_required_modules = [
+    'sphinx-sitemap',
+]
 
 # Add files or directories that should be excluded from processing.
 custom_excludes = [
@@ -206,3 +210,20 @@ rst_prolog = '''
 .. role:: center
    :class: align-center
 '''
+
+#######################
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+#######################
+
+# Base URL of RTD hosted project
+
+html_baseurl = 'https://documentation.ubuntu.com/data-science-stack/'
+
+# URL scheme. Add language and version scheme elements.
+# When configured with RTD variables, check for RTD environment so manual runs succeed:
+
+if 'READTHEDOCS_VERSION' in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = '{version}{link}'
+else:
+    sitemap_url_scheme = 'MANUAL/{link}'
