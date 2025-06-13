@@ -109,7 +109,7 @@ html_context = {
 
 # If your project is on documentation.ubuntu.com, specify the project
 # slug (for example, "lxd") here.
-slug = ""
+slug = "data-science-stack"
 
 ############################################################
 # Redirects
@@ -131,7 +131,10 @@ redirects = {}
 linkcheck_ignore = [
     'http://127.0.0.1:8000',
     'https://matrix.to/#/#dss:ubuntu.com',
-    'https://microk8s.io/docs/addon-gpu#use-host-nvidia-drivers-5'
+    'https://microk8s.io/docs/addon-gpu#use-host-nvidia-drivers-5',
+    'https://mlflow.org/docs/latest/tracking/#other-tracking-setup',
+    'https://mlflow.org/docs/latest/tracking.html#runs' 
+
 ]
 
 # Pages on which to ignore anchors
