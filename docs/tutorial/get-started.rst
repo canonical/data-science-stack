@@ -94,7 +94,7 @@ For example, you should expect an output like this:
 Once you know the URL, open a web browser and enter the URL into the address bar. 
 This will direct you to the notebook UI where you can start working with your notebook.
 
-Next Steps
+Next steps
 ----------
 * To learn more about how to interact with DSS, see :ref:`manage_DSS`.
 * To connect to MLflow, see :ref:`manage_MLflow`.

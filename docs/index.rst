@@ -15,28 +15,38 @@ DSS solves this problem by providing accessible, production-ready, isolated, and
 Both ML beginners and engineers who need to build complex development and runtime environments will see set-up time reduced to a minimum, 
 allowing them to get started with meaningful work within minutes.
 
----------
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   tutorial/index
+   How to <how-to/index>
+   explanation/index
 
 In this documentation
 ---------------------
 
-..  grid:: 1 1 2 2
+.. grid:: 1 1 2 2
 
-   ..  grid-item:: :doc:`Tutorial <tutorial/index>`
+   .. grid-item-card:: Tutorial
+      :link: /tutorial/index
+      :link-type: doc
 
-       Get started - a hands-on introduction to DSS for newcomers
+      Get started with DSS.
 
-   ..  grid-item:: :doc:`How-to guides <how-to/index>`
+   .. grid-item-card:: How-to guides
+      :link: /how-to/index
+      :link-type: doc
 
-      Step-by-step guides covering key operations and common tasks with DSS
+      Step-by-step guides covering key operations and common tasks with DSS.
 
 .. grid:: 1 1 2 2
 
-   .. grid-item:: :doc:`Explanation <explanation/index>`
+   .. grid-item-card:: Explanation
+      :link: /explanation/index
+      :link-type: doc
 
-      Discussion and clarification of key topics
-
----------
+      Learn about DSS system architecture.
 
 Project and community
 ---------------------
@@ -47,12 +57,3 @@ Data Science Stack is an open-source project that values its community. We warml
 * `Contribute`_ and `report bugs <https://github.com/canonical/data-science-stack/issues/new/choose>`_.
 * Join the `Discourse forum`_.
 * Talk to us on `Matrix`_.
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-
-   Home <self>
-   tutorial/index
-   How to <how-to/index>
-   explanation/index
