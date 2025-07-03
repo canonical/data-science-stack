@@ -51,7 +51,8 @@ In this documentation
 Project and community
 ---------------------
 
-Data Science Stack is an open-source project that values its community. We warmly welcome contributions, suggestions, fixes, and constructive feedback from everyone.
+Data Science Stack is an open-source project that values its community. 
+Contributions, suggestions, fixes, and constructive feedback are welcome from everyone.
 
 * Read our `Code of conduct`_.
 * `Contribute`_ and `report bugs <https://github.com/canonical/data-science-stack/issues/new/choose>`_.
