@@ -19,6 +19,7 @@ intel
 IPEX
 ipynb
 ITEX
+jovyan
 Jupyter
 jupyter
 JupyterLab

@@ -60,7 +60,7 @@ Jupyter Notebooks
 ^^^^^^^^^^^^^^^^^
 
 A `Jupyter Notebook <Jupyter Notebooks_>`_ is essentially a `Kubernetes deployment <Pod_>`_, also known as `Pod`, running a Docker image with Jupyter Lab and a dedicated ML framework, such as PyTorch or TensorFlow.
-For each Jupyter Notebook, DSS mounts a `Hostpath <Microk8s hostpath docs_>`_ directory-backed persistent volume to the data directory. 
+For each Jupyter Notebook, DSS mounts a `Hostpath <MicroK8s hostpath docs_>`_ directory-backed persistent volume to the data directory. 
 All Jupyter Notebooks share the same persistent volume, allowing them to exchange data seamlessly. 
 The full path to that persistent volume is `/home/jovyan/shared`.
 
