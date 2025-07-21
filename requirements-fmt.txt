@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-fmt.in
 #
-black==23.12.1
+black==24.3.0
     # via -r requirements-fmt.in
 click==8.1.7
     # via black
