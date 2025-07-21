@@ -142,7 +142,7 @@ typing-extensions==4.9.0
     # via
     #   -r requirements.txt
     #   anyio
-urllib3==2.2.0
+urllib3==2.2.2
     # via
     #   -r requirements.txt
     #   requests
