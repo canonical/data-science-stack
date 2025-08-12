@@ -169,7 +169,7 @@ html_theme_options = {
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-# slug = ''
+slug = 'data-science-stack'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
