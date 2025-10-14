@@ -179,14 +179,9 @@ slug = 'data-science-stack'
 
 html_baseurl = 'https://documentation.ubuntu.com/data-science-stack/'
 
-# URL scheme. Add language and version scheme elements.
-# When configured with RTD variables, check for RTD environment so manual runs succeed:
+# URL scheme.
 
-if 'READTHEDOCS_VERSION' in os.environ:
-    version = os.environ["READTHEDOCS_VERSION"]
-    sitemap_url_scheme = '{version}{link}'
-else:
-    sitemap_url_scheme = 'MANUAL/{link}'
+sitemap_url_scheme = '{link}'
 
 # Include `lastmod` dates in the sitemap:
 
