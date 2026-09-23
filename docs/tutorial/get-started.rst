@@ -19,7 +19,7 @@ Requirements
 .. _set_canonical_k8s:
 
 Set up Canonical Kubernetes
---------------------
+----------------------------
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
 `Canonical Kubernetes`_ is used as the orchestration system.
