@@ -4,7 +4,7 @@ DSS architecture
 This guide provides an overview of the Data Science Stack (DSS) architecture, its main components, and their interactions. 
 
 DSS is a ready-to-run environment for Machine Learning (ML) and Data Science (DS). 
-It's built on open-source tooling, including `Canonical K8s`_, JupyterLab, and `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_.
+It's built on open-source tooling, including `Canonical Kubernetes`_, JupyterLab, and `MLflow <https://ubuntu.com/blog/what-is-mlflow>`_.
 
 DSS is distributed as a `snap`_ and usable on any Ubuntu workstation. 
 This provides robust security management and user-friendly version control, enabling seamless updates and auto-rollback in case of failure. 
@@ -79,9 +79,9 @@ Orchestration
 ~~~~~~~~~~~~~
 
 DSS requires a container orchestration solution. 
-DSS relies on `Canonical K8s`_, a lightweight Kubernetes distribution.
+DSS relies on `Canonical Kubernetes`_, a lightweight Kubernetes distribution.
 
-Therefore, Canonical K8s needs to be deployed before installing DSS on the host machine. 
+Therefore, Canonical Kubernetes needs to be deployed before installing DSS on the host machine. 
 It must be configured with local storage support to handle persistent volumes used by DSS.
 
 .. _gpu_support:
@@ -93,7 +93,7 @@ DSS can run with or without the use of GPUs.
 If needed, follow `NVIDIA GPU Operator <https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html>`_ for deployment details.
 
 DSS does not automatically install the tools and libraries required for running GPU workloads.
-It relies on Canonical K8s for the required operating-system drivers.
+It relies on Canonical Kubernetes for the required operating-system drivers.
 It also depends on the chosen image, for example, CUDA when working with NVIDIA GPUs.
 
 .. caution::
@@ -103,7 +103,7 @@ Storage
 ^^^^^^^
 
 DSS expects a default `storage class <https://kubernetes.io/docs/concepts/storage/storage-classes/>`_ in the Kubernetes deployment, which is used to persist Jupyter Notebooks and MLflow artefacts.   
-In Canonical K8s, a local storage class should be configured to provision Kubernetes' *PersistentVolumeClaims* (`PVCs <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_). 
+In Canonical Kubernetes, a local storage class should be configured to provision Kubernetes' *PersistentVolumeClaims* (`PVCs <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_). 
 
 A shared PVC is used across all Jupyter Notebooks to share and persist data. 
 MLflow also uses its dedicated PVC to store the logged artefacts.
@@ -142,7 +142,5 @@ This includes the GPU Operator for managing access and usage.
 Accessibility
 -------------
 
-Jupyter Notebooks and MLflow can be accessed from a web browser through the Pod IP that is given access through Canonical K8s.
+Jupyter Notebooks and MLflow can be accessed from a web browser through the Pod IP that is given access through Canonical Kubernetes.
 See :ref:`access_notebook` and :ref:`access_mlflow` for more details.
-
-.. _Canonical K8s: https://snapcraft.io/k8s

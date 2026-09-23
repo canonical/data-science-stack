@@ -4,7 +4,7 @@ Get started with DSS
 ====================
 
 This guide describes how you can get started with Data Science Stack (DSS). 
-From setting up Canonical K8s in your host environment, all the way to running your first notebook.
+From setting up Canonical Kubernetes in your host environment, all the way to running your first notebook.
 
 Data Science Stack is a ready-made environment that makes it seamless to run GPU-enabled containerised Machine Learning (ML) environments. 
 It provides easy access to a solution for developing and optimising ML models, utilising your machine's GPUs and allowing users to utilise different ML environment images based on their needs.
@@ -18,14 +18,14 @@ Requirements
 
 .. _set_canonical_k8s:
 
-Set up Canonical K8s
---------------------
+Set up Canonical Kubernetes
+----------------------------
 
 DSS relies on a container orchestration system, capable of exposing the host GPUs to the workloads. 
-`Canonical K8s`_ is used as the orchestration system.
-All the workloads and state managed by DSS are running on top of Canonical K8s.
+`Canonical Kubernetes`_ is used as the orchestration system.
+All the workloads and state managed by DSS are running on top of Canonical Kubernetes.
 
-You can install Canonical K8s using ``snap`` as follows:
+You can install Canonical Kubernetes ``k8s snap`` as follows:
 
 .. code-block:: bash
 
@@ -50,7 +50,7 @@ Now, install the DSS CLI using the following command:
 Initialise DSS
 --------------
 
-Next, you need to initialise DSS on top of Canonical K8s and prepare MLflow:
+Next, you need to initialise DSS on top of Canonical Kubernetes and prepare MLflow:
 
 .. code-block:: bash
 
