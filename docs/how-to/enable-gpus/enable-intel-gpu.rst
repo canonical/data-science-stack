@@ -5,7 +5,7 @@ Enable Intel GPUs
 
 This guide describes how to configure Data Science Stack (DSS) to utilise the Intel GPUs on your machine. 
 
-You can do so by enabling the Intel device plugin on your `Canonical K8s`_ cluster.
+You can do so by enabling the Intel device plugin on your `Canonical Kubernetes`_ cluster.
 
 Prerequisites
 -------------
@@ -44,7 +44,7 @@ If the drivers are correctly installed, you should see information about your GP
 Enable the Intel GPU plugin
 ---------------------------
 
-To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Canonical K8s cluster.
+To ensure DSS can utilise Intel GPUs, you have to enable the Intel GPU plugin in your Canonical Kubernetes cluster.
 
 1. Use `kubectl kustomize` to build the plugin YAML configuration files:
 
@@ -61,7 +61,7 @@ To allow multiple containers to utilise the same GPU, run:
                 
   sed -i 's/enable-monitoring/enable-monitoring\n        - -shared-dev-num=10/' gpu_plugin.yaml
 
-2. Apply the built YAML files to your Canonical K8s cluster:
+2. Apply the built YAML files to your Canonical Kubernetes cluster:
 
 .. code-block:: bash
                 
@@ -69,7 +69,7 @@ To allow multiple containers to utilise the same GPU, run:
   kubectl apply -f node_feature_rules.yaml
   kubectl apply -f gpu_plugin.yaml
 
-The Canonical K8s cluster is now configured to recognise and utilise your Intel GPU.
+The Canonical Kubernetes cluster is now configured to recognise and utilise your Intel GPU.
 
 .. note::
  After the YAML configuration files have been applied, they can be safely deleted.
@@ -77,7 +77,7 @@ The Canonical K8s cluster is now configured to recognise and utilise your Intel 
 Verify the Intel GPU plugin
 ---------------------------
 
-To verify the Intel GPU plugin is installed and the Canonical K8s cluster recognises your GPU, run:
+To verify the Intel GPU plugin is installed and the Canonical Kubernetes cluster recognises your GPU, run:
 
 .. code-block:: bash
 

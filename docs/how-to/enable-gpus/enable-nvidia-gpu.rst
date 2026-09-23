@@ -3,7 +3,7 @@
 Enable NVIDIA GPUs
 ==================
 
-This guide describes how to configure Data Science Stack (DSS) to utilise your NVIDIA GPUs within a Canonical K8s environment.
+This guide describes how to configure Data Science Stack (DSS) to utilise your NVIDIA GPUs within a Canonical Kubernetes environment.
 
 DSS supports GPU acceleration by leveraging the `NVIDIA GPU Operator`_. The operator ensures that the necessary components, including drivers and runtime, are set up correctly to enable GPU workloads.
 

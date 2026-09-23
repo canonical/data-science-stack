@@ -11,7 +11,7 @@ Install
 -------
 
 .. note::
-   To install DSS, ensure you have previously installed `Snap`_ and `Canonical K8s`_.
+   To install DSS, ensure you have previously installed `Snap`_ and `Canonical Kubernetes`_.
 
 You can install DSS using ``snap`` as follows:
 
@@ -31,7 +31,7 @@ Initialise
 You can initialise DSS through ``dss initialize``.
 This command:
 
-* Stores credentials for the Canonical K8s cluster.
+* Stores credentials for the Canonical Kubernetes cluster.
 * Allocates storage for your DSS Jupyter Notebooks.
 * Deploys an `MLflow <MLflow Docs_>`_ model registry.
 
@@ -39,7 +39,7 @@ This command:
 
     dss initialize --kubeconfig "$(sudo k8s config)"
 
-The ``--kubeconfig`` option is used to provide your Canonical K8s cluster's kubeconfig.
+The ``--kubeconfig`` option is used to provide your Canonical Kubernetes cluster's kubeconfig.
 
 .. note::
    Note the use of quotes for the ``--kubeconfig`` option. Without them, the content may be interpreted by your shell.
@@ -63,7 +63,7 @@ You should expect an output like this:
 Remove
 ------
 
-You can remove DSS from your Canonical K8s cluster through ``dss purge``. 
+You can remove DSS from your Canonical Kubernetes cluster through ``dss purge``. 
 This command purges all the DSS components, including:
 
 * All Jupyter Notebooks.
@@ -72,7 +72,7 @@ This command purges all the DSS components, including:
 
 .. note::
 
-    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your Canonical K8s cluster.  
+    This action removes the components of the DSS environment, but it does not remove the DSS CLI or your Canonical Kubernetes cluster.  
     To remove those, `delete their snaps <https://snapcraft.io/docs/get-started>`_.
 
 .. code-block:: bash
